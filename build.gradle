@@ -32,9 +32,16 @@ minecraft {
 
 repositories {
     mavenCentral()
+    ivy {
+        url "https://download.nodecdn.net/containers"
+        layout "pattern", {
+            artifact "/[organisation]/[module]/release/[revision]/[ext]"
+        }
+    }
 }
 
 dependencies {
+    compile 'reforged:server:7.2.0@Pixelmon-1.12.2-7.2.0-server.jar'
 }
 
 processResources {
