@@ -19,6 +19,7 @@ import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 public class GUIRegistry {
 
@@ -118,8 +119,8 @@ public class GUIRegistry {
         lore.add(attackLine1);
 
         String attackLine2 = ""
-                .concat(TextFormatting.AQUA + ((attacks[0] != null) ? attacks[2].getMove().getAttackName() : "None"))
-                .concat(" - " + TextFormatting.AQUA + ((attacks[1] != null) ? attacks[3].getMove().getAttackName() : "None"));
+                .concat(TextFormatting.AQUA + ((attacks[2] != null) ? attacks[2].getMove().getAttackName() : "None"))
+                .concat(" - " + TextFormatting.AQUA + ((attacks[3] != null) ? attacks[3].getMove().getAttackName() : "None"));
         lore.add(attackLine2);
 
         return lore;

@@ -23,8 +23,8 @@ public class Editor extends CommandBase {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if(sender instanceof EntityPlayerMP){
-            GUIRegistry registry = new GUIRegistry();
-            registry.openRegistry((EntityPlayerMP) sender);
+            GUIRegistry registry = new GUIRegistry((EntityPlayerMP) sender);
+            registry.openRegistry();
         }
         else{
             sender.sendMessage(new TextComponentString("You must be in-game to use this command!"));

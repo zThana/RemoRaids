@@ -2,6 +2,7 @@ package ca.landonjw.remoraids;
 
 import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.implementation.BossAPI;
+import ca.landonjw.remoraids.implementation.commands.TestCommand;
 import ca.landonjw.remoraids.implementation.listeners.BattleEndListener;
 import ca.landonjw.remoraids.implementation.listeners.BossDropListener;
 import ca.landonjw.remoraids.implementation.listeners.BossUpdateListener;
@@ -81,6 +82,7 @@ public class RemoRaids {
     public void onServerStart(FMLServerStartingEvent event){
         event.registerServerCommand(new Base());
         event.registerServerCommand(new Callback());
+        event.registerServerCommand(new TestCommand());
     }
 
     public static IBossAPI getBossAPI(){
