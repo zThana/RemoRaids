@@ -4,6 +4,7 @@ import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.battles.IBossBattle;
 import ca.landonjw.remoraids.api.battles.IBossBattleRegistry;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
+import com.google.common.base.Preconditions;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.battles.controller.ai.MoveChoice;

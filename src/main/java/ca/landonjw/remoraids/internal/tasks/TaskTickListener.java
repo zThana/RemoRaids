@@ -11,8 +11,6 @@ public class TaskTickListener {
 
     /** List of active tasks to be ticked by the listener. */
     private static List<Task> tasks = new ArrayList<>();
-    /** List of tasks that have expired and are to be removed from {@link #tasks}. */
-    private static List<Task> expiredTasks = new ArrayList<>();
 
     /**
      * Invokes {@link Task#tick()} on each active task and checks if any should be removed.
@@ -23,21 +21,13 @@ public class TaskTickListener {
     public void onServerTick(TickEvent.ServerTickEvent event){
         if(event.phase == TickEvent.Phase.END){
             for(Task task : new ArrayList<>(tasks)){
-                task.tick();
                 if(task.isExpired()){
-                    expiredTasks.add(task);
+                    tasks.remove(task);
+                    continue;
                 }
+                task.tick();
             }
-            removeExpiredTasks();
         }
-    }
-
-    /**
-     * Removes any expired tasks from the active task list.
-     */
-    private void removeExpiredTasks(){
-        tasks.removeAll(expiredTasks);
-        expiredTasks.clear();
     }
 
     /**

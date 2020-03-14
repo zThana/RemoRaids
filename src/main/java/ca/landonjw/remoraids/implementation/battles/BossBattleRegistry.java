@@ -1,9 +1,7 @@
 package ca.landonjw.remoraids.implementation.battles;
 
-import ca.landonjw.remoraids.api.battles.IBattleRestraint;
 import ca.landonjw.remoraids.api.battles.IBossBattle;
 import ca.landonjw.remoraids.api.battles.IBossBattleRegistry;
-import ca.landonjw.remoraids.api.battles.IBossBattleRules;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import net.minecraft.entity.player.EntityPlayerMP;
 

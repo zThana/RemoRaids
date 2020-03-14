@@ -1,17 +1,16 @@
 package ca.landonjw.remoraids.implementation.commands;
 
 import ca.landonjw.remoraids.RemoRaids;
-import ca.landonjw.remoraids.api.boss.IBossEntity;
+import ca.landonjw.remoraids.api.boss.IBoss;
+import ca.landonjw.remoraids.api.boss.IBossCreator;
+import ca.landonjw.remoraids.api.spawning.IBossSpawnLocation;
+import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import ca.landonjw.remoraids.api.spawning.ISpawnAnnouncement;
 import ca.landonjw.remoraids.implementation.battles.BossBattleRules;
 import ca.landonjw.remoraids.implementation.battles.restraints.PreventRebattleRestraint;
-import ca.landonjw.remoraids.implementation.boss.Boss;
 import ca.landonjw.remoraids.implementation.spawning.BossSpawnLocation;
-import ca.landonjw.remoraids.implementation.spawning.BossSpawner;
 import ca.landonjw.remoraids.implementation.spawning.announcements.SpawnAnnouncement;
 import ca.landonjw.remoraids.implementation.spawning.announcements.TeleportableSpawnAnnouncement;
-import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import net.minecraft.command.CommandBase;
@@ -20,7 +19,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
-import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 public class TestCommand extends CommandBase {
 
@@ -39,13 +38,7 @@ public class TestCommand extends CommandBase {
 		if(sender instanceof EntityPlayerMP){
 			EntityPlayerMP player = (EntityPlayerMP) sender;
 
-			Pokemon pokemon = Pixelmon.pokemonFactory.create(EnumSpecies.randomPoke());
-
-			Boss boss = new Boss(pokemon);
-			boss.setSize(10);
-			boss.setStat(StatsType.HP, 1000);
-
-			BossSpawnLocation location = new BossSpawnLocation(player);
+			IBossSpawnLocation location = new BossSpawnLocation(player);
 			ISpawnAnnouncement announcement;
 			if(RemoRaids.getGeneralConfig().isAnnouncementTeleportable()){
 				announcement = new TeleportableSpawnAnnouncement(RemoRaids.getMessageConfig().getSpawnAnnouncement());
@@ -54,17 +47,25 @@ public class TestCommand extends CommandBase {
 				announcement = new SpawnAnnouncement(RemoRaids.getMessageConfig().getSpawnAnnouncement());
 			}
 
-			BossSpawner spawner = new BossSpawner(boss, location, announcement);
+			IBossSpawner spawner = IBossCreator.initialize()
+					.boss(IBoss.builder()
+							.species(EnumSpecies.Bidoof)
+							.level(5)
+							.size(5)
+							.stat(StatsType.HP, 1000, false)
+							.build()
+					)
+					.location(location)
+					.announcement(announcement)
+					.respawns(1, 5, TimeUnit.SECONDS)
+					.build();
 
-			Optional<IBossEntity> maybeBossEntity = spawner.spawn();
-
-			if(maybeBossEntity.isPresent()){
-				IBossEntity bossEntity = maybeBossEntity.get();
+			spawner.spawn().ifPresent(entity -> {
 				BossBattleRules rules = new BossBattleRules();
-				rules.addBattleRestraint(new PreventRebattleRestraint(bossEntity));
+				rules.addBattleRestraint(new PreventRebattleRestraint(entity));
 
-				RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(bossEntity).get().setBattleRules(rules);
-			}
+				RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(entity).get().setBattleRules(rules);
+			});
 		}
 	}
 

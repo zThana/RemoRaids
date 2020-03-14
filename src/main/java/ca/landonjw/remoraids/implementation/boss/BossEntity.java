@@ -1,6 +1,7 @@
 package ca.landonjw.remoraids.implementation.boss;
 
 import ca.landonjw.remoraids.RemoRaids;
+import ca.landonjw.remoraids.api.battles.IBossBattle;
 import ca.landonjw.remoraids.api.boss.IBoss;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.boss.engage.IBossEngager;
@@ -21,6 +22,7 @@ import net.minecraft.world.BossInfo;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 public class BossEntity implements IBossEntity {
@@ -137,17 +139,17 @@ public class BossEntity implements IBossEntity {
     @Override
     public void despawn() {
         BossBattleRegistry battleRegistry = BossBattleRegistry.getInstance();
+        Optional<IBossBattle> battle = battleRegistry.getBossBattle(this);
+        battleRegistry.deregisterBossBattle(this);
 
-        if(battleRegistry.getBossBattle(this).isPresent()){
-            BossDeathEvent deathEvent = new BossDeathEvent(this, battleRegistry.getBossBattle(this).get());
+        if(battle.isPresent()){
+            BossDeathEvent deathEvent = new BossDeathEvent(this, battle.get());
             RemoRaids.EVENT_BUS.post(deathEvent);
         }
         else{
             BossDeathEvent deathEvent = new BossDeathEvent(this, null);
             RemoRaids.EVENT_BUS.post(deathEvent);
         }
-
-        battleRegistry.deregisterBossBattle(this);
 
         entity.setDead();
         battleEntity.setDead();

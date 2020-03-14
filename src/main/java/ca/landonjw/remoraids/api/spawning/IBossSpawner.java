@@ -9,10 +9,10 @@ public interface IBossSpawner {
 
     Optional<IBossEntity> spawn();
 
-    IBossSpawnLocation getSpawnLocation();
-
     IBoss getBoss();
 
-    void setSpawnLocation(IBossSpawnLocation location);
+    IBossSpawnLocation getSpawnLocation();
+
+    ISpawnAnnouncement getAnnouncement();
 
 }

@@ -1,13 +1,19 @@
 package ca.landonjw.remoraids;
 
 import ca.landonjw.remoraids.api.IBossAPI;
+import ca.landonjw.remoraids.api.BossAPIProvider;
+import ca.landonjw.remoraids.api.boss.IBoss;
+import ca.landonjw.remoraids.api.boss.IBossCreator;
 import ca.landonjw.remoraids.implementation.BossAPI;
+import ca.landonjw.remoraids.implementation.boss.Boss;
+import ca.landonjw.remoraids.implementation.boss.BossCreator;
 import ca.landonjw.remoraids.implementation.commands.TestCommand;
 import ca.landonjw.remoraids.implementation.listeners.BattleEndListener;
 import ca.landonjw.remoraids.implementation.listeners.BossDropListener;
 import ca.landonjw.remoraids.implementation.listeners.BossUpdateListener;
 import ca.landonjw.remoraids.implementation.listeners.EngageListener;
 import ca.landonjw.remoraids.implementation.ui.Base;
+import ca.landonjw.remoraids.internal.api.APIRegistrationUtil;
 import ca.landonjw.remoraids.internal.config.GeneralConfig;
 import ca.landonjw.remoraids.internal.config.MessageConfig;
 import ca.landonjw.remoraids.internal.config.RestraintsConfig;
@@ -41,7 +47,6 @@ public class RemoRaids {
 
     public static final EventBus EVENT_BUS = new EventBus();
     public static final Logger logger = LogManager.getLogger(MOD_NAME);
-    private static IBossAPI bossAPI;
 
     private static GeneralConfig generalConfig;
     private static RestraintsConfig restraintsConfig;
@@ -73,9 +78,11 @@ public class RemoRaids {
 
         Pixelmon.EVENT_BUS.register(new EngageListener());
         Pixelmon.EVENT_BUS.register(new BossDropListener());
-        Pixelmon.EVENT_BUS.register(new BattleEndListener());
+        RemoRaids.EVENT_BUS.register(new BattleEndListener());
 
-        bossAPI = new BossAPI();
+        APIRegistrationUtil.register(new BossAPI());
+        getBossAPI().getRaidRegistry().registerBuilderSupplier(IBossCreator.class, BossCreator::new);
+        getBossAPI().getRaidRegistry().registerBuilderSupplier(IBoss.IBossBuilder.class, Boss.BossBuilder::new);
     }
 
     @Mod.EventHandler
@@ -86,7 +93,7 @@ public class RemoRaids {
     }
 
     public static IBossAPI getBossAPI(){
-        return bossAPI;
+        return BossAPIProvider.get();
     }
 
     public static GeneralConfig getGeneralConfig() {

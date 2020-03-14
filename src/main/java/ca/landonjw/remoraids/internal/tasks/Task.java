@@ -1,6 +1,7 @@
 package ca.landonjw.remoraids.internal.tasks;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -24,6 +25,9 @@ public class Task {
     private long ticksRemaining;
     /** If the task is expired and ready to be removed. */
     private boolean expired;
+
+    /** States whether or not the task is currently paused from executing */
+    private boolean paused;
 
     /**
      * Constructor for a task.
@@ -72,10 +76,10 @@ public class Task {
      * Decrements the number of ticks remaining and evaluates if the task should run.
      */
     public void tick(){
-        if(!expired) {
-            ticksRemaining--;
+        if(!expired && !paused) {
+            this.ticksRemaining = Math.max(0, ticksRemaining--);
 
-            if (ticksRemaining < 0) {
+            if (ticksRemaining == 0) {
                 consumer.accept(this);
                 currentIteration++;
 
@@ -199,4 +203,21 @@ public class Task {
 
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return interval == task.interval &&
+                currentIteration == task.currentIteration &&
+                iterations == task.iterations &&
+                ticksRemaining == task.ticksRemaining &&
+                expired == task.expired &&
+                Objects.equals(consumer, task.consumer);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(consumer, interval, currentIteration, iterations, ticksRemaining, expired);
+    }
 }

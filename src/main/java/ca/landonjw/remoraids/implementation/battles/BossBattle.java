@@ -133,7 +133,6 @@ public class BossBattle implements IBossBattle {
             RemoRaids.EVENT_BUS.post(battleStarting);
 
             if(!battleStarting.isCanceled()){
-
                 if(startingPixelmon == null){
                     startingPixelmon = Pixelmon.storageManager.getParty(player).getAndSendOutFirstAblePokemon(player);
                 }
@@ -210,7 +209,7 @@ public class BossBattle implements IBossBattle {
                     killer = source.getUniqueID();
                 }
                 distributeRewards();
-                bossEntity.despawn();
+                this.bossEntity.despawn();
             }
             currentHealth = newHealth;
         }

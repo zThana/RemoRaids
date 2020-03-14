@@ -23,8 +23,7 @@ public class TimedSpawnListener {
         }
     }
 
-    public void addRespawningEntity(@Nonnull IBossEntity entity,
-                                    @Nonnull TimedBossSpawner spawner){
+    void addRespawningEntity(@Nonnull IBossEntity entity, @Nonnull TimedBossSpawner spawner){
         respawnList.put(entity, spawner);
     }
 
