@@ -156,4 +156,20 @@ public class BossEntity implements IBossEntity {
         BossEntityRegistry.getInstance().deregister(this);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BossEntity that = (BossEntity) o;
+        return Objects.equals(uniqueId, that.uniqueId) &&
+                Objects.equals(boss, that.boss) &&
+                Objects.equals(entity, that.entity) &&
+                Objects.equals(battleEntity, that.battleEntity) &&
+                Objects.equals(bossEngager, that.bossEngager);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uniqueId, boss, entity, battleEntity, bossEngager);
+    }
 }

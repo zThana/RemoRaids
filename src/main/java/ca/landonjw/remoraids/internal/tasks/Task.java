@@ -29,6 +29,8 @@ public class Task {
     /** States whether or not the task is currently paused from executing */
     private boolean paused;
 
+    private String identifier;
+
     /**
      * Constructor for a task.
      *
@@ -37,7 +39,8 @@ public class Task {
      * @param interval   the time before the task will run after being executed
      * @param iterations the number of times the task will be run
      */
-    private Task(Consumer<Task> consumer, long delay, long interval, long iterations){
+    private Task(String identifier, Consumer<Task> consumer, long delay, long interval, long iterations){
+        this.identifier = identifier;
         this.consumer = consumer;
         this.interval = interval;
         this.iterations = iterations;
@@ -72,12 +75,20 @@ public class Task {
         expired = true;
     }
 
+    public void pause() {
+        this.paused = true;
+    }
+
+    public void resume() {
+        this.paused = false;
+    }
+
     /**
      * Decrements the number of ticks remaining and evaluates if the task should run.
      */
-    public void tick(){
+    void tick(){
         if(!expired && !paused) {
-            this.ticksRemaining = Math.max(0, ticksRemaining--);
+            this.ticksRemaining = Math.max(0, --ticksRemaining);
 
             if (ticksRemaining == 0) {
                 consumer.accept(this);
@@ -90,6 +101,15 @@ public class Task {
                     expired = true;
                 }
             }
+        }
+    }
+
+    @Override
+    public String toString() {
+        if(this.identifier != null) {
+            return "Task-" + this.identifier;
+        } else {
+            return super.toString();
         }
     }
 
@@ -117,6 +137,13 @@ public class Task {
         private long interval;
         /** The number of times the task will run. -1 to run indefinitely. */
         private long iterations = -1;
+
+        private String identifier;
+
+        public Builder identifier(String identifier) {
+            this.identifier = identifier;
+            return this;
+        }
 
         /**
          * Sets the consumer to be executed by the task.
@@ -196,7 +223,7 @@ public class Task {
             if(consumer == null){
                 throw new IllegalStateException("consumer must be set");
             }
-            Task task = new Task(consumer, delay, interval, iterations);
+            Task task = new Task(identifier, consumer, delay, interval, iterations);
             TaskTickListener.addTask(task);
             return task;
         }

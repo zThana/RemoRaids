@@ -74,11 +74,14 @@ public interface IBossCreator extends IBuilder<IBossSpawner, IBossCreator> {
 	IBossCreator announcement(ISpawnAnnouncement announcement);
 
 	/**
+	 * Specifies whether or not this boss can respawn. Alongside this call, the amount of times it can respawn and
+	 * the cooldown period will state how often a raid boss respawns, as well as how often. If the input for amount
+	 * is -1, the system will treat this as an unlimited respawn template.
 	 *
-	 *
-	 * @param time
-	 * @param unit
-	 * @return
+	 * @param amount The number of times to respawn the raid boss. -1 for unlimited
+	 * @param time The amount of time to wait before respawning the raid boss
+	 * @param unit The time unit to use for specifying the actual intended wait for the respawn cooldown
+	 * @return The current instance of the builder
 	 */
 	IBossCreator respawns(int amount, long time, TimeUnit unit);
 

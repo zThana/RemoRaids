@@ -21,11 +21,10 @@ public class TaskTickListener {
     public void onServerTick(TickEvent.ServerTickEvent event){
         if(event.phase == TickEvent.Phase.END){
             for(Task task : new ArrayList<>(tasks)){
+                task.tick();
                 if(task.isExpired()){
                     tasks.remove(task);
-                    continue;
                 }
-                task.tick();
             }
         }
     }

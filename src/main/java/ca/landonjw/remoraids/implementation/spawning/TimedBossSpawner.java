@@ -13,8 +13,6 @@ import java.util.concurrent.TimeUnit;
 
 public class TimedBossSpawner extends BossSpawner {
 
-    private Task runner;
-
     private int numRespawns;
     private long cooldownTimeTicks;
 
@@ -22,10 +20,10 @@ public class TimedBossSpawner extends BossSpawner {
                             @Nonnull IBossSpawnLocation spawnLocation,
                             @Nullable ISpawnAnnouncement announcement,
                             int numRespawns,
-                            long interval) {
+                            long delay) {
         super(boss, spawnLocation, announcement);
         this.numRespawns = numRespawns;
-        cooldownTimeTicks = interval;
+        cooldownTimeTicks = delay;
     }
 
     /** {@inheritDoc} */
@@ -36,11 +34,12 @@ public class TimedBossSpawner extends BossSpawner {
         return entity;
     }
 
-    void startRespawnCooldown(){
-        this.runner = Task.builder()
+    void startCooldown(){
+        Task.builder()
+                .identifier("Timed-Spawner")
                 .execute(this::spawn)
-                .interval(cooldownTimeTicks)
-                .iterations(this.getNumRespawns())
+                .delay(cooldownTimeTicks)
+                .iterations(1)
                 .build();
     }
 

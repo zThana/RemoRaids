@@ -7,19 +7,21 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class TimedSpawnListener {
 
     private static TimedSpawnListener instance;
 
-    private Map<IBossEntity, TimedBossSpawner> respawnList = new HashMap<>();
+    private static Map<IBossEntity, TimedBossSpawner> respawnList = new HashMap<>();
 
     @SubscribeEvent
     public void onBossDeath(BossDeathEvent event){
         if(respawnList.containsKey(event.getBossEntity())){
+            System.out.println("Found matching entity");
             TimedBossSpawner spawner = respawnList.get(event.getBossEntity());
-            spawner.startRespawnCooldown();
             respawnList.remove(event.getBossEntity());
+            spawner.startCooldown();
         }
     }
 
