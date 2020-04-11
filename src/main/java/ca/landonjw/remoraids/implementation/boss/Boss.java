@@ -1,13 +1,16 @@
 package ca.landonjw.remoraids.implementation.boss;
 
 import ca.landonjw.remoraids.api.boss.IBoss;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Gender;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 import com.pixelmonmod.pixelmon.enums.EnumNature;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
-import com.pixelmonmod.pixelmon.enums.EnumStatueTextureType;
 import com.pixelmonmod.pixelmon.enums.forms.IEnumForm;
 import net.minecraft.util.Tuple;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -23,19 +26,21 @@ public class Boss implements IBoss {
 
     private Pokemon pokemon;
     private float size;
-    private EnumStatueTextureType texture;
+    private String texture;
 
     public Boss(@Nonnull Pokemon pokemon){
-        this.pokemon = Objects.requireNonNull(pokemon, "pokemon must not be null");
+        this.pokemon = Objects.requireNonNull(pokemon, "Pokemon must not be null");
+        this.size = 1;
+        this.texture = "";
     }
 
     private Boss(@NonNull BossBuilder builder) {
         this.pokemon = Pixelmon.pokemonFactory.create(builder.species);
-        this.applyIfNull(builder.form, this.pokemon::setForm);
-        this.applyIfNull(builder.level, this.pokemon::setLevel);
-        this.applyIfNull(builder.nature, this.pokemon::setNature);
+        applyIfNotNull(builder.form, this.pokemon::setForm);
+        applyIfNotNull(builder.level, this.pokemon::setLevel);
+        applyIfNotNull(builder.nature, this.pokemon::setNature);
         this.pokemon.initialize();
-        this.applyIfNull(builder.ability, this.pokemon::setAbility);
+        applyIfNotNull(builder.ability, this.pokemon::setAbility);
         for(Map.Entry<StatsType, Tuple<Integer, Boolean>> entry : builder.stats.entrySet()) {
             if(entry.getValue().getSecond()) {
                 this.amplifyStat(entry.getKey(), entry.getValue().getFirst());
@@ -43,12 +48,17 @@ public class Boss implements IBoss {
                 this.setStat(entry.getKey(), entry.getValue().getFirst());
             }
         }
+        applyIfNotNull(builder.gender, this.pokemon::setGender);
+        this.pokemon.setShiny(builder.shiny);
+        applyIfNotNull(builder.moveset, moveset -> {
+        	this.pokemon.getMoveset().attacks = moveset.attacks;
+        });
 
         this.texture = builder.texture;
         this.size = Math.max(1, builder.size);
     }
 
-    private <T> void applyIfNull(T input, Consumer<T> consumer) {
+    private static <T> void applyIfNotNull(T input, Consumer<T> consumer) {
         if(input != null) {
             consumer.accept(input);
         }
@@ -71,9 +81,6 @@ public class Boss implements IBoss {
     public void setStat(@Nonnull StatsType stat, int value) {
         if(value <= 0){
             throw new IllegalArgumentException("stat value must be above 0");
-        }
-        if(value > Short.MAX_VALUE){
-            throw new IllegalArgumentException("stat value will cause short overflow");
         }
 
         switch(stat){
@@ -120,13 +127,13 @@ public class Boss implements IBoss {
 
     /** {@inheritDoc} */
     @Override
-    public Optional<EnumStatueTextureType> getTexture() {
+    public Optional<String> getTexture() {
         return Optional.ofNullable(texture);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void setTexture(@Nullable EnumStatueTextureType texture) {
+    public void setTexture(@Nullable String texture) {
         this.texture = texture;
     }
 
@@ -136,11 +143,31 @@ public class Boss implements IBoss {
         private IEnumForm form;
         private Integer level;
 
+        private boolean shiny;
+
         private EnumNature nature;
         private String ability;
-        private EnumStatueTextureType texture;
+        private String texture;
+        private Gender gender;
+        private Moveset moveset;
+
         private float size;
         private Map<StatsType, Tuple<Integer, Boolean>> stats = Maps.newHashMap();
+
+        @Override
+        public IBossBuilder spec(PokemonSpec spec) {
+        	applyIfNotNull(spec.name, s -> this.species = EnumSpecies.getFromNameAnyCase(s));
+			applyIfNotNull(spec.level, lvl -> this.level = lvl);
+			applyIfNotNull(spec.form, f -> {
+				Preconditions.checkNotNull(this.species, "The species must be configured for a form to be passed along");
+				this.form = this.species.getFormEnum((int) f);
+			});
+			applyIfNotNull(spec.shiny, b -> this.shiny = b);
+			applyIfNotNull(spec.nature, n -> this.nature = EnumNature.getNatureFromIndex((int) n));
+			applyIfNotNull(spec.ability, a -> this.ability = a);
+			applyIfNotNull(spec.gender, g -> this.gender = Gender.getGender(g));
+            return this;
+        }
 
         @Override
         public IBossBuilder species(EnumSpecies species) {
@@ -160,7 +187,13 @@ public class Boss implements IBoss {
             return this;
         }
 
-        @Override
+	    @Override
+	    public IBossBuilder shiny(boolean shiny) {
+        	this.shiny = shiny;
+		    return this;
+	    }
+
+	    @Override
         public IBossBuilder nature(EnumNature nature) {
             this.nature = nature;
             return this;
@@ -172,7 +205,13 @@ public class Boss implements IBoss {
             return this;
         }
 
-        @Override
+	    @Override
+	    public IBossBuilder gender(Gender gender) {
+        	this.gender = gender;
+		    return this;
+	    }
+
+	    @Override
         public IBossBuilder stat(StatsType stat, int input, boolean amplify) {
             this.stats.put(stat, new Tuple<>(input, amplify));
             return this;
@@ -185,18 +224,42 @@ public class Boss implements IBoss {
         }
 
         @Override
-        public IBossBuilder texture(EnumStatueTextureType texture) {
+        public IBossBuilder texture(@NonNull String texture) {
+        	Preconditions.checkNotNull(texture, "Texture cannot be null!");
             this.texture = texture;
             return this;
         }
 
-        @Override
+	    @Override
+	    public IBossBuilder moveset(Moveset moveset) {
+        	this.moveset = moveset;
+		    return this;
+	    }
+
+	    @Override
         public IBossBuilder from(IBoss input) {
-            return this;
+            return this.species(input.getPokemon().getSpecies())
+		            .form(input.getPokemon().getFormEnum())
+		            .level(input.getPokemon().getLevel())
+		            .size(input.getSize())
+		            .stat(StatsType.HP, input.getStat(StatsType.HP), false)
+		            .stat(StatsType.Attack, input.getStat(StatsType.Attack), false)
+		            .stat(StatsType.Defence, input.getStat(StatsType.Defence), false)
+		            .stat(StatsType.SpecialAttack, input.getStat(StatsType.SpecialAttack), false)
+		            .stat(StatsType.SpecialDefence, input.getStat(StatsType.SpecialDefence), false)
+		            .stat(StatsType.Speed, input.getStat(StatsType.Speed), false)
+		            .ability(input.getPokemon().getAbilityName())
+		            .gender(input.getPokemon().getGender())
+		            .moveset(input.getPokemon().getMoveset())
+		            .nature(input.getPokemon().getNature())
+		            .shiny(input.getPokemon().isShiny())
+		            .texture(input.getTexture().orElse(""))
+            ;
         }
 
         @Override
         public IBoss build() {
+        	Preconditions.checkNotNull(this.species, "A raid boss must have a species specified to be created!");
             return new Boss(this);
         }
 

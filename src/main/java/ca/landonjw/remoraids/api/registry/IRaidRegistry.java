@@ -1,6 +1,7 @@
 package ca.landonjw.remoraids.api.registry;
 
 import ca.landonjw.remoraids.api.util.IBuilder;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -66,16 +67,27 @@ public interface IRaidRegistry {
 	 * This class acts as a wrapper to avoid Java Generic issues. This should really only be handled
 	 * via the internals of RemoRaids, and isn't a requirement for an outside developer to use.
 	 *
-	 * @param <T>
+	 * @param <T> The type that is being wrapped into this provider
 	 */
 	class Provider<T> {
 
+		/** Represents the wrapped instance */
 		private T instance;
 
+		/**
+		 * Constructs a new provider wrapping the input argument
+		 *
+		 * @param input The instance we wish to store in this wrapper
+		 */
 		public Provider(T input) {
 			this.instance = input;
 		}
 
+		/**
+		 * Retrieves the instance stored within this wrapper.
+		 *
+		 * @return The stored instance
+		 */
 		public T get() {
 			return this.instance;
 		}

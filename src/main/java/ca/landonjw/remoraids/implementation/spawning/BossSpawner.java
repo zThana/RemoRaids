@@ -12,10 +12,14 @@ import ca.landonjw.remoraids.implementation.boss.BossEntity;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityStatue;
+import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * An implementation of {@link IBossSpawner} that simply spawns a {@link IBoss}.
@@ -50,7 +54,7 @@ public class BossSpawner implements IBossSpawner {
     /** {@inheritDoc} */
     @Override
     public Optional<IBossEntity> spawn(){
-        BossSpawningEvent spawningEvent = new BossSpawningEvent(boss, this);
+        BossSpawningEvent spawningEvent = new BossSpawningEvent(this.getBoss(), this);
         RemoRaids.EVENT_BUS.post(spawningEvent);
 
         if(!spawningEvent.isCanceled()){
@@ -61,7 +65,7 @@ public class BossSpawner implements IBossSpawner {
                 announcement.sendAnnouncement(this);
             }
 
-            IBossEntity bossEntity = new BossEntity(boss, statue, battleEntity);
+            IBossEntity bossEntity = new BossEntity(this.getBoss(), statue, battleEntity);
 
             BossSpawnedEvent spawnedEvent = new BossSpawnedEvent(bossEntity, this);
             RemoRaids.EVENT_BUS.post(spawnedEvent);
@@ -82,15 +86,18 @@ public class BossSpawner implements IBossSpawner {
     private EntityStatue createAndSpawnStatue(){
         EntityStatue statue = new EntityStatue(spawnLocation.getWorld());
 
-        Pokemon bossPokemon = boss.getPokemon();
+        Pokemon bossPokemon = this.getBoss().getPokemon();
         statue.setPokemon(bossPokemon);
 
         statue.setAnimate(true);
         statue.setAnimation("Idle");
 
-        statue.setPixelmonScale(boss.getSize());
-        if(boss.getTexture().isPresent()){
-            statue.setTextureType(boss.getTexture().get());
+        statue.setPixelmonScale(this.getBoss().getSize());
+        if(this.getBoss().getTexture().isPresent()){
+            NBTTagCompound nbt = new NBTTagCompound();
+            statue.writeToNBT(nbt);
+            nbt.setString("CustomTexture", this.getBoss().getTexture().get());
+            statue.readFromNBT(nbt);
         }
 
         statue.setPosition(spawnLocation.getX(), spawnLocation.getY(), spawnLocation.getZ());
@@ -108,7 +115,7 @@ public class BossSpawner implements IBossSpawner {
     private EntityPixelmon createAndSpawnBattleEntity(){
         EntityPixelmon battleEntity = new EntityPixelmon(spawnLocation.getWorld());
 
-        Pokemon bossPokemon = boss.getPokemon();
+        Pokemon bossPokemon = this.getBoss().getPokemon();
         battleEntity.setPokemon(bossPokemon);
         battleEntity.enablePersistence();
         battleEntity.setPixelmonScale(0);
@@ -132,8 +139,9 @@ public class BossSpawner implements IBossSpawner {
      *
      * @return the boss to be spawned
      */
+    @Override
     public IBoss getBoss() {
-        return boss;
+        return this.boss;
     }
 
     /**
@@ -141,6 +149,7 @@ public class BossSpawner implements IBossSpawner {
      *
      * @return the spawn announcement
      */
+    @Override
     public ISpawnAnnouncement getAnnouncement() {
         return announcement;
     }

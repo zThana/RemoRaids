@@ -1,5 +1,6 @@
 package ca.landonjw.remoraids.implementation.spawning.announcements;
 
+import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import ca.landonjw.remoraids.api.spawning.ISpawnAnnouncement;
 import net.minecraft.server.management.PlayerList;
@@ -76,14 +77,12 @@ public class SpawnAnnouncement implements ISpawnAnnouncement {
      * @param spawner      the spawner being used
      * @return the announcement with placeholders replaced
      */
-    protected String getParsedAnnouncement(@Nonnull String announcement, @Nonnull IBossSpawner spawner){
-        String parsedAnnouncement = announcement
+    private String getParsedAnnouncement(@Nonnull String announcement, @Nonnull IBossSpawner spawner){
+        return announcement
                 .replace(BOSS_SPECIES_PLACEHOLDER, spawner.getBoss().getPokemon().getSpecies().name)
                 .replace(BOSS_LOCATION_X_PLACEHOLDER, "" + spawner.getSpawnLocation().getX())
                 .replace(BOSS_LOCATION_Y_PLACEHOLDER, "" + spawner.getSpawnLocation().getY())
                 .replace(BOSS_LOCATION_Z_PLACEHOLDER, "" + spawner.getSpawnLocation().getZ());
-
-        return parsedAnnouncement;
     }
 
 }

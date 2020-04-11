@@ -3,6 +3,9 @@ package ca.landonjw.remoraids.api.spawning;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
+/**
+ * Controls how a raid boss is announced to the server.
+ */
 public interface ISpawnAnnouncement {
 
     /**

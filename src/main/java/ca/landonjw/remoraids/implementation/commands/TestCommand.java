@@ -52,7 +52,7 @@ public class TestCommand extends CommandBase {
 							.species(EnumSpecies.Bidoof)
 							.level(5)
 							.size(5)
-							.stat(StatsType.HP, 1000, false)
+							.stat(StatsType.HP, 5000000, false)
 							.build()
 					)
 					.location(location)
