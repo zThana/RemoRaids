@@ -1,6 +1,5 @@
 package ca.landonjw.remoraids.implementation.spawning.announcements;
 
-import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import ca.landonjw.remoraids.api.spawning.ISpawnAnnouncement;
 import net.minecraft.server.management.PlayerList;
@@ -65,8 +64,7 @@ public class SpawnAnnouncement implements ISpawnAnnouncement {
      */
     protected ITextComponent getAnnouncementText(@Nonnull String announcement, @Nonnull IBossSpawner spawner){
         String parsedAnnouncement = getParsedAnnouncement(announcement, spawner);
-        ITextComponent text = new TextComponentString(parsedAnnouncement);
-        return text;
+        return new TextComponentString(parsedAnnouncement);
     }
 
     /**

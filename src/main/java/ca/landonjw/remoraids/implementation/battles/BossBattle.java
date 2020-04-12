@@ -12,6 +12,8 @@ import ca.landonjw.remoraids.api.rewards.IReward;
 import ca.landonjw.remoraids.implementation.battles.controller.BossStatusController;
 import ca.landonjw.remoraids.implementation.battles.controller.participants.BossParticipant;
 import ca.landonjw.remoraids.implementation.battles.controller.participants.BossPlayerParticipant;
+import ca.landonjw.remoraids.internal.api.config.ConfigKey;
+import ca.landonjw.remoraids.internal.config.RestraintsConfig;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.BattleControllerBase;
@@ -149,7 +151,7 @@ public class BossBattle implements IBossBattle {
                 battleController.globalStatusController = new BossStatusController(
                         bossEntity,
                         battleController,
-                        RemoRaids.getRestraintsConfig().getDisabledStatus()
+                        RemoRaids.getRestraintsConfig().get(RestraintsConfig.DISABLED_STATUSES)
                 );
 
                 playerBattleMap.put(player, battleController);

@@ -11,6 +11,8 @@ import ca.landonjw.remoraids.implementation.boss.engage.ActionBarEngager;
 import ca.landonjw.remoraids.implementation.boss.engage.BossBarEngager;
 import ca.landonjw.remoraids.implementation.boss.engage.OverlayEngager;
 import ca.landonjw.remoraids.implementation.boss.engage.TitleEngager;
+import ca.landonjw.remoraids.internal.config.GeneralConfig;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import ca.landonjw.remoraids.internal.tasks.Task;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityStatue;
@@ -51,19 +53,19 @@ public class BossEntity implements IBossEntity {
     }
 
     private void setEngager(){
-        switch(RemoRaids.getGeneralConfig().getEngageMessageType()){
+        switch(RemoRaids.getGeneralConfig().get(GeneralConfig.ENGAGE_MESSAGE_TYPE)){
             case 1:
                 bossEngager = new ActionBarEngager(
                         this,
-                        RemoRaids.getGeneralConfig().getEngageRange(),
-                        RemoRaids.getMessageConfig().getEngageMessage()
+                        RemoRaids.getGeneralConfig().get(GeneralConfig.ENGAGE_RANGE),
+                        RemoRaids.getMessageConfig().get(MessageConfig.RAID_ENGAGE)
                 );
                 break;
             case 2:
                 bossEngager = new BossBarEngager(
                         this,
-                        RemoRaids.getGeneralConfig().getEngageRange(),
-                        RemoRaids.getMessageConfig().getEngageMessage(),
+                        RemoRaids.getGeneralConfig().get(GeneralConfig.ENGAGE_RANGE),
+                        RemoRaids.getMessageConfig().get(MessageConfig.RAID_ENGAGE),
                         BossInfo.Color.WHITE,
                         BossInfo.Overlay.PROGRESS
                 );
@@ -71,15 +73,15 @@ public class BossEntity implements IBossEntity {
             case 3:
                 bossEngager = new OverlayEngager(
                         this,
-                        RemoRaids.getGeneralConfig().getEngageRange(),
-                        RemoRaids.getMessageConfig().getEngageMessage()
+                        RemoRaids.getGeneralConfig().get(GeneralConfig.ENGAGE_RANGE),
+                        RemoRaids.getMessageConfig().get(MessageConfig.RAID_ENGAGE)
                 );
                 break;
             case 4:
                 bossEngager = new TitleEngager(
                         this,
-                        RemoRaids.getGeneralConfig().getEngageRange(),
-                        RemoRaids.getMessageConfig().getEngageMessage(),
+                        RemoRaids.getGeneralConfig().get(GeneralConfig.ENGAGE_RANGE),
+                        RemoRaids.getMessageConfig().get(MessageConfig.RAID_ENGAGE),
                         SPacketTitle.Type.TITLE
                 );
                 break;

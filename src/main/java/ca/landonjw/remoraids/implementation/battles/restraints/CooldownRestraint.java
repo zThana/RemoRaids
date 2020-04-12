@@ -4,6 +4,7 @@ import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.battles.IBattleRestraint;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.events.BossBattleEndedEvent;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -42,7 +43,7 @@ public class CooldownRestraint implements IBattleRestraint {
     }
 
     private TextComponentString parseCooldownMessage(Duration timeElapsed){
-        String message = RemoRaids.getMessageConfig().getCooldownRestraintDenied();
+        String message = RemoRaids.getMessageConfig().get(MessageConfig.RAID_COOLDOWN);
 
         long secondsRemaining = cooldownSeconds - timeElapsed.getSeconds();
         long minutesRemaining = secondsRemaining / 60;

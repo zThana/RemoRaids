@@ -11,6 +11,8 @@ import ca.landonjw.remoraids.implementation.battles.restraints.PreventRebattleRe
 import ca.landonjw.remoraids.implementation.spawning.BossSpawnLocation;
 import ca.landonjw.remoraids.implementation.spawning.announcements.SpawnAnnouncement;
 import ca.landonjw.remoraids.implementation.spawning.announcements.TeleportableSpawnAnnouncement;
+import ca.landonjw.remoraids.internal.config.GeneralConfig;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
@@ -54,11 +56,13 @@ public class RaidsCommand extends CommandBase {
 
 	private void create(EntityPlayerMP reference, String... arguments) {
 		IBossSpawnLocation spawnLoc = new BossSpawnLocation(reference);
-		ISpawnAnnouncement announcement;
-		if(RemoRaids.getGeneralConfig().isAnnouncementTeleportable()){
-			announcement = new TeleportableSpawnAnnouncement(RemoRaids.getMessageConfig().getSpawnAnnouncement());
-		} else{
-			announcement = new SpawnAnnouncement(RemoRaids.getMessageConfig().getSpawnAnnouncement());
+		ISpawnAnnouncement announcement = null;
+		if(RemoRaids.getGeneralConfig().get(GeneralConfig.ANNOUNCEMENTS_ENABLED)) {
+			if (RemoRaids.getGeneralConfig().get(GeneralConfig.ANNOUNCEMENTS_ALLOW_TP)) {
+				announcement = new TeleportableSpawnAnnouncement(RemoRaids.getMessageConfig().get(MessageConfig.RAID_SPAWN_ANNOUNCE));
+			} else {
+				announcement = new SpawnAnnouncement(RemoRaids.getMessageConfig().get(MessageConfig.RAID_SPAWN_ANNOUNCE));
+			}
 		}
 
 		PokemonSpec design = PokemonSpec.from(arguments);

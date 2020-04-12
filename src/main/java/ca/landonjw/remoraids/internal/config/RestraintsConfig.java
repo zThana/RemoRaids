@@ -1,201 +1,201 @@
 package ca.landonjw.remoraids.internal.config;
 
-import ca.landonjw.remoraids.RemoRaids;
+import ca.landonjw.remoraids.internal.api.config.ConfigKey;
+import ca.landonjw.remoraids.internal.api.config.ConfigKeyHolder;
+import ca.landonjw.remoraids.internal.api.config.keys.BaseConfigKey;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.pixelmonmod.pixelmon.battles.rules.clauses.AbilityClause;
 import com.pixelmonmod.pixelmon.battles.rules.clauses.BattleClause;
 import com.pixelmonmod.pixelmon.battles.rules.clauses.ItemPreventClause;
 import com.pixelmonmod.pixelmon.battles.status.StatusType;
-import com.pixelmonmod.pixelmon.entities.pixelmon.abilities.Aftermath;
-import com.pixelmonmod.pixelmon.entities.pixelmon.abilities.Imposter;
-import com.pixelmonmod.pixelmon.entities.pixelmon.abilities.IronBarbs;
-import com.pixelmonmod.pixelmon.entities.pixelmon.abilities.RoughSkin;
+import com.pixelmonmod.pixelmon.entities.pixelmon.abilities.AbilityBase;
 import com.pixelmonmod.pixelmon.enums.heldItems.EnumHeldItems;
-import net.minecraftforge.common.config.Configuration;
 
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-public class RestraintsConfig {
+import static ca.landonjw.remoraids.internal.api.config.ConfigKeyTypes.customKey;
+import static ca.landonjw.remoraids.internal.api.config.ConfigKeyTypes.listKey;
 
-    private Configuration config;
+public class RestraintsConfig implements ConfigKeyHolder {
 
-    private String[] disabledBossMoves = new String[]{
-            "Aqua Ring",
-            "Ingain",
-            "Recover",
-            "Rest",
-            "Shore Up",
-            "Soft-Boiled",
-            "Synthesis"
-    };
+	public static ConfigKey<List<String>> DISABLED_BOSS_MOVES = listKey("disabled-moves.raid-boss", Lists.newArrayList(
+			"Aqua Ring",
+			"Ingain",
+			"Recover",
+			"Rest",
+			"Shore Up",
+			"Soft-Boiled",
+			"Synthesis"
+	));
+	public static ConfigKey<List<String>> DISABLED_PLAYER_MOVES = listKey("disabled-moves.player", Lists.newArrayList(
+			"Endeavor",
+			"Pain Split",
+			"Leech Seed",
+			"Perish Song",
+			"Whirlpool",
+			"Constrict",
+			"Infestation",
+			"Fire Spin",
+			"Natures Madness",
+			"Super Fang",
+			"Sheer Cold",
+			"Fissure",
+			"Horn Drill",
+			"Guillotine",
+			"Power Swap",
+			"Guard Swap",
+			"Heal Pulse",
+			"Present",
+			"Floral Healing",
+			"Spiky Shield",
+			"Imprison",
+			"Transform",
+			"Destiny Bond",
+			"Poison Gas",
+			"Entrainment",
+			"Glare",
+			"Grass Whistle",
+			"Hypnosis",
+			"Lovely Kiss",
+			"Poison Powder",
+			"Psycho Shift",
+			"Roar",
+			"Whirlwind",
+			"Sing",
+			"Skill Swap",
+			"Spore",
+			"Stun Spore",
+			"Thunder Wave",
+			"Toxic",
+			"Will-O-Wisp",
+			"Yawn",
+			"Magma Storm",
+			"Bind",
+			"Clamp",
+			"Sand Tomb",
+			"Wrap"
+	));
+	public static ConfigKey<List<StatusType>> DISABLED_STATUSES = customKey(adapter -> adapter.getStringList("disabled-statuses", Lists.newArrayList(
+				"Poison",
+				"PoisonBadly",
+				"Burn",
+				"Paralysis",
+				"Freeze",
+				"Sleep",
+				"GrassyTerrain",
+				"Sandstorm",
+				"Hail",
+				"Cursed",
+				"Imprison"
+			))
+			.stream()
+			.map(x -> Optional.ofNullable(StatusType.getStatusEffect(x)).orElse(null))
+			.filter(Objects::nonNull)
+			.collect(Collectors.toList())
+	);
 
-    private String[] disabledPlayerMoves = new String[]{
-            "Endeavor",
-            "Pain Split",
-            "Leech Seed",
-            "Perish Song",
-            "Whirlpool",
-            "Constrict",
-            "Infestation",
-            "Fire Spin",
-            "Natures Madness",
-            "Super Fang",
-            "Sheer Cold",
-            "Fissure",
-            "Horn Drill",
-            "Guillotine",
-            "Power Swap",
-            "Guard Swap",
-            "Heal Pulse",
-            "Present",
-            "Floral Healing",
-            "Spiky Shield",
-            "Imprison",
-            "Transform",
-            "Destiny Bond",
-            "Poison Gas",
-            "Entrainment",
-            "Glare",
-            "Grass Whistle",
-            "Hypnosis",
-            "Lovely Kiss",
-            "Poison Powder",
-            "Psycho Shift",
-            "Roar",
-            "Whirlwind",
-            "Sing",
-            "Skill Swap",
-            "Spore",
-            "Stun Spore",
-            "Thunder Wave",
-            "Toxic",
-            "Will-O-Wisp",
-            "Yawn",
-            "Magma Storm",
-            "Bind",
-            "Clamp",
-            "Sand Tomb",
-            "Wrap"
-    };
+	public static ConfigKey<List<BattleClause>> BANNED_CLAUSES = customKey(adapter -> {
+		List<AbilityClause> abilities = adapter.getStringList("banned-clauses.abilities", Lists.newArrayList(
+					"Aftermath",
+					"Imposter",
+					"Iron Barbs",
+					"Rough Skin"
+				))
+				.stream()
+				.map(in -> {
+					AbilityBase base = AbilityBase.getAbility(in).orElse(null);
+					if(base != null) {
+						return new AbilityClause(in, base.getClass());
+					}
+					return null;
+				})
+				.filter(Objects::nonNull)
+				.collect(Collectors.toList());
 
-    private String[] disabledStatus = new String[]{
-            "Poison",
-            "PoisonBadly",
-            "Burn",
-            "Paralysis",
-            "Freeze",
-            "Sleep",
-            "GrassyTerrain",
-            "Sandstorm",
-            "Hail",
-            "Cursed",
-            "Imprison"
-    };
+		List<ItemPreventClause> items = adapter.getStringList("banned-clauses.held-items", Lists.newArrayList(
+					"Rocky Helmet",
+					"Sticky Barb"
+				))
+				.stream()
+				.map(in -> {
+					try {
+						EnumHeldItems item = Arrays.stream(EnumHeldItems.values()).filter(x -> x.name().toLowerCase().equals(in.toLowerCase().replace(" ", ""))).findAny().orElse(null);
+						if(item != null) {
+							return new ItemPreventClause(in, item);
+						}
 
-    private boolean banAftermath = true;
-    private boolean banImposter = true;
-    private boolean banIronBarbs = true;
-    private boolean banRockyHelmet = true;
-    private boolean banRoughSkin = true;
-    private boolean banStickyBarb = true;
+						return null;
+					} catch (Exception e) {
+						return null;
+					}
+				})
+				.filter(Objects::nonNull)
+				.collect(Collectors.toList());
 
-    public RestraintsConfig(@Nonnull Configuration config){
-        this.config = config;
-        readConfig();
-    }
+		List<BattleClause> clauses = Lists.newArrayList();
+		clauses.addAll(abilities);
+		return clauses;
+	});
 
-    public void readConfig(){
-        try{
-            config.load();
-            init();
-        }
-        catch(Exception e){
-            RemoRaids.logger.error("An error occurred during restraint configuration loading.");
-        }
-        finally{
-            if(config.hasChanged()){
-                config.save();
-            }
-        }
-    }
+	private static final Map<String, ConfigKey<?>> KEYS;
+	private static final int SIZE;
 
-    private void init(){
-        config.addCustomCategoryComment("Player-Restraints", "Sets the restraints " +
-                "on players during battle with the boss.");
+	static {
+		Map<String, ConfigKey<?>> keys = new LinkedHashMap<>();
+		Field[] values = RestraintsConfig.class.getFields();
+		int i = 0;
 
-        disabledPlayerMoves = config.getStringList("Disabled-Player-Moves", "Player-Restraints",
-                disabledPlayerMoves, "Moves that are disabled from being used by the player during battle.");
+		for (Field f : values) {
+			// ignore non-static fields
+			if (!Modifier.isStatic(f.getModifiers())) {
+				continue;
+			}
 
-        disabledStatus = config.getStringList("Disabled-Status", "Player-Restraints",
-                disabledStatus, "Status that is disabled from being inflicted on the boss during battle.");
+			// ignore fields that aren't configkeys
+			if (!ConfigKey.class.equals(f.getType())) {
+				continue;
+			}
 
-        banAftermath = config.getBoolean("Ban-Aftermath", "Player-Restraints",
-                banAftermath, "If aftermath should be banned from being used in boss battles.");
+			try {
+				// get the key instance
+				BaseConfigKey<?> key = (BaseConfigKey<?>) f.get(null);
+				// set the ordinal value of the key.
+				key.ordinal = i++;
+				// add the key to the return map
+				keys.put(f.getName(), key);
+			} catch (Exception e) {
+				throw new RuntimeException("Exception processing field: " + f, e);
+			}
+		}
 
-        banImposter = config.getBoolean("Ban-Imposter", "Player-Restraints",
-                banImposter, "If imposter should be banned from being used in boss battles.");
+		KEYS = ImmutableMap.copyOf(keys);
+		SIZE = i;
+	}
 
-        banIronBarbs = config.getBoolean("Ban-Iron-Barbs", "Player-Restraints",
-                banIronBarbs, "If iron barbs should be banned from being used in boss battles.");
+	/**
+	 * Gets a map of the keys defined in this class.
+	 *
+	 * <p>The string key in the map is the {@link Field#getName() field name}
+	 * corresponding to each key.</p>
+	 *
+	 * @return the defined keys
+	 */
+	@Override
+	public Map<String, ConfigKey<?>> getKeys() {
+		return KEYS;
+	}
 
-        banRockyHelmet = config.getBoolean("Ban-Rocky-Helmet", "Player-Restraints",
-                banIronBarbs, "If rocky helmet should be banned from being used in boss battles.");
-
-        banRoughSkin = config.getBoolean("Ban-Rough-Skin", "Player-Restraints",
-                banRoughSkin, "If rough skin should be banned from being used in boss battles.");
-
-        banStickyBarb = config.getBoolean("Ban-Sticky-Barb", "Player-Restraints",
-                banStickyBarb, "If sticky barb should be banned from being used in boss battles.");
-
-        config.addCustomCategoryComment("Player-Restraints", "Sets the restraints " +
-                "on bosses during battle.");
-
-        disabledBossMoves = config.getStringList("Disabled-Boss-Moves", "Boss-Restraints",
-                disabledBossMoves, "Moves that are disabled from being used by a boss.");
-    }
-
-    public List<String> getDisabledBossMoves(){
-        return Arrays.asList(disabledBossMoves);
-    }
-
-    public List<String> getDisabledPlayerMoves(){
-        return Arrays.asList(disabledPlayerMoves);
-    }
-
-    public List<StatusType> getDisabledStatus(){
-        List<StatusType> disabledStatusList = new ArrayList<>();
-        for(String strStatus : disabledStatus){
-            StatusType status = StatusType.getStatusEffect(strStatus);
-            if(status != null){
-                disabledStatusList.add(status);
-            }
-        }
-        return disabledStatusList;
-    }
-
-    public List<BattleClause> getBannedClauses(){
-        List<BattleClause> bannedClauses = new ArrayList<>();
-        if(banAftermath){
-            bannedClauses.add(new AbilityClause("Aftermath", Aftermath.class));
-        }
-        if(banImposter){
-            bannedClauses.add(new AbilityClause("Imposter", Imposter.class));
-        }
-        if(banIronBarbs){
-            bannedClauses.add(new AbilityClause("Iron Barbs", IronBarbs.class));
-        }
-        if(banRockyHelmet){
-            bannedClauses.add(new ItemPreventClause("Rocky Helmet", EnumHeldItems.rockyHelmet));
-        }
-        if(banRoughSkin){
-            bannedClauses.add(new AbilityClause("Rough Skin", RoughSkin.class));
-        }
-        if(banStickyBarb){
-            bannedClauses.add(new ItemPreventClause("Sticky Barb", EnumHeldItems.stickyBarb));
-        }
-        return bannedClauses;
-    }
-
+	@Override
+	public int getSize() {
+		return SIZE;
+	}
 }

@@ -5,6 +5,7 @@ import ca.landonjw.remoraids.api.battles.IBattleRestraint;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.events.BossBattleEndedEvent;
 import ca.landonjw.remoraids.api.events.BossBattleStartedEvent;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -26,7 +27,7 @@ public class CapacityRestraint implements IBattleRestraint {
     @Override
     public boolean validatePlayer(EntityPlayerMP player) {
         if(playerNum >= capacity){
-            player.sendMessage(new TextComponentString(RemoRaids.getMessageConfig().getCapacityRestraintDenied()));
+            player.sendMessage(new TextComponentString(RemoRaids.getMessageConfig().get(MessageConfig.RAID_CAPACITY_REACHED)));
         }
         return playerNum < capacity;
     }

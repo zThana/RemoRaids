@@ -3,6 +3,7 @@ package ca.landonjw.remoraids.implementation.battles.controller;
 import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.battles.IBossBattle;
 import ca.landonjw.remoraids.implementation.battles.controller.participants.BossParticipant;
+import ca.landonjw.remoraids.internal.config.RestraintsConfig;
 import ca.landonjw.remoraids.internal.pokemon.PokemonUtils;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.battles.attacks.AttackBase;
@@ -40,7 +41,7 @@ public class BossWrapper extends PixelmonWrapper {
      * If the boss has no remaining moves, it will use Tackle.
      */
     private void removeDisabledMoves(){
-        List<String> disabledMoves = RemoRaids.getRestraintsConfig().getDisabledBossMoves();
+        List<String> disabledMoves = RemoRaids.getRestraintsConfig().get(RestraintsConfig.DISABLED_BOSS_MOVES);
         for(String move : disabledMoves){
             getMoveset().removeAttack(move);
         }
@@ -82,7 +83,7 @@ public class BossWrapper extends PixelmonWrapper {
      */
     @Override
     public boolean cannotHaveStatus(StatusBase status, PixelmonWrapper opponent, boolean ignorePrimaryOverlap){
-        List<StatusType> disabledStatus = RemoRaids.getRestraintsConfig().getDisabledStatus();
+        List<StatusType> disabledStatus = RemoRaids.getRestraintsConfig().get(RestraintsConfig.DISABLED_STATUSES);
         StatusType[] arrDisabledStatus = new StatusType[disabledStatus.size()];
         disabledStatus.toArray(arrDisabledStatus);
 

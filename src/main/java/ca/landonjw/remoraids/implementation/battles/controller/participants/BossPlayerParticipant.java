@@ -4,6 +4,7 @@ import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.battles.IBossBattle;
 import ca.landonjw.remoraids.api.battles.IBossBattleRegistry;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
+import ca.landonjw.remoraids.internal.config.RestraintsConfig;
 import com.google.common.base.Preconditions;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
@@ -57,7 +58,7 @@ public class BossPlayerParticipant extends PlayerParticipant {
      * These moves will appear blanked out and will not be able to be clicked by the player.
      */
     private void disableMoves(){
-        List<String> disabledMoves = RemoRaids.getRestraintsConfig().getDisabledPlayerMoves();
+        List<String> disabledMoves = RemoRaids.getRestraintsConfig().get(RestraintsConfig.DISABLED_PLAYER_MOVES);
         for(PixelmonWrapper wrapper : this.controlledPokemon){
             for(Attack attack : wrapper.getMoveset().attacks){
                 if(attack != null){

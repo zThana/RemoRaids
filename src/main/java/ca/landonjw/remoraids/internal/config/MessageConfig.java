@@ -1,84 +1,76 @@
 package ca.landonjw.remoraids.internal.config;
 
-import ca.landonjw.remoraids.RemoRaids;
-import net.minecraftforge.common.config.Configuration;
+import ca.landonjw.remoraids.internal.api.config.ConfigKey;
+import ca.landonjw.remoraids.internal.api.config.ConfigKeyHolder;
+import ca.landonjw.remoraids.internal.api.config.keys.BaseConfigKey;
+import com.google.common.collect.ImmutableMap;
 
-import java.util.Objects;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-public class MessageConfig {
+import static ca.landonjw.remoraids.internal.api.config.ConfigKeyTypes.stringKey;
 
-    private Configuration config;
+public class MessageConfig implements ConfigKeyHolder {
 
-    //General Messages
-    private String spawnAnnouncement = "&6&lA boss &a&l{boss-species} &6&lhas spawned!";
-    private String engageMessage = "&a&lRelease a pokemon to engage the boss!";
-    private String capacityRestraintDenied = "&4&lThere are too many players currently battling the boss!";
-    private String cooldownRestraintDenied = "&4&lYou cannot battle the boss for another {minutes} minute(s) and {trimmed-seconds} second(s)!";
-    private String preventRebattleRestraintDenied = "&4&lYou cannot rebattle this boss!";
+    public static final ConfigKey<String> RAID_CAPACITY_REACHED = stringKey("restraints.capacity-reached", "&cThere are too many players currently battling the boss...");
+    public static final ConfigKey<String> RAID_COOLDOWN = stringKey("restraints.cooldown", "&cYou cannot battle the boss for another {minute} minute(s) and {trimmed-seconds} second(s)...");
+    public static final ConfigKey<String> RAID_NO_REBATLLE = stringKey("restraints.no-rebattle", "&cYou cannot attempt to battle this raid boss again...");
 
-    public MessageConfig(Configuration config){
-        this.config = Objects.requireNonNull(config);
-        readConfig();
-    }
+    public static final ConfigKey<String> RAID_ENGAGE = stringKey("engage-message", "&a&lRelease a pokemon to engage the boss!");
+    public static final ConfigKey<String> RAID_SPAWN_ANNOUNCE = stringKey("spawn-announcement", "&6&lA boss &a&l{boss-species} &6&lhas spawned!");
 
-    private void readConfig(){
-        try{
-            config.load();
-            init();
-        }
-        catch(Exception e){
-            RemoRaids.logger.error("An error occurred during message configuration loading.");
-        }
-        finally{
-            if(config.hasChanged()){
-                config.save();
+    private static final Map<String, ConfigKey<?>> KEYS;
+    private static final int SIZE;
+
+    static {
+        Map<String, ConfigKey<?>> keys = new LinkedHashMap<>();
+        Field[] values = MessageConfig.class.getFields();
+        int i = 0;
+
+        for (Field f : values) {
+            // ignore non-static fields
+            if (!Modifier.isStatic(f.getModifiers())) {
+                continue;
+            }
+
+            // ignore fields that aren't configkeys
+            if (!ConfigKey.class.equals(f.getType())) {
+                continue;
+            }
+
+            try {
+                // get the key instance
+                BaseConfigKey<?> key = (BaseConfigKey<?>) f.get(null);
+                // set the ordinal value of the key.
+                key.ordinal = i++;
+                // add the key to the return map
+                keys.put(f.getName(), key);
+            } catch (Exception e) {
+                throw new RuntimeException("Exception processing field: " + f, e);
             }
         }
+
+        KEYS = ImmutableMap.copyOf(keys);
+        SIZE = i;
     }
 
-    public void init() {
-        config.addCustomCategoryComment("Messages", "Offers customization of any" +
-                " message included in RemoRaids.");
-
-        spawnAnnouncement = config.getString("Spawn-Announcement", "Messages", spawnAnnouncement,
-                "Message sent to all players when a boss is spawned.");
-
-        engageMessage = config.getString("Engage-Message", "Messages", engageMessage,
-                "Message sent when a player is within engage range of a boss.");
-
-        capacityRestraintDenied = config.getString("Battle-Denied-Capacity", "Messages", capacityRestraintDenied,
-                "Message sent when a player is denied entrance to a battle because the capacity is full");
-
-        cooldownRestraintDenied = config.getString("Battle-Denied-Cooldown", "Messages", cooldownRestraintDenied,
-                "Message sent when a player is denied entrance to a battle because they are on cooldown."
-                        + "Placeholders: {seconds}, {trimmed-seconds}, {minutes}, {trimmed-minutes}, {hours}");
-
-        preventRebattleRestraintDenied = config.getString("Battle-Denied-No-Rebattle", "Messages", preventRebattleRestraintDenied,
-                "Message sent when a player is denied entrance to a battle because they have already battled it.");
+    /**
+     * Gets a map of the keys defined in this class.
+     *
+     * <p>The string key in the map is the {@link Field#getName() field name}
+     * corresponding to each key.</p>
+     *
+     * @return the defined keys
+     */
+    @Override
+    public Map<String, ConfigKey<?>> getKeys() {
+        return KEYS;
     }
 
-    private String formatCodes(String message){
-        return message.replaceAll("&", "\u00a7");
+    @Override
+    public int getSize() {
+        return SIZE;
     }
-
-    public String getEngageMessage() {
-        return formatCodes(engageMessage);
-    }
-
-    public String getSpawnAnnouncement() {
-        return formatCodes(spawnAnnouncement);
-    }
-
-    public String getCapacityRestraintDenied() {
-        return formatCodes(capacityRestraintDenied);
-    }
-
-    public String getCooldownRestraintDenied() {
-        return formatCodes(cooldownRestraintDenied);
-    }
-
-    public String getPreventRebattleRestraintDenied() {
-        return formatCodes(preventRebattleRestraintDenied);
-    }
-
 }

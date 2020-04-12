@@ -4,6 +4,7 @@ import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.battles.IBattleRestraint;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.events.BossBattleEndedEvent;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -25,7 +26,7 @@ public class PreventRebattleRestraint implements IBattleRestraint {
     @Override
     public boolean validatePlayer(EntityPlayerMP player) {
         if(restrainedPlayers.contains(player)){
-            player.sendMessage(new TextComponentString(RemoRaids.getMessageConfig().getPreventRebattleRestraintDenied()));
+            player.sendMessage(new TextComponentString(RemoRaids.getMessageConfig().get(MessageConfig.RAID_NO_REBATLLE)));
         }
         return !restrainedPlayers.contains(player);
     }

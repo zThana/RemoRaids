@@ -11,6 +11,7 @@ import ca.landonjw.remoraids.implementation.spawning.BossSpawner;
 import ca.landonjw.remoraids.implementation.spawning.TimedBossSpawner;
 import ca.landonjw.remoraids.implementation.spawning.announcements.SpawnAnnouncement;
 import ca.landonjw.remoraids.implementation.spawning.announcements.TeleportableSpawnAnnouncement;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import com.google.common.base.Preconditions;
 import net.minecraft.world.World;
 
@@ -82,7 +83,7 @@ public class BossCreator implements IBossCreator {
 		Preconditions.checkNotNull(boss, "No raid pokemon specified");
 		Preconditions.checkNotNull(location, "No spawn location specified");
 		if(announcement == null) {
-			this.announcement(false, RemoRaids.getMessageConfig().getSpawnAnnouncement());
+			this.announcement(false, RemoRaids.getMessageConfig().get(MessageConfig.RAID_SPAWN_ANNOUNCE));
 		}
 
 		if(this.respawns) {

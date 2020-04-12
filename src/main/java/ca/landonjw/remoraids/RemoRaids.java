@@ -7,7 +7,7 @@ import ca.landonjw.remoraids.api.boss.IBossCreator;
 import ca.landonjw.remoraids.implementation.BossAPI;
 import ca.landonjw.remoraids.implementation.boss.Boss;
 import ca.landonjw.remoraids.implementation.boss.BossCreator;
-import ca.landonjw.remoraids.implementation.commands.TestCommand;
+import ca.landonjw.remoraids.implementation.commands.RaidsCommand;
 import ca.landonjw.remoraids.implementation.listeners.BattleEndListener;
 import ca.landonjw.remoraids.implementation.listeners.BossDropListener;
 import ca.landonjw.remoraids.implementation.listeners.BossUpdateListener;
@@ -15,15 +15,17 @@ import ca.landonjw.remoraids.implementation.listeners.EngageListener;
 import ca.landonjw.remoraids.implementation.spawning.TimedSpawnListener;
 import ca.landonjw.remoraids.implementation.ui.Base;
 import ca.landonjw.remoraids.internal.api.APIRegistrationUtil;
+import ca.landonjw.remoraids.internal.api.config.Config;
 import ca.landonjw.remoraids.internal.config.GeneralConfig;
 import ca.landonjw.remoraids.internal.config.MessageConfig;
 import ca.landonjw.remoraids.internal.config.RestraintsConfig;
+import ca.landonjw.remoraids.internal.config.readers.ForgeConfig;
+import ca.landonjw.remoraids.internal.config.readers.ForgeConfigAdapter;
 import ca.landonjw.remoraids.internal.inventory.api.InventoryAPI;
 import ca.landonjw.remoraids.internal.tasks.TaskTickListener;
 import ca.landonjw.remoraids.internal.text.Callback;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -33,6 +35,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.io.InputStream;
 
 @Mod(
         modid = RemoRaids.MOD_ID,
@@ -46,28 +49,23 @@ public class RemoRaids {
     public static final String MOD_NAME = "RemoRaids";
     public static final String VERSION = "1.0.0";
 
+    private static RemoRaids instance;
+
     public static final EventBus EVENT_BUS = new EventBus();
     public static final Logger logger = LogManager.getLogger(MOD_NAME);
 
-    private static GeneralConfig generalConfig;
-    private static RestraintsConfig restraintsConfig;
-    private static MessageConfig messageConfig;
+    private static Config generalConfig;
+    private static Config restraintsConfig;
+    private static Config messageConfig;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event){
+        instance = this;
         File directory = new File(event.getModConfigurationDirectory(), "remoraids");
 
-        Configuration general = new Configuration(new File(directory.getPath(),
-                "General.cfg"));
-        generalConfig = new GeneralConfig(general);
-
-        Configuration restraints = new Configuration(new File(directory.getPath(),
-                "Restraints.cfg"));
-        restraintsConfig = new RestraintsConfig(restraints);
-
-        Configuration messages = new Configuration(new File(directory.getPath(),
-                "Messages.cfg"));
-        messageConfig = new MessageConfig(messages);
+        generalConfig = new ForgeConfig(new ForgeConfigAdapter(directory.toPath().resolve("general.conf")), new GeneralConfig());
+        restraintsConfig = new ForgeConfig(new ForgeConfigAdapter(directory.toPath().resolve("restraints.conf")), new RestraintsConfig());
+        messageConfig = new ForgeConfig(new ForgeConfigAdapter(directory.toPath().resolve("messages.conf")), new MessageConfig());
     }
 
     @Mod.EventHandler
@@ -91,23 +89,27 @@ public class RemoRaids {
     public void onServerStart(FMLServerStartingEvent event){
         event.registerServerCommand(new Base());
         event.registerServerCommand(new Callback());
-        event.registerServerCommand(new TestCommand());
+        event.registerServerCommand(new RaidsCommand());
     }
 
     public static IBossAPI getBossAPI(){
         return BossAPIProvider.get();
     }
 
-    public static GeneralConfig getGeneralConfig() {
+    public static Config getGeneralConfig() {
         return generalConfig;
     }
 
-    public static MessageConfig getMessageConfig() {
+    public static Config getMessageConfig() {
         return messageConfig;
     }
 
-    public static RestraintsConfig getRestraintsConfig() {
+    public static Config getRestraintsConfig() {
         return restraintsConfig;
+    }
+
+    public static InputStream getResourceStream(String path) {
+        return RemoRaids.instance.getClass().getClassLoader().getResourceAsStream(path);
     }
 
 }
