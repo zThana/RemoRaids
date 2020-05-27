@@ -8,7 +8,7 @@ import ca.landonjw.remoraids.implementation.BossAPI;
 import ca.landonjw.remoraids.implementation.boss.Boss;
 import ca.landonjw.remoraids.implementation.boss.BossCreator;
 import ca.landonjw.remoraids.implementation.commands.RaidsCommand;
-import ca.landonjw.remoraids.implementation.listeners.BattleEndListener;
+import ca.landonjw.remoraids.implementation.listeners.BossDeathListener;
 import ca.landonjw.remoraids.implementation.listeners.BossDropListener;
 import ca.landonjw.remoraids.implementation.listeners.BossUpdateListener;
 import ca.landonjw.remoraids.implementation.listeners.EngageListener;
@@ -75,11 +75,12 @@ public class RemoRaids {
 
         MinecraftForge.EVENT_BUS.register(new TaskTickListener());
         MinecraftForge.EVENT_BUS.register(new BossUpdateListener());
-        RemoRaids.EVENT_BUS.register(new TimedSpawnListener());
 
         Pixelmon.EVENT_BUS.register(new EngageListener());
         Pixelmon.EVENT_BUS.register(new BossDropListener());
-        RemoRaids.EVENT_BUS.register(new BattleEndListener());
+
+        RemoRaids.EVENT_BUS.register(new TimedSpawnListener());
+        RemoRaids.EVENT_BUS.register(new BossDeathListener());
 
         APIRegistrationUtil.register(new BossAPI());
         getBossAPI().getRaidRegistry().registerBuilderSupplier(IBossCreator.class, BossCreator::new);

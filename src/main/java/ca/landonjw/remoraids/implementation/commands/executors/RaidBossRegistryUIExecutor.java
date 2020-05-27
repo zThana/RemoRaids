@@ -17,7 +17,7 @@ public class RaidBossRegistryUIExecutor implements RaidsCommandExecutor {
 	@Override
 	public void execute(MinecraftServer server, ICommandSender source, String[] args) throws CommandException {
 		GUIRegistry registry = new GUIRegistry((EntityPlayerMP) source);
-		registry.openRegistry();
+		registry.open();
 	}
 
 }
