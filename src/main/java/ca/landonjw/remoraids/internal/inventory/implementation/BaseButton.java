@@ -1,9 +1,9 @@
 package ca.landonjw.remoraids.internal.inventory.implementation;
 
-import ca.landonjw.remoraids.internal.inventory.api.Page;
 import ca.landonjw.remoraids.internal.inventory.api.Button;
 import ca.landonjw.remoraids.internal.inventory.api.ButtonAction;
 import ca.landonjw.remoraids.internal.inventory.api.ButtonType;
+import ca.landonjw.remoraids.internal.inventory.api.Page;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;

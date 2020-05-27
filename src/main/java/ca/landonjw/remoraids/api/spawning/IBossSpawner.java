@@ -3,9 +3,7 @@ package ca.landonjw.remoraids.api.spawning;
 import ca.landonjw.remoraids.api.boss.IBoss;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.util.DataSerializable;
-import com.google.common.collect.Multimap;
 
-import java.util.List;
 import java.util.Optional;
 
 /**

@@ -4,7 +4,6 @@ import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.boss.engage.IBossEngager;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityStatue;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.math.AxisAlignedBB;
 
 import javax.annotation.Nonnull;
 

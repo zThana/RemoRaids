@@ -2,6 +2,7 @@ package ca.landonjw.remoraids.implementation.spawning.announcements;
 
 import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import ca.landonjw.remoraids.api.spawning.ISpawnAnnouncement;
+import ca.landonjw.remoraids.internal.storage.gson.JObject;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -81,6 +82,12 @@ public class SpawnAnnouncement implements ISpawnAnnouncement {
                 .replace(BOSS_LOCATION_X_PLACEHOLDER, "" + spawner.getSpawnLocation().getX())
                 .replace(BOSS_LOCATION_Y_PLACEHOLDER, "" + spawner.getSpawnLocation().getY())
                 .replace(BOSS_LOCATION_Z_PLACEHOLDER, "" + spawner.getSpawnLocation().getZ());
+    }
+
+    //TODO
+    @Override
+    public JObject serialize() {
+        return null;
     }
 
 }

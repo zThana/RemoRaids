@@ -2,10 +2,8 @@ package ca.landonjw.remoraids.api.battles;
 
 import ca.landonjw.remoraids.api.boss.IBoss;
 import com.pixelmonmod.pixelmon.battles.rules.BattleRules;
-import com.pixelmonmod.pixelmon.battles.status.StatusType;
 import net.minecraft.entity.player.EntityPlayerMP;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 

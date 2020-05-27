@@ -31,6 +31,13 @@ public class BattleEndListener {
             output.add(format.apply("&7Through valiant effort, the raid pokemon,"));
             output.add(format.apply("&e" + boss.getBoss().getPokemon().getSpecies().getLocalizedName() + "&7, was defeated!"));
             output.add(format.apply(""));
+
+            b.getKiller().ifPresent(killer -> {
+                String playerName = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(killer).getName();
+                output.add(format.apply("&cKiller: &e" + playerName));
+                output.add("");
+            });
+
             output.add(format.apply("&aTop " + Math.min(3, contributors.size()) + " Damage Dealers:"));
             for(int i = 0; i < Math.min(3, contributors.size()); i++) {
                 output.add(format.apply("&e" + contributors.get(i).getName() + "&7: &b" + b.getDamageDealt(contributors.get(i).getUniqueID()).get()));

@@ -9,6 +9,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.Map;
 import java.util.StringJoiner;
@@ -48,7 +49,7 @@ public class RaidsCommand extends CommandBase {
 					System.arraycopy(args, 1, arguments, 0, args.length - 1);
 					executor.execute(server, sender, arguments);
 				} else {
-					sender.sendMessage(new TextComponentString("&cSub-command not recognized!"));
+					sender.sendMessage(new TextComponentString(TextFormatting.RED + "Sub-command not recognized!"));
 					sender.sendMessage(new TextComponentString(""));
 					sender.sendMessage(new TextComponentString(this.getUsage(sender)));
 				}

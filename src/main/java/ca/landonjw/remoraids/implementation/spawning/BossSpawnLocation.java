@@ -1,6 +1,7 @@
 package ca.landonjw.remoraids.implementation.spawning;
 
 import ca.landonjw.remoraids.api.spawning.IBossSpawnLocation;
+import ca.landonjw.remoraids.internal.storage.gson.JObject;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
@@ -47,6 +48,12 @@ public class BossSpawnLocation implements IBossSpawnLocation {
     @Override
     public float getRotation() {
         return rotation;
+    }
+
+    //TODO
+    @Override
+    public JObject serialize() {
+        return null;
     }
 
 }

@@ -1,7 +1,7 @@
 package ca.landonjw.remoraids.internal.api;
 
-import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.BossAPIProvider;
+import ca.landonjw.remoraids.api.IBossAPI;
 
 import java.lang.reflect.Method;
 

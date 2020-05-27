@@ -12,7 +12,6 @@ import ca.landonjw.remoraids.api.rewards.IReward;
 import ca.landonjw.remoraids.implementation.battles.controller.BossStatusController;
 import ca.landonjw.remoraids.implementation.battles.controller.participants.BossParticipant;
 import ca.landonjw.remoraids.implementation.battles.controller.participants.BossPlayerParticipant;
-import ca.landonjw.remoraids.internal.api.config.ConfigKey;
 import ca.landonjw.remoraids.internal.config.RestraintsConfig;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;

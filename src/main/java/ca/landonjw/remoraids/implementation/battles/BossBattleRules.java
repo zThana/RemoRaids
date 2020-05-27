@@ -5,12 +5,14 @@ import ca.landonjw.remoraids.api.battles.IBossBattleRules;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.rules.BattleRules;
-import com.pixelmonmod.pixelmon.battles.status.StatusType;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Implementation of {@link IBossBattleRules).

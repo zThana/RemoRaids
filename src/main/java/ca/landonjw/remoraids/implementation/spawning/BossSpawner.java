@@ -9,6 +9,7 @@ import ca.landonjw.remoraids.api.spawning.IBossSpawnLocation;
 import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import ca.landonjw.remoraids.api.spawning.ISpawnAnnouncement;
 import ca.landonjw.remoraids.implementation.boss.BossEntity;
+import ca.landonjw.remoraids.internal.storage.gson.JObject;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityStatue;
@@ -16,10 +17,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.Optional;
-import java.util.Random;
-import java.util.stream.Collectors;
 
 /**
  * An implementation of {@link IBossSpawner} that simply spawns a {@link IBoss}.
@@ -154,4 +152,10 @@ public class BossSpawner implements IBossSpawner {
         return announcement;
     }
 
+    //TODO
+    @Override
+    public JObject serialize() {
+
+        return null;
+    }
 }

@@ -1,7 +1,6 @@
 package ca.landonjw.remoraids.api.registry;
 
 import ca.landonjw.remoraids.api.util.IBuilder;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Optional;
 import java.util.function.Supplier;

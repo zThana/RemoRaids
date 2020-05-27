@@ -23,6 +23,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -39,6 +40,11 @@ public class CreateRaidBossExecutor implements RaidsCommandExecutor {
 	@Override
 	public void execute(MinecraftServer server, ICommandSender source, String[] arguments) throws CommandException {
 		try {
+			if(arguments.length == 0){
+				source.sendMessage(new TextComponentString(TextFormatting.RED + "Usage: " + getUsage(source)));
+				return;
+			}
+
 			EntityPlayerMP player = (EntityPlayerMP) source;
 			IBossSpawnLocation spawnLoc = new BossSpawnLocation(player);
 			ISpawnAnnouncement announcement = null;
@@ -70,7 +76,7 @@ public class CreateRaidBossExecutor implements RaidsCommandExecutor {
 						for (int i = 0; i < split.length && i < 4; i++) {
 							Attack attack = new Attack(split[i]);
 							if (attack.getMove() == null) {
-								player.sendMessage(new TextComponentString("&cUnrecognized move: " + split[i]));
+								player.sendMessage(new TextComponentString(TextFormatting.RED + "Unrecognized move: " + split[i]));
 								break;
 							}
 							moveset.add(attack);
@@ -80,13 +86,13 @@ public class CreateRaidBossExecutor implements RaidsCommandExecutor {
 					case "stat":
 						String[] separator = input.getValue().split("\\|");
 						if (separator.length != 2) {
-							player.sendMessage(new TextComponentString("&cInvalid stat input"));
+							player.sendMessage(new TextComponentString(TextFormatting.RED + "Invalid stat input"));
 							break;
 						}
 
 						StatsType stat = Arrays.stream(StatsType.getStatValues()).filter(st -> st.name().toLowerCase().equals(separator[0])).findAny().orElse(null);
 						if (stat == null) {
-							player.sendMessage(new TextComponentString("&cUnrecognized stat type: " + separator[0]));
+							player.sendMessage(new TextComponentString(TextFormatting.RED + "Unrecognized stat type: " + separator[0]));
 							break;
 						}
 
@@ -97,7 +103,7 @@ public class CreateRaidBossExecutor implements RaidsCommandExecutor {
 					case "respawn":
 						String[] args = input.getValue().split("\\|");
 						if (args.length != 2) {
-							player.sendMessage(new TextComponentString("&cInvalid respawn input"));
+							player.sendMessage(new TextComponentString(TextFormatting.RED + "Invalid respawn input"));
 							break;
 						}
 						creator.respawns(Integer.parseInt(args[0]), Long.parseLong(args[1]), TimeUnit.SECONDS);
@@ -118,7 +124,7 @@ public class CreateRaidBossExecutor implements RaidsCommandExecutor {
 				RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(entity).get().setBattleRules(rules);
 			});
 		} catch (Exception e) {
-			source.sendMessage(new TextComponentString("&c" + e.getMessage()));
+			source.sendMessage(new TextComponentString(TextFormatting.RED + e.getMessage()));
 		}
 	}
 
