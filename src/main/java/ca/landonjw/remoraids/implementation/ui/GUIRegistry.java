@@ -1,4 +1,4 @@
-package ca.landonjw.remoraids.implementation.ui.graphical;
+package ca.landonjw.remoraids.implementation.ui;
 
 import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
@@ -10,6 +10,7 @@ import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
+import com.pixelmonmod.pixelmon.enums.forms.EnumNoForm;
 import com.pixelmonmod.pixelmon.items.ItemPixelmonSprite;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -19,7 +20,6 @@ import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringJoiner;
 
 public class GUIRegistry {
 
@@ -91,6 +91,9 @@ public class GUIRegistry {
 
         lore.add(TextFormatting.GRAY + "Species: " + TextFormatting.YELLOW + pokemon.getSpecies().name);
         lore.add(TextFormatting.GRAY + "Size: " + TextFormatting.YELLOW + (boss.getBoss().getSize() * 100) + "%");
+        if(boss.getBoss().getPokemon().getFormEnum() != EnumNoForm.NoForm) {
+            lore.add(TextFormatting.GRAY + "Form: " + TextFormatting.YELLOW + (boss.getBoss().getPokemon().getFormEnum().getLocalizedName()));
+        }
         lore.add("");
 
         String statLine1 = ""

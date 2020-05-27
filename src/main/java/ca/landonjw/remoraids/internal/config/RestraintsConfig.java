@@ -1,5 +1,6 @@
 package ca.landonjw.remoraids.internal.config;
 
+import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.internal.api.config.ConfigKey;
 import ca.landonjw.remoraids.internal.api.config.ConfigKeyHolder;
 import ca.landonjw.remoraids.internal.api.config.keys.BaseConfigKey;
@@ -116,6 +117,8 @@ public class RestraintsConfig implements ConfigKeyHolder {
 					if(base != null) {
 						return new AbilityClause(in, base.getClass());
 					}
+
+					RemoRaids.logger.warn("\u00a7eRemoRaids \u00a77\u00bb \u00a7cFailed to locate an ability: " + in);
 					return null;
 				})
 				.filter(Objects::nonNull)
@@ -132,7 +135,7 @@ public class RestraintsConfig implements ConfigKeyHolder {
 						if(item != null) {
 							return new ItemPreventClause(in, item);
 						}
-
+						RemoRaids.logger.warn("\u00a7eRemoRaids \u00a77\u00bb \u00a7cFailed to locate an item: " + in);
 						return null;
 					} catch (Exception e) {
 						return null;
@@ -143,6 +146,7 @@ public class RestraintsConfig implements ConfigKeyHolder {
 
 		List<BattleClause> clauses = Lists.newArrayList();
 		clauses.addAll(abilities);
+		clauses.addAll(items);
 		return clauses;
 	});
 

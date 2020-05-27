@@ -8,8 +8,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class BossBattleRegistry implements IBossBattleRegistry {
 
@@ -52,6 +54,11 @@ public class BossBattleRegistry implements IBossBattleRegistry {
             }
         }
         return Optional.empty();
+    }
+
+    @Override
+    public List<IBossBattle> getAllBossBattles() {
+        return new ArrayList<>(this.registry.values());
     }
 
     /** {@inheritDoc} */

@@ -2,6 +2,7 @@ package ca.landonjw.remoraids.api.spawning;
 
 import ca.landonjw.remoraids.api.boss.IBoss;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
+import ca.landonjw.remoraids.api.util.DataSerializable;
 import com.google.common.collect.Multimap;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.Optional;
  * three main variables. The first being the boss it'll spawn, the location to spawn it at, and the annoucement
  * template to send when the boss is spawned.
  */
-public interface IBossSpawner {
+public interface IBossSpawner extends DataSerializable<IBossSpawner> {
 
     /**
      * Attempts to spawn a new raid pokemon at the specified spawn location. Typically, this will be a singular

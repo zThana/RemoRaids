@@ -144,14 +144,9 @@ public class BossEntity implements IBossEntity {
         Optional<IBossBattle> battle = battleRegistry.getBossBattle(this);
         battleRegistry.deregisterBossBattle(this);
 
-        if(battle.isPresent()){
-            BossDeathEvent deathEvent = new BossDeathEvent(this, battle.get());
-            RemoRaids.EVENT_BUS.post(deathEvent);
-        }
-        else{
-            BossDeathEvent deathEvent = new BossDeathEvent(this, null);
-            RemoRaids.EVENT_BUS.post(deathEvent);
-        }
+        BossDeathEvent deathEvent = battle.map(iBossBattle -> new BossDeathEvent(this, iBossBattle))
+                .orElseGet(() -> new BossDeathEvent(this, null));
+        RemoRaids.EVENT_BUS.post(deathEvent);
 
         entity.setDead();
         battleEntity.setDead();

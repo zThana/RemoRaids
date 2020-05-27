@@ -5,9 +5,13 @@ buildscript {
             name = "forge"
             url = "https://files.minecraftforge.net/maven"
         }
+        maven {
+            url "http://repository.jboss.org/nexus/content/groups/public/"
+        }
     }
     dependencies {
         classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
+        classpath 'org.hibernate.build.gradle:gradle-maven-publish-auth:2.0.1'
     }
 }
 
@@ -19,6 +23,8 @@ plugins {
 }
 
 apply plugin: "net.minecraftforge.gradle.forge"
+apply plugin: 'maven-publish'
+apply plugin: 'maven-publish-auth'
 
 version = modVersion
 group = modGroup
@@ -89,5 +95,23 @@ reobf {
     }
 }
 
-
 build.dependsOn reobfShadowJar
+
+publishing {
+    repositories {
+        maven {
+            name = "ImpactDev-Public"
+            url = "https://maven.impactdev.net/repository/development/"
+            credentials {
+                username System.getenv('NEXUS_USER')
+                password System.getenv('NEXUS_PW')
+            }
+        }
+    }
+
+    publications {
+        remoraids(MavenPublication) {
+            from components.java
+        }
+    }
+}

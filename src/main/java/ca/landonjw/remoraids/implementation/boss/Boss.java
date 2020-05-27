@@ -1,16 +1,22 @@
 package ca.landonjw.remoraids.implementation.boss;
 
 import ca.landonjw.remoraids.api.boss.IBoss;
+import ca.landonjw.remoraids.internal.storage.gson.JObject;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
+import com.pixelmonmod.pixelmon.battles.attacks.Attack;
+import com.pixelmonmod.pixelmon.battles.attacks.AttackBase;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Gender;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 import com.pixelmonmod.pixelmon.enums.EnumNature;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
+import com.pixelmonmod.pixelmon.enums.forms.EnumNoForm;
 import com.pixelmonmod.pixelmon.enums.forms.IEnumForm;
 import net.minecraft.util.Tuple;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -26,12 +32,10 @@ public class Boss implements IBoss {
 
     private Pokemon pokemon;
     private float size;
-    private String texture;
 
     public Boss(@Nonnull Pokemon pokemon){
         this.pokemon = Objects.requireNonNull(pokemon, "Pokemon must not be null");
         this.size = 1;
-        this.texture = "";
     }
 
     private Boss(@NonNull BossBuilder builder) {
@@ -54,7 +58,6 @@ public class Boss implements IBoss {
         	this.pokemon.getMoveset().attacks = moveset.attacks;
         });
 
-        this.texture = builder.texture;
         this.size = Math.max(1, builder.size);
     }
 
@@ -128,16 +131,43 @@ public class Boss implements IBoss {
     /** {@inheritDoc} */
     @Override
     public Optional<String> getTexture() {
-        return Optional.ofNullable(texture);
+        return Optional.ofNullable(this.pokemon.getCustomTexture());
     }
 
     /** {@inheritDoc} */
     @Override
     public void setTexture(@Nullable String texture) {
-        this.texture = texture;
+        this.pokemon.setCustomTexture(texture);
     }
 
-    public static class BossBuilder implements IBossBuilder {
+	@Override
+	public JObject serialize() {
+    	JObject data = new JObject()
+			    .add("species", this.pokemon.getSpecies().name())
+			    .add("level", this.pokemon.getLevel())
+			    .when(this.pokemon, pokemon -> this.getPokemon().getFormEnum() != EnumNoForm.NoForm, d -> d.add("form", this.pokemon.getForm()))
+			    .add("nature", this.pokemon.getNature().name())
+			    .add("ability", this.pokemon.getAbilityName())
+			    .add("gender", this.pokemon.getGender().name())
+			    .add("shiny", this.pokemon.isShiny())
+			    ;
+
+    	JObject stats = new JObject();
+    	for(StatsType stat : StatsType.getStatValues()) {
+		    stats.add(stat.name(), this.pokemon.getStat(stat));
+	    }
+    	data.add("stats", stats);
+
+    	JObject moves = new JObject();
+    	for(int i = 1; i < this.pokemon.getMoveset().size(); i++) {
+    		moves.add("" + i, this.pokemon.getMoveset().get(i - 1).getActualMove().getAttackName());
+	    }
+
+		return data.add("size", this.size)
+				.add("texture", this.pokemon.getCustomTexture());
+	}
+
+	public static class BossBuilder implements IBossBuilder {
 
         private EnumSpecies species;
         private IEnumForm form;
@@ -236,7 +266,32 @@ public class Boss implements IBoss {
 		    return this;
 	    }
 
-	    @Override
+		@Override
+		public IBossBuilder fromJson(JObject json) {
+			JsonObject data = json.toJson();
+			this.species = EnumSpecies.getFromNameAnyCase(data.get("species").getAsString());
+			this.level = data.get("level").getAsInt();
+			this.form = this.species.getFormEnum(data.get("form").getAsInt());
+			this.ability = data.get("ability").getAsString();
+			this.nature = EnumNature.natureFromString(data.get("nature").getAsString());
+			this.gender = Gender.getGender(data.get("gender").getAsString());
+
+			JsonObject stats = data.getAsJsonObject("stats");
+			for(Map.Entry<String, JsonElement> entry : stats.entrySet()) {
+				this.stat(StatsType.valueOf(entry.getKey()), entry.getValue().getAsInt(), false);
+			}
+
+			JsonObject moves = data.getAsJsonObject("moves");
+			Moveset moveset = new Moveset();
+			for(Map.Entry<String, JsonElement> entry : moves.entrySet()) {
+				moveset.add(new Attack(AttackBase.getAttackBase(entry.getValue().getAsString()).get()));
+			}
+			this.moveset(moveset);
+
+			return this;
+		}
+
+		@Override
         public IBossBuilder from(IBoss input) {
             return this.species(input.getPokemon().getSpecies())
 		            .form(input.getPokemon().getFormEnum())

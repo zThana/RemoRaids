@@ -24,10 +24,12 @@ import com.pixelmonmod.pixelmon.comm.packetHandlers.battles.gui.HPPacket;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class BossBattle implements IBossBattle {
 
@@ -102,9 +104,13 @@ public class BossBattle implements IBossBattle {
 
     /** {@inheritDoc} */
     @Override
+    @SuppressWarnings("ConstantConditions")
     public List<UUID> getTopDamageDealers() {
         List<UUID> damageDealers = new ArrayList<>(playerDamageDealt.keySet());
-        damageDealers.sort((val1, val2) -> playerDamageDealt.get(val2) - playerDamageDealt.get(val1));
+        damageDealers.stream()
+                .filter(x -> FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(x) != null)
+                .collect(Collectors.toList())
+                .sort((val1, val2) -> playerDamageDealt.get(val2) - playerDamageDealt.get(val1));
         return damageDealers;
     }
 
@@ -184,6 +190,7 @@ public class BossBattle implements IBossBattle {
     @Override
     public void setBossHealth(int health, @Nullable EntityPlayerMP source) {
         BossHealthChangeEvent event = new BossHealthChangeEvent(this, bossEntity, source, currentHealth - health);
+        RemoRaids.EVENT_BUS.post(event);
 
         if(!event.isCanceled()){
             int damage = event.getDifference();

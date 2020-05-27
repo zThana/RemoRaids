@@ -4,6 +4,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 
 public interface IRewardContent {
 
-    void giveContent(EntityPlayerMP player);
+    void give(EntityPlayerMP player);
 
 }

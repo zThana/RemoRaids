@@ -1,12 +1,14 @@
 package ca.landonjw.remoraids.api.spawning;
 
+import ca.landonjw.remoraids.api.util.DataSerializable;
+
 import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**
  * Controls how a raid boss is announced to the server.
  */
-public interface ISpawnAnnouncement {
+public interface ISpawnAnnouncement extends DataSerializable<ISpawnAnnouncement> {
 
     /**
      * Sets the announcement to be sent to players. Formatting can be applied here.

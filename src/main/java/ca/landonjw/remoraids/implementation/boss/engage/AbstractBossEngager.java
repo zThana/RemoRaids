@@ -38,21 +38,11 @@ public abstract class AbstractBossEngager implements IBossEngager {
     @Override
     public boolean isPlayerInRange(@Nonnull EntityPlayerMP player) {
         EntityStatue bossStatue = bossEntity.getEntity();
-        AxisAlignedBB boundingBox = bossStatue.getEntityBoundingBox();
-
-        double radiiX = Math.abs(boundingBox.maxX - bossStatue.posX);
-        double radiiZ = Math.abs(boundingBox.maxZ - bossStatue.posZ);
-        double largestRadii = (radiiX > radiiZ) ? radiiX : radiiZ;
 
         boolean inRange = false;
         if(!bossStatue.isDead){
             if(player.world.equals(bossStatue.world)){
-                inRange = player.world.isAnyPlayerWithinRangeAt(
-                        bossStatue.posX,
-                        bossStatue.posY,
-                        bossStatue.posZ,
-                        engageRange + largestRadii
-                );
+                inRange = player.getDistance(bossStatue) <= engageRange;
             }
         }
         return inRange;

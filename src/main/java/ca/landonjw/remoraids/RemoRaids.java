@@ -4,6 +4,7 @@ import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.BossAPIProvider;
 import ca.landonjw.remoraids.api.boss.IBoss;
 import ca.landonjw.remoraids.api.boss.IBossCreator;
+import ca.landonjw.remoraids.api.events.BossHealthChangeEvent;
 import ca.landonjw.remoraids.implementation.BossAPI;
 import ca.landonjw.remoraids.implementation.boss.Boss;
 import ca.landonjw.remoraids.implementation.boss.BossCreator;
@@ -13,7 +14,6 @@ import ca.landonjw.remoraids.implementation.listeners.BossDropListener;
 import ca.landonjw.remoraids.implementation.listeners.BossUpdateListener;
 import ca.landonjw.remoraids.implementation.listeners.EngageListener;
 import ca.landonjw.remoraids.implementation.spawning.TimedSpawnListener;
-import ca.landonjw.remoraids.implementation.ui.Base;
 import ca.landonjw.remoraids.internal.api.APIRegistrationUtil;
 import ca.landonjw.remoraids.internal.api.config.Config;
 import ca.landonjw.remoraids.internal.config.GeneralConfig;
@@ -25,17 +25,21 @@ import ca.landonjw.remoraids.internal.inventory.api.InventoryAPI;
 import ca.landonjw.remoraids.internal.tasks.TaskTickListener;
 import ca.landonjw.remoraids.internal.text.Callback;
 import com.pixelmonmod.pixelmon.Pixelmon;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.EventBus;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.UUID;
 
 @Mod(
         modid = RemoRaids.MOD_ID,
@@ -83,13 +87,15 @@ public class RemoRaids {
         APIRegistrationUtil.register(new BossAPI());
         getBossAPI().getRaidRegistry().registerBuilderSupplier(IBossCreator.class, BossCreator::new);
         getBossAPI().getRaidRegistry().registerBuilderSupplier(IBoss.IBossBuilder.class, Boss.BossBuilder::new);
+
+        RemoRaids.EVENT_BUS.register(this);
     }
 
     @Mod.EventHandler
     public void onServerStart(FMLServerStartingEvent event){
-        event.registerServerCommand(new Base());
         event.registerServerCommand(new Callback());
         event.registerServerCommand(new RaidsCommand());
+        logger.info(FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(UUID.fromString("a8d614a7-7e28-4f69-ae54-3ad8deb82efc")) != null);
     }
 
     public static IBossAPI getBossAPI(){
