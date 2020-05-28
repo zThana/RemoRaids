@@ -22,13 +22,16 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-package ca.landonjw.remoraids.internal.storage.gson;
+package ca.landonjw.remoraids.api.util.gson;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -68,6 +71,14 @@ public class JObject implements JElement<JsonObject> {
 		return add(key, new JsonPrimitive(value));
 	}
 
+	public JObject add(String key, List<?> elements) {
+		if(elements == null) {
+			return add(key, JsonNull.INSTANCE);
+		}
+
+		return add(key, PRETTY.toJsonTree(elements));
+	}
+
 	public JObject add(String key, JElement value) {
 		if (value == null) {
 			return add(key, JsonNull.INSTANCE);
@@ -90,6 +101,13 @@ public class JObject implements JElement<JsonObject> {
 	public JObject consume(Consumer<? super JObject> consumer) {
 		consumer.accept(this);
 		return this;
+	}
+
+	static final Gson PRETTY = new GsonBuilder().setPrettyPrinting().create();
+
+	@Override
+	public String toString() {
+		return PRETTY.toJson(this.toJson());
 	}
 
 }

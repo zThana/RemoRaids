@@ -1,7 +1,7 @@
 package ca.landonjw.remoraids.implementation.boss;
 
 import ca.landonjw.remoraids.api.boss.IBoss;
-import ca.landonjw.remoraids.internal.storage.gson.JObject;
+import ca.landonjw.remoraids.api.util.gson.JObject;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class Boss implements IBoss {
 
@@ -59,6 +60,7 @@ public class Boss implements IBoss {
         });
 
         this.size = Math.max(1, builder.size);
+        applyIfNotNull(builder.texture, this.pokemon::setCustomTexture);
     }
 
     private static <T> void applyIfNotNull(T input, Consumer<T> consumer) {
@@ -150,6 +152,7 @@ public class Boss implements IBoss {
 			    .add("ability", this.pokemon.getAbilityName())
 			    .add("gender", this.pokemon.getGender().name())
 			    .add("shiny", this.pokemon.isShiny())
+			    .add("moves", this.pokemon.getMoveset().stream().map(a -> a.getActualMove().getAttackName()).collect(Collectors.toList()))
 			    ;
 
     	JObject stats = new JObject();
@@ -157,11 +160,6 @@ public class Boss implements IBoss {
 		    stats.add(stat.name(), this.pokemon.getStat(stat));
 	    }
     	data.add("stats", stats);
-
-    	JObject moves = new JObject();
-    	for(int i = 1; i < this.pokemon.getMoveset().size(); i++) {
-    		moves.add("" + i, this.pokemon.getMoveset().get(i - 1).getActualMove().getAttackName());
-	    }
 
 		return data.add("size", this.size)
 				.add("texture", this.pokemon.getCustomTexture());

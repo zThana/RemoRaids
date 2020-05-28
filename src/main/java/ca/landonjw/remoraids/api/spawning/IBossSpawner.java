@@ -11,7 +11,7 @@ import java.util.Optional;
  * three main variables. The first being the boss it'll spawn, the location to spawn it at, and the annoucement
  * template to send when the boss is spawned.
  */
-public interface IBossSpawner extends DataSerializable<IBossSpawner> {
+public interface IBossSpawner extends DataSerializable {
 
     /**
      * Attempts to spawn a new raid pokemon at the specified spawn location. Typically, this will be a singular

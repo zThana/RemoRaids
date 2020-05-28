@@ -8,7 +8,7 @@ import java.util.Optional;
 /**
  * Controls how a raid boss is announced to the server.
  */
-public interface ISpawnAnnouncement extends DataSerializable<ISpawnAnnouncement> {
+public interface ISpawnAnnouncement extends DataSerializable {
 
     /**
      * Sets the announcement to be sent to players. Formatting can be applied here.

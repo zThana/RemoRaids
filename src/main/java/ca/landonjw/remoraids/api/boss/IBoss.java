@@ -3,7 +3,7 @@ package ca.landonjw.remoraids.api.boss;
 import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.util.DataSerializable;
 import ca.landonjw.remoraids.api.util.IBuilder;
-import ca.landonjw.remoraids.internal.storage.gson.JObject;
+import ca.landonjw.remoraids.api.util.gson.JObject;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Gender;
@@ -23,7 +23,7 @@ import java.util.Optional;
  * A boss can be customized as much as a user desires, and external third party options
  * are free to use a raid boss's data for any necessary means they desire.
  */
-public interface IBoss extends DataSerializable<IBoss> {
+public interface IBoss extends DataSerializable {
 
 	/**
 	 * Returns the pokemon that represents the raid boss. This boss is used to create the statue representing
