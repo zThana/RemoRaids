@@ -11,9 +11,11 @@ import ca.landonjw.remoraids.api.spawning.ISpawnAnnouncement;
 import ca.landonjw.remoraids.implementation.boss.BossEntity;
 import ca.landonjw.remoraids.internal.storage.gson.JObject;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.client.models.smd.AnimationType;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityStatue;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -58,6 +60,7 @@ public class BossSpawner implements IBossSpawner {
         if(!spawningEvent.isCanceled()){
             EntityStatue statue = createAndSpawnStatue();
             EntityPixelmon battleEntity = createAndSpawnBattleEntity();
+            setStatueAnimation(statue, battleEntity);
 
             if(announcement != null){
                 announcement.sendAnnouncement(this);
@@ -86,11 +89,8 @@ public class BossSpawner implements IBossSpawner {
 
         Pokemon bossPokemon = this.getBoss().getPokemon();
         statue.setPokemon(bossPokemon);
-
-        statue.setAnimate(true);
-        statue.setAnimation("Idle");
-
         statue.setPixelmonScale(this.getBoss().getSize());
+
         if(this.getBoss().getTexture().isPresent()){
             NBTTagCompound nbt = new NBTTagCompound();
             statue.writeToNBT(nbt);
@@ -103,6 +103,27 @@ public class BossSpawner implements IBossSpawner {
         spawnLocation.getWorld().spawnEntity(statue);
 
         return statue;
+    }
+
+    /**
+     * Sets the animation for the boss statue.
+     * If the boss is midair and is capable of flying, the flying animation will be used.
+     * Otherwise, the idle animation is used.
+     *
+     * @param statue the statue to apply the animation to
+     * @param pixelmon the pixelmon to search for flying capabilities
+     */
+    private void setStatueAnimation(EntityStatue statue, EntityPixelmon pixelmon){
+        BlockPos spawnPos = new BlockPos(spawnLocation.getX(), spawnLocation.getY(), spawnLocation.getZ());
+
+        if(!spawnLocation.getWorld().getBlockState(spawnPos.down()).getMaterial().isSolid() && pixelmon.canFly()){
+            statue.setIsFlying(true);
+            statue.setAnimation(AnimationType.FLY);
+        }
+        else{
+            statue.setAnimation(AnimationType.IDLE);
+        }
+        statue.setAnimate(true);
     }
 
     /**

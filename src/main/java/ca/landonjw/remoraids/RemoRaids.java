@@ -8,10 +8,7 @@ import ca.landonjw.remoraids.implementation.BossAPI;
 import ca.landonjw.remoraids.implementation.boss.Boss;
 import ca.landonjw.remoraids.implementation.boss.BossCreator;
 import ca.landonjw.remoraids.implementation.commands.RaidsCommand;
-import ca.landonjw.remoraids.implementation.listeners.BossDeathListener;
-import ca.landonjw.remoraids.implementation.listeners.BossDropListener;
-import ca.landonjw.remoraids.implementation.listeners.BossUpdateListener;
-import ca.landonjw.remoraids.implementation.listeners.EngageListener;
+import ca.landonjw.remoraids.implementation.listeners.*;
 import ca.landonjw.remoraids.implementation.spawning.TimedSpawnListener;
 import ca.landonjw.remoraids.internal.api.APIRegistrationUtil;
 import ca.landonjw.remoraids.internal.api.config.Config;
@@ -78,6 +75,7 @@ public class RemoRaids {
 
         Pixelmon.EVENT_BUS.register(new EngageListener());
         Pixelmon.EVENT_BUS.register(new BossDropListener());
+        Pixelmon.EVENT_BUS.register(new StatueInteractListener());
 
         RemoRaids.EVENT_BUS.register(new TimedSpawnListener());
         RemoRaids.EVENT_BUS.register(new BossDeathListener());
@@ -93,7 +91,6 @@ public class RemoRaids {
     public void onServerStart(FMLServerStartingEvent event){
         event.registerServerCommand(new Callback());
         event.registerServerCommand(new RaidsCommand());
-        logger.info(FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(UUID.fromString("a8d614a7-7e28-4f69-ae54-3ad8deb82efc")) != null);
     }
 
     public static IBossAPI getBossAPI(){

@@ -53,10 +53,6 @@ public class UIUtils {
                 .concat(TextFormatting.AQUA + ((attacks[2] != null) ? attacks[2].getMove().getAttackName() : "None"))
                 .concat(" - " + TextFormatting.AQUA + ((attacks[3] != null) ? attacks[3].getMove().getAttackName() : "None"));
         lore.add(attackLine2);
-        lore.add("");
-
-        lore.add(TextFormatting.WHITE + "Left click to teleport to location");
-        lore.add(TextFormatting.WHITE + "Right click to despawn");
 
         return lore;
     }
