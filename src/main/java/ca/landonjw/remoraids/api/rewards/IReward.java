@@ -26,11 +26,11 @@ public interface IReward {
     /**
      * Gets all players that will receive the reward.
      *
-     * @param boss the boss that the reward is being distributed to.
+     * @param battle battle to get winners for.
      *
      * @return list of players that will receive the reward upon distribution.
      */
-    List<EntityPlayerMP> getWinnersList(IBossEntity boss);
+    List<EntityPlayerMP> getWinnersList(IBossBattle battle);
 
     /**
      * Gets the contents of the reward.
@@ -43,7 +43,6 @@ public interface IReward {
      * Adds contents to the reward.
      *
      * @param contents contents to add
-     * @throws IllegalArgumentException if a reward content is null
      */
     void addContents(IRewardContent... contents);
 
@@ -51,7 +50,6 @@ public interface IReward {
      * Removes contents from the reward.
      *
      * @param contents contents to remove
-     * @throws IllegalArgumentException if a reward content is null
      */
     void removeContents(IRewardContent... contents);
 

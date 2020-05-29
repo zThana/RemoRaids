@@ -13,6 +13,7 @@ import ca.landonjw.remoraids.implementation.battles.controller.BossStatusControl
 import ca.landonjw.remoraids.implementation.battles.controller.participants.BossParticipant;
 import ca.landonjw.remoraids.implementation.battles.controller.participants.BossPlayerParticipant;
 import ca.landonjw.remoraids.internal.config.RestraintsConfig;
+import com.google.common.collect.Lists;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.BattleControllerBase;
@@ -23,11 +24,13 @@ import com.pixelmonmod.pixelmon.comm.packetHandlers.battles.gui.HPPacket;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class BossBattle implements IBossBattle {
@@ -216,10 +219,49 @@ public class BossBattle implements IBossBattle {
                 if(source != null){
                     killer = source.getUniqueID();
                 }
+                displayBattleSummary();
                 distributeRewards();
                 this.bossEntity.despawn();
             }
             currentHealth = newHealth;
+        }
+    }
+
+    /**
+     * Creates a summary for the boss battle, including the highest damage dealers and killer.
+     * It then sends this to all players on the server.
+     */
+    private void displayBattleSummary(){
+        //Create an list of players in order of highest damage dealt in the battle
+        List<EntityPlayerMP> contributors = getTopDamageDealers().stream()
+                .map(id -> FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(id))
+                .collect(Collectors.toList());
+
+        //Create output to send to players
+        List<String> output = Lists.newArrayList();
+        Function<String, String> format = str -> str.replaceAll("&", "\u00a7");
+        output.add(format.apply("&8&m==============&r &c[Raid Results] &8&m=============="));
+        output.add(format.apply("&7Through valiant effort, the raid pokemon,"));
+        output.add(format.apply("&e" + bossEntity.getBoss().getPokemon().getSpecies().getLocalizedName() + "&7, was defeated!"));
+        output.add(format.apply(""));
+
+        getKiller().ifPresent(killer -> {
+            String playerName = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(killer).getName();
+            output.add(format.apply("&cKiller: &e" + playerName));
+            output.add("");
+        });
+
+        output.add(format.apply("&aTop " + Math.min(3, contributors.size()) + " Damage Dealers:"));
+        for(int i = 0; i < Math.min(3, contributors.size()); i++) {
+            output.add(format.apply("&e" + contributors.get(i).getName() + "&7: &b" + getDamageDealt(contributors.get(i).getUniqueID()).get()));
+        }
+        output.add(format.apply("&8&m=================================="));
+
+        //Send summary to all players
+        for(EntityPlayerMP player : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers()) {
+            for(String out : output) {
+                player.sendMessage(new TextComponentString(out));
+            }
         }
     }
 

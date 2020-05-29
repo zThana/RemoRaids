@@ -150,7 +150,15 @@ public class BossEntity implements IBossEntity {
 
         entity.setDead();
         battleEntity.setDead();
-        BossEntityRegistry.getInstance().deregister(this);
+
+        /* This is delayed by one tick due to drops not cancelling properly due to the pixelmon entity
+         * queueing drop items on death and the boss being deregistered simultaneously, causing the
+         * drop listener to be incapable of cancelling the event.
+         */
+        Task.builder().execute(() -> BossEntityRegistry.getInstance().deregister(this))
+                .delay(1)
+                .iterations(1)
+                .build();
     }
 
     @Override

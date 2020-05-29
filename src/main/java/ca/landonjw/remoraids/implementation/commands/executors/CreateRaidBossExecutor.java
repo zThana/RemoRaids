@@ -34,7 +34,7 @@ public class CreateRaidBossExecutor implements RaidsCommandExecutor {
 
 	@Override
 	public String getUsage(ICommandSender source) {
-		return "/raids create [respawn:(amount)|(seconds)] (pokemon spec) [size:(size), moves:(M1,...,M4), (stat):type|(value[x])]";
+		return "/raids create [respawn:(amount)|(seconds)] (pokemon spec) (size:(size), moves:(M1,...,M4), (stat:type|(value[x])]";
 	}
 
 	@Override

@@ -9,7 +9,10 @@ import ca.landonjw.remoraids.implementation.BossAPI;
 import ca.landonjw.remoraids.implementation.boss.Boss;
 import ca.landonjw.remoraids.implementation.boss.BossCreator;
 import ca.landonjw.remoraids.implementation.commands.RaidsCommand;
-import ca.landonjw.remoraids.implementation.listeners.*;
+import ca.landonjw.remoraids.implementation.listeners.BossDropListener;
+import ca.landonjw.remoraids.implementation.listeners.BossUpdateListener;
+import ca.landonjw.remoraids.implementation.listeners.EngageListener;
+import ca.landonjw.remoraids.implementation.listeners.StatueInteractListener;
 import ca.landonjw.remoraids.implementation.spawning.TimedSpawnListener;
 import ca.landonjw.remoraids.internal.api.APIRegistrationUtil;
 import ca.landonjw.remoraids.internal.api.config.Config;
@@ -19,13 +22,12 @@ import ca.landonjw.remoraids.internal.config.RestraintsConfig;
 import ca.landonjw.remoraids.internal.config.readers.ForgeConfig;
 import ca.landonjw.remoraids.internal.config.readers.ForgeConfigAdapter;
 import ca.landonjw.remoraids.internal.inventory.api.InventoryAPI;
+import ca.landonjw.remoraids.internal.network.RaidsDropPacketHandler;
 import ca.landonjw.remoraids.internal.tasks.TaskTickListener;
 import ca.landonjw.remoraids.internal.text.Callback;
 import com.google.common.collect.Lists;
-import com.google.gson.GsonBuilder;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
-import com.pixelmonmod.pixelmon.battles.attacks.AttackBase;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
@@ -42,7 +44,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.UUID;
 
 @Mod(
         modid = RemoRaids.MOD_ID,
@@ -88,12 +89,12 @@ public class RemoRaids {
         Pixelmon.EVENT_BUS.register(new StatueInteractListener());
 
         RemoRaids.EVENT_BUS.register(new TimedSpawnListener());
-        RemoRaids.EVENT_BUS.register(new BossDeathListener());
 
         getBossAPI().getRaidRegistry().registerBuilderSupplier(IBossCreator.class, BossCreator::new);
         getBossAPI().getRaidRegistry().registerBuilderSupplier(IBoss.IBossBuilder.class, Boss.BossBuilder::new);
 
         RemoRaids.EVENT_BUS.register(this);
+        RaidsDropPacketHandler.initialize();
     }
 
     @Mod.EventHandler
