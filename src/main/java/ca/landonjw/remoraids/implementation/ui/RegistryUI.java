@@ -6,11 +6,7 @@ import ca.landonjw.remoraids.internal.inventory.api.Button;
 import ca.landonjw.remoraids.internal.inventory.api.ButtonType;
 import ca.landonjw.remoraids.internal.inventory.api.Page;
 import ca.landonjw.remoraids.internal.inventory.api.Template;
-import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
-import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
-import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
-import com.pixelmonmod.pixelmon.enums.forms.EnumNoForm;
 import com.pixelmonmod.pixelmon.items.ItemPixelmonSprite;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -18,17 +14,34 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GUIRegistry {
+/**
+ * A user interface to display all registered boss entities.
+ * Can be viewed by using /raids registry
+ *
+ * @author landonjw
+ * @since  1.0.0
+ */
+public class RegistryUI {
 
+    /** The player using the user interface. */
     private EntityPlayerMP player;
 
-    public GUIRegistry(EntityPlayerMP player){
+    /**
+     * Constructor for the user interface.
+     *
+     * @param player the player using the user interface
+     */
+    public RegistryUI(@Nonnull EntityPlayerMP player){
         this.player = player;
     }
 
+    /**
+     * Opens the user interface for the player.
+     */
     public void open(){
         Button filler = Button.builder()
                 .item(new ItemStack(Blocks.STAINED_GLASS_PANE, 1, EnumDyeColor.LIGHT_BLUE.getMetadata()))
@@ -37,19 +50,19 @@ public class GUIRegistry {
 
         Button nextButton = Button.builder()
                 .item(new ItemStack(PixelmonItems.tradeHolderRight))
-                .displayName(TextFormatting.AQUA + "Next Page")
+                .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Next Page")
                 .type(ButtonType.NextPage)
                 .build();
 
         Button infoButton = Button.builder()
                 .item(new ItemStack(PixelmonItems.tradeMonitor))
-                .displayName(TextFormatting.AQUA + Page.CURRENT_PAGE_PLACEHOLDER + " / " + Page.TOTAL_PAGES_PLACEHOLDER)
+                .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Page " + Page.CURRENT_PAGE_PLACEHOLDER + " / " + Page.TOTAL_PAGES_PLACEHOLDER)
                 .type(ButtonType.PageInfo)
                 .build();
 
         Button previousButton = Button.builder()
                 .item(new ItemStack(PixelmonItems.LtradeHolderLeft))
-                .displayName(TextFormatting.AQUA + "Previous Page")
+                .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Previous Page")
                 .type(ButtonType.PreviousPage)
                 .build();
 
@@ -58,9 +71,9 @@ public class GUIRegistry {
             Button bossButton = Button.builder()
                     .item(ItemPixelmonSprite.getPhoto(bossEntity.getBoss().getPokemon()))
                     .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Boss " + bossEntity.getBoss().getPokemon().getSpecies().name)
-                    .lore(UIUtils.getBossLore(bossEntity))
+                    .lore(UIUtils.getPokemonLore(bossEntity))
                     .onClick((action) -> {
-                        GUIBossOptions options = new GUIBossOptions(player, bossEntity);
+                        BossOptionsUI options = new BossOptionsUI(player, bossEntity);
                         options.open();
                     })
                     .build();

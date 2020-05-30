@@ -14,6 +14,12 @@ import net.minecraft.world.WorldServer;
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
+/**
+ * An implementation of {@link SpawnAnnouncement} that will teleport players to a {@link IBossSpawnLocation} when it is clicked in chat.
+ *
+ * @author landonjw
+ * @since  1.0.0
+ */
 public class TeleportableSpawnAnnouncement extends SpawnAnnouncement {
 
     /**
@@ -47,8 +53,6 @@ public class TeleportableSpawnAnnouncement extends SpawnAnnouncement {
                     playerList.transferPlayerToDimension(player, spawnWorld.provider.getDimension(), teleporter);
                 }
                 player.setPositionAndUpdate(spawnLocation.getX(), spawnLocation.getY(), spawnLocation.getZ());
-
-                //TODO Configurable teleport messager
             }
         };
 

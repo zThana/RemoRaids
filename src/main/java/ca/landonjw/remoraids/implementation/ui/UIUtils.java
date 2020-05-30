@@ -10,9 +10,21 @@ import net.minecraft.util.text.TextFormatting;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Collection of utilities to be used for user interfaces.
+ *
+ * @author landonjw
+ * @since  1.0.0
+ */
 public class UIUtils {
 
-    public static List<String> getBossLore(IBossEntity boss){
+    /**
+     * Gets information of a boss and returns nicely formated strings for lore.
+     *
+     * @param boss the boss to get information from
+     * @return list of formatted strings to be used for lore, to give information about a boss
+     */
+    public static List<String> getPokemonLore(IBossEntity boss){
         List<String> lore = new ArrayList<>();
 
         Pokemon pokemon = boss.getBoss().getPokemon();

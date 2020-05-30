@@ -12,6 +12,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
+/**
+ * Base implementation for {@link ISpawnAnnouncement}.
+ *
+ * @author landonjw
+ * @since  1.0.0
+ */
 public class SpawnAnnouncement implements ISpawnAnnouncement {
 
     /** The placeholder for a boss's species. */
@@ -84,6 +90,7 @@ public class SpawnAnnouncement implements ISpawnAnnouncement {
                 .replace(BOSS_LOCATION_Z_PLACEHOLDER, "" + spawner.getSpawnLocation().getZ());
     }
 
+    /** {@inheritDoc} */
     @Override
     public JObject serialize() {
         return new JObject().add("message", this.announcement);

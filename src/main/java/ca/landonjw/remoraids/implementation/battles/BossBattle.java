@@ -33,28 +33,43 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation of {@link IBossBattle}.
+ *
+ * @author landonjw
+ * @since  1.0.0
+ */
 public class BossBattle implements IBossBattle {
 
+    /** The boss entity players will battle. */
     private IBossEntity bossEntity;
-    private final int MAX_HEALTH;
+    /** The current health of the boss. This value is volatile. */
     private int currentHealth;
-
+    /** The rules imposed before and during battle with the boss. */
     private IBossBattleRules bossBattleRules;
+    /** Map of all players currently in battle with the boss, and the corresponding battle controllers. */
     private Map<EntityPlayerMP, BattleControllerBase> playerBattleMap = new HashMap<>();
-
+    /** Map of player UUIDs and the amount of damage they have dealt to the boss. */
     private Map<UUID, Integer> playerDamageDealt = new HashMap<>();
+    /** The UUID of the player who dealt the killing blow to the boss. May be null if boss is not dead. */
     private UUID killer;
-
+    /** A list of rewards to be distributed when the boss is slain. */
     private List<IReward> defeatRewards;
 
+    /**
+     * Constructor for the boss battle.
+     *
+     * @param bossEntity      the boss entity players will battle
+     * @param bossBattleRules the rules for the battle
+     * @param defeatRewards   the rewards to be distributed when the boss is slain
+     */
     public BossBattle(@Nonnull IBossEntity bossEntity,
                       @Nonnull IBossBattleRules bossBattleRules,
                       @Nullable List<IReward> defeatRewards){
         this.bossEntity = bossEntity;
         this.bossBattleRules = bossBattleRules;
         this.defeatRewards = (defeatRewards != null) ? defeatRewards : new ArrayList<>();
-        MAX_HEALTH = bossEntity.getBoss().getStat(StatsType.HP);
-        currentHealth = MAX_HEALTH;
+        currentHealth = bossEntity.getBoss().getStat(StatsType.HP);
     }
 
     /** {@inheritDoc} */
@@ -139,14 +154,17 @@ public class BossBattle implements IBossBattle {
     public void startBattle(@Nonnull EntityPlayerMP player, @Nullable EntityPixelmon startingPixelmon) {
         if(BattleRegistry.getBattle(player) == null){
 
+            //Create battle starting event for RemoRaids and post it to the event bus to check if battle should proceed.
             BossBattleStartingEvent battleStarting = new BossBattleStartingEvent(bossEntity, player);
             RemoRaids.EVENT_BUS.post(battleStarting);
 
             if(!battleStarting.isCanceled()){
+                //If the starting pixelmon isn't specified, use first available Pokemon in player's party.
                 if(startingPixelmon == null){
                     startingPixelmon = Pixelmon.storageManager.getParty(player).getAndSendOutFirstAblePokemon(player);
                 }
 
+                //Create battle using our custom participants and the bosses battle rules.
                 BossPlayerParticipant playerParticipant = new BossPlayerParticipant(bossEntity, player, startingPixelmon);
                 BossParticipant bossParticipant = new BossParticipant(this, bossEntity);
 
@@ -282,7 +300,7 @@ public class BossBattle implements IBossBattle {
     /** {@inheritDoc} */
     @Override
     public int getMaxHealth(){
-        return MAX_HEALTH;
+        return bossEntity.getBoss().getStat(StatsType.HP);
     }
 
 }

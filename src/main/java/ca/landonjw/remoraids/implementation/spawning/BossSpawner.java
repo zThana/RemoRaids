@@ -10,6 +10,7 @@ import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import ca.landonjw.remoraids.api.spawning.ISpawnAnnouncement;
 import ca.landonjw.remoraids.implementation.boss.BossEntity;
 import ca.landonjw.remoraids.api.util.gson.JObject;
+import ca.landonjw.remoraids.internal.pokemon.PokemonUtils;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.client.models.smd.AnimationType;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
@@ -135,7 +136,7 @@ public class BossSpawner implements IBossSpawner {
         EntityPixelmon battleEntity = new EntityPixelmon(spawnLocation.getWorld());
 
         Pokemon bossPokemon = this.getBoss().getPokemon();
-        battleEntity.setPokemon(bossPokemon);
+        battleEntity.setPokemon(PokemonUtils.clonePokemon(bossPokemon));
         battleEntity.enablePersistence();
         battleEntity.setPixelmonScale(0);
 
@@ -153,26 +154,19 @@ public class BossSpawner implements IBossSpawner {
         return spawnLocation;
     }
 
-    /**
-     * Gets the boss to be spawned.
-     *
-     * @return the boss to be spawned
-     */
+    /** {@inheritDoc} */
     @Override
     public IBoss getBoss() {
         return this.boss;
     }
 
-    /**
-     * Gets the announcement to be sent to players when the boss is spawned.
-     *
-     * @return the spawn announcement
-     */
+    /** {@inheritDoc} */
     @Override
     public ISpawnAnnouncement getAnnouncement() {
         return announcement;
     }
 
+    /** {@inheritDoc} */
     @Override
     public JObject serialize() {
         return new JObject()

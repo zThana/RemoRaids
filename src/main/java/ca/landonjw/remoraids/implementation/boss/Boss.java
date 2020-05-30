@@ -2,6 +2,7 @@ package ca.landonjw.remoraids.implementation.boss;
 
 import ca.landonjw.remoraids.api.boss.IBoss;
 import ca.landonjw.remoraids.api.util.gson.JObject;
+import ca.landonjw.remoraids.api.boss.IBoss.IBossBuilder;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
@@ -29,16 +30,35 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation for {@link IBoss}
+ *
+ * @author landonjw
+ * @since  1.0.0
+ */
 public class Boss implements IBoss {
 
+    /** The Boss Pokemon. This should be preserved and not used in battle due to death potentially reverting forms and stats. */
     private Pokemon pokemon;
+    /** The size of the boss. */
     private float size;
 
+    /**
+     * Default constructor for the boss.
+     *
+     * @param pokemon the pokemon to use as a boss
+     */
     public Boss(@Nonnull Pokemon pokemon){
         this.pokemon = Objects.requireNonNull(pokemon, "Pokemon must not be null");
         this.size = 1;
     }
 
+    /**
+     * The detailed constructor for the boss.
+     * This allowed for a nice builder to be utilized via {@link BossBuilder} to outline more details of a boss.
+     *
+     * @param builder the builder to use to construct boss
+     */
     private Boss(@NonNull BossBuilder builder) {
         this.pokemon = Pixelmon.pokemonFactory.create(builder.species);
         applyIfNotNull(builder.form, this.pokemon::setForm);
@@ -142,6 +162,7 @@ public class Boss implements IBoss {
         this.pokemon.setCustomTexture(texture);
     }
 
+    /** {@inheritDoc} */
 	@Override
 	public JObject serialize() {
     	JObject data = new JObject()
@@ -165,23 +186,38 @@ public class Boss implements IBoss {
 				.add("texture", this.pokemon.getCustomTexture());
 	}
 
+    /**
+     * An implementation of an {@link IBossBuilder} for a {@link IBoss}.
+     *
+     * @author NickImpact
+     * @since  1.0.0
+     */
 	public static class BossBuilder implements IBossBuilder {
 
+	    /** The Pokemon species of the boss. May be null. */
         private EnumSpecies species;
+        /** The form of the boss. May be null. */
         private IEnumForm form;
+        /** The level of the boss. May be null. */
         private Integer level;
-
+        /** If the boss is shiny. */
         private boolean shiny;
-
+        /** The nature of the boss. May be null. */
         private EnumNature nature;
+        /** The ability of the boss. May be null. */
         private String ability;
+        /** The texture of the boss. May be null. */
         private String texture;
+        /** The gender of the boss. May be null. */
         private Gender gender;
+        /** The moveset of the boss. May be null. */
         private Moveset moveset;
-
+        /** The size of the boss. */
         private float size;
+        /** Map corresponding to each stat of the boss. Tuple represents a value, and if the value is intended as an amplification or flat value. */
         private Map<StatsType, Tuple<Integer, Boolean>> stats = Maps.newHashMap();
 
+        /** {@inheritDoc} */
         @Override
         public IBossBuilder spec(PokemonSpec spec) {
         	applyIfNotNull(spec.name, s -> this.species = EnumSpecies.getFromNameAnyCase(s));
@@ -197,60 +233,70 @@ public class Boss implements IBoss {
             return this;
         }
 
+        /** {@inheritDoc} */
         @Override
         public IBossBuilder species(EnumSpecies species) {
             this.species = species;
             return this;
         }
 
+        /** {@inheritDoc} */
         @Override
         public IBossBuilder level(int level) {
             this.level = level;
             return this;
         }
 
+        /** {@inheritDoc} */
         @Override
         public IBossBuilder form(IEnumForm form) {
             this.form = form;
             return this;
         }
 
+        /** {@inheritDoc} */
 	    @Override
 	    public IBossBuilder shiny(boolean shiny) {
         	this.shiny = shiny;
 		    return this;
 	    }
 
+        /** {@inheritDoc} */
 	    @Override
         public IBossBuilder nature(EnumNature nature) {
             this.nature = nature;
             return this;
         }
 
+        /** {@inheritDoc} */
         @Override
         public IBossBuilder ability(String ability) {
             this.ability = ability;
             return this;
         }
 
+        /** {@inheritDoc} */
 	    @Override
 	    public IBossBuilder gender(Gender gender) {
         	this.gender = gender;
 		    return this;
 	    }
 
+        /** {@inheritDoc} */
 	    @Override
         public IBossBuilder stat(StatsType stat, int input, boolean amplify) {
             this.stats.put(stat, new Tuple<>(input, amplify));
             return this;
         }
 
+        /** {@inheritDoc} */
         @Override
         public IBossBuilder size(float size) {
             this.size = size;
             return this;
         }
 
+        /** {@inheritDoc} */
         @Override
         public IBossBuilder texture(@NonNull String texture) {
         	Preconditions.checkNotNull(texture, "Texture cannot be null!");
@@ -258,12 +304,14 @@ public class Boss implements IBoss {
             return this;
         }
 
+        /** {@inheritDoc} */
 	    @Override
 	    public IBossBuilder moveset(Moveset moveset) {
         	this.moveset = moveset;
 		    return this;
 	    }
 
+        /** {@inheritDoc} */
 		@Override
 		public IBossBuilder fromJson(JObject json) {
 			JsonObject data = json.toJson();
@@ -289,6 +337,7 @@ public class Boss implements IBoss {
 			return this;
 		}
 
+        /** {@inheritDoc} */
 		@Override
         public IBossBuilder from(IBoss input) {
             return this.species(input.getPokemon().getSpecies())
@@ -310,6 +359,7 @@ public class Boss implements IBoss {
             ;
         }
 
+        /** {@inheritDoc} */
         @Override
         public IBoss build() {
         	Preconditions.checkNotNull(this.species, "A raid boss must have a species specified to be created!");
