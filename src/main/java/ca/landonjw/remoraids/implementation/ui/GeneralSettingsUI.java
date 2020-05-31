@@ -35,49 +35,51 @@ public class GeneralSettingsUI extends BaseBossUI {
 
     /** {@inheritDoc} */
     public void open() {
-        Button setStats = Button.builder()
-                .item(new ItemStack(Items.PAPER))
-                .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Stats")
-                .onClick(() -> {
-                    BattleStatsSelectionUI statsSelection = new BattleStatsSelectionUI(player, bossEntity);
-                    statsSelection.open();
-                })
-                .build();
+        if(bossNotInBattle()){
+            Button setStats = Button.builder()
+                    .item(new ItemStack(Items.PAPER))
+                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Stats")
+                    .onClick(() -> {
+                        BattleStatsSelectionUI statsSelection = new BattleStatsSelectionUI(player, bossEntity);
+                        statsSelection.open();
+                    })
+                    .build();
 
-        Button setSize = Button.builder()
-                .item(new ItemStack(PixelmonItems.rareCandy))
-                .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Size")
-                .onClick(() -> {
-                    BossSizeEditorUI sizeEditor = new BossSizeEditorUI(player, bossEntity);
-                    sizeEditor.open();
-                })
-                .build();
+            Button setSize = Button.builder()
+                    .item(new ItemStack(PixelmonItems.rareCandy))
+                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Size")
+                    .onClick(() -> {
+                        BossSizeEditorUI sizeEditor = new BossSizeEditorUI(player, bossEntity);
+                        sizeEditor.open();
+                    })
+                    .build();
 
-        Button back = Button.builder()
-                .item(new ItemStack(Blocks.BARRIER))
-                .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Go Back")
-                .onClick(() -> {
-                    EditorUI editor = new EditorUI(player, bossEntity);
-                    editor.open();
-                })
-                .build();
+            Button back = Button.builder()
+                    .item(new ItemStack(Blocks.BARRIER))
+                    .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Go Back")
+                    .onClick(() -> {
+                        EditorUI editor = new EditorUI(player, bossEntity);
+                        editor.open();
+                    })
+                    .build();
 
-        Template template = Template.builder(5)
-                .line(LineType.Horizontal, 1, 0, 9, getWhiteFiller())
-                .line(LineType.Horizontal, 3, 0, 9, getWhiteFiller())
-                .border(0,0, 5,9, getBlueFiller())
-                .set(0, 4, getBossButton())
-                .set(2, 3, setSize)
-                .set(2, 5, setStats)
-                .set(3, 4, back)
-                .build();
+            Template template = Template.builder(5)
+                    .line(LineType.Horizontal, 1, 0, 9, getWhiteFiller())
+                    .line(LineType.Horizontal, 3, 0, 9, getWhiteFiller())
+                    .border(0,0, 5,9, getBlueFiller())
+                    .set(0, 4, getBossButton())
+                    .set(2, 2, setSize)
+                    .set(2, 6, setStats)
+                    .set(3, 4, back)
+                    .build();
 
-        Page page = Page.builder()
-                .template(template)
-                .title(TextFormatting.BLUE + "" + TextFormatting.BOLD + "General Settings")
-                .build();
+            Page page = Page.builder()
+                    .template(template)
+                    .title(TextFormatting.BLUE + "" + TextFormatting.BOLD + "General Settings")
+                    .build();
 
-        page.forceOpenPage(player);
+            page.forceOpenPage(player);
+        }
     }
 
 }

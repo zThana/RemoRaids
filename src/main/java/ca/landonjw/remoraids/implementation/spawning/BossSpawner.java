@@ -8,8 +8,8 @@ import ca.landonjw.remoraids.api.events.BossSpawningEvent;
 import ca.landonjw.remoraids.api.spawning.IBossSpawnLocation;
 import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import ca.landonjw.remoraids.api.spawning.ISpawnAnnouncement;
-import ca.landonjw.remoraids.implementation.boss.BossEntity;
 import ca.landonjw.remoraids.api.util.gson.JObject;
+import ca.landonjw.remoraids.implementation.boss.BossEntity;
 import ca.landonjw.remoraids.internal.pokemon.PokemonUtils;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.client.models.smd.AnimationType;
@@ -154,6 +154,10 @@ public class BossSpawner implements IBossSpawner {
         return spawnLocation;
     }
 
+    public void setSpawnLocation(IBossSpawnLocation spawnLocation) {
+        this.spawnLocation = spawnLocation;
+    }
+
     /** {@inheritDoc} */
     @Override
     public IBoss getBoss() {
@@ -174,4 +178,5 @@ public class BossSpawner implements IBossSpawner {
                 .add("announcement", this.announcement.serialize())
                 .add("location", this.spawnLocation.serialize());
     }
+
 }

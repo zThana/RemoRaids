@@ -1,5 +1,6 @@
 package ca.landonjw.remoraids.implementation.ui;
 
+import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.internal.inventory.api.Button;
 import com.pixelmonmod.pixelmon.items.ItemPixelmonSprite;
@@ -45,6 +46,18 @@ public abstract class BaseBossUI {
     public BaseBossUI(@Nonnull EntityPlayerMP player, @Nonnull IBossEntity bossEntity){
         this.player = Objects.requireNonNull(player);
         this.bossEntity = Objects.requireNonNull(bossEntity);
+    }
+
+    /**
+     * Checks if a boss is in battle or not.
+     *
+     * @return true if boss is not in battle, false if boss is in battle
+     */
+    public boolean bossNotInBattle(){
+        if(RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(bossEntity).isPresent()){
+            return RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(bossEntity).get().getPlayersInBattle().size() == 0;
+        }
+        return false;
     }
 
     /**

@@ -12,6 +12,10 @@ import ca.landonjw.remoraids.api.rewards.IReward;
 import ca.landonjw.remoraids.implementation.battles.controller.BossStatusController;
 import ca.landonjw.remoraids.implementation.battles.controller.participants.BossParticipant;
 import ca.landonjw.remoraids.implementation.battles.controller.participants.BossPlayerParticipant;
+import ca.landonjw.remoraids.implementation.rewards.KillerReward;
+import ca.landonjw.remoraids.implementation.rewards.ParticipationReward;
+import ca.landonjw.remoraids.implementation.rewards.TopDamageReward;
+import ca.landonjw.remoraids.implementation.rewards.contents.CurrencyContent;
 import ca.landonjw.remoraids.internal.config.RestraintsConfig;
 import com.google.common.collect.Lists;
 import com.pixelmonmod.pixelmon.Pixelmon;
@@ -84,6 +88,7 @@ public class BossBattle implements IBossBattle {
         return bossBattleRules;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setBattleRules(@Nonnull IBossBattleRules battleRules) {
         bossBattleRules = battleRules;
@@ -153,6 +158,13 @@ public class BossBattle implements IBossBattle {
     @Override
     public void startBattle(@Nonnull EntityPlayerMP player, @Nullable EntityPixelmon startingPixelmon) {
         if(BattleRegistry.getBattle(player) == null){
+            if(!bossBattleRules.validate(player)){
+                List<String> rejectionReasons = bossBattleRules.getRejectionMessages(player);
+                for(String reason : rejectionReasons){
+                    player.sendMessage(new TextComponentString(reason));
+                }
+                return;
+            }
 
             //Create battle starting event for RemoRaids and post it to the event bus to check if battle should proceed.
             BossBattleStartingEvent battleStarting = new BossBattleStartingEvent(bossEntity, player);
@@ -163,7 +175,6 @@ public class BossBattle implements IBossBattle {
                 if(startingPixelmon == null){
                     startingPixelmon = Pixelmon.storageManager.getParty(player).getAndSendOutFirstAblePokemon(player);
                 }
-
                 //Create battle using our custom participants and the bosses battle rules.
                 BossPlayerParticipant playerParticipant = new BossPlayerParticipant(bossEntity, player, startingPixelmon);
                 BossParticipant bossParticipant = new BossParticipant(this, bossEntity);

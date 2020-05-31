@@ -6,8 +6,15 @@ import ca.landonjw.remoraids.api.boss.IBossEntity;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 
+/**
+ * Implementation for {@link IBossBattleRegistry}.
+ *
+ * @author landonjw
+ * @since  1.0.0
+ */
 public class BossBattleRegistry implements IBossBattleRegistry {
 
     /** The instance of the battle registry. */
@@ -16,7 +23,13 @@ public class BossBattleRegistry implements IBossBattleRegistry {
     /** Map of all boss entity's and their corresponding battles. */
     private Map<IBossEntity, IBossBattle> registry = new HashMap<>();
 
-    public IBossBattle registerBossBattle(@Nonnull IBossEntity boss) {
+    /**
+     * Creates a boss battle for the boss and adds it to the registry.
+     *
+     * @param boss the boss to create battle for
+     * @return the battle that is created
+     */
+    public IBossBattle createBossBattle(@Nonnull IBossEntity boss) {
         if(registry.containsKey(boss)){
             throw new IllegalStateException("boss is already registered in the battle registry");
         }
@@ -26,7 +39,12 @@ public class BossBattleRegistry implements IBossBattleRegistry {
         return battle;
     }
 
-    public void deregisterBossBattle(IBossEntity boss) {
+    /**
+     * Removes a boss battle from the registry.
+     *
+     * @param boss the boss to remove battle for
+     */
+    public void removeBossBattle(@Nullable IBossEntity boss) {
         if(registry.containsKey(boss)){
             IBossBattle battle = registry.get(boss);
             battle.endAllBattles();
@@ -51,6 +69,7 @@ public class BossBattleRegistry implements IBossBattleRegistry {
         return Optional.empty();
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<IBossBattle> getAllBossBattles() {
         return new ArrayList<>(this.registry.values());
@@ -73,4 +92,5 @@ public class BossBattleRegistry implements IBossBattleRegistry {
         }
         return instance;
     }
+
 }

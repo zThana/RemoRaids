@@ -14,7 +14,11 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * A battle between a {@link IBossEntity} and potentially several players.
+ * A battle between a {@link IBossEntity} and zero or many several players.
+ *
+ * This contains information regarding restraints in the battle, and rewards to be distributed upon successful defeat.
+ * When a {@link IBossEntity} is created, this will be created and registered to the {@link IBossBattleRegistry},
+ * and persist over the lifecycle of the boss entity until it is killed or forcibly despawned.
  *
  * @author landonjw
  * @since  1.0.0
@@ -116,16 +120,43 @@ public interface IBossBattle {
      */
     void startBattle(@Nonnull EntityPlayerMP player, @Nullable EntityPixelmon startingPixelmon);
 
+    /**
+     * Ends a battle between a player and the boss.
+     *
+     * @param player the player to end battle for
+     */
     void endBattle(@Nonnull EntityPlayerMP player);
 
+    /**
+     * Ends all ongoing battles between players and the boss.
+     */
     void endAllBattles();
 
+    /**
+     * Sets the health of the boss.
+     *
+     * @param health new health of the boss
+     * @param source the source that is changing the health
+     */
     void setBossHealth(int health, @Nullable EntityPlayerMP source);
 
+    /**
+     * Distributes any battle rewards.
+     */
     void distributeRewards();
 
+    /**
+     * Gets the current health of the boss.
+     *
+     * @return the current health of the boss
+     */
     int getHealth();
 
+    /**
+     * Gets the max health of the boss.
+     *
+     * @return the max health of the boss
+     */
     int getMaxHealth();
 
 }

@@ -36,56 +36,61 @@ public class EditorUI extends BaseBossUI {
 
     /** {@inheritDoc} */
     public void open() {
-        Button spawningSettings = Button.builder()
-                .item(new ItemStack(PixelmonItemsHeld.luckyEgg))
-                .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Spawning Settings")
-                .onClick(() -> {
-                    SpawnSettingsUI spawnSettings = new SpawnSettingsUI(player, bossEntity);
-                    spawnSettings.open();
-                })
-                .build();
+        if(bossNotInBattle()){
+            Button spawningSettings = Button.builder()
+                    .item(new ItemStack(PixelmonItemsHeld.luckyEgg))
+                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Respawn Settings")
+                    .onClick(() -> {
+                        RespawnSettingsUI spawnSettings = new RespawnSettingsUI(player, bossEntity);
+                        spawnSettings.open();
+                    })
+                    .build();
 
-        Button generalSettings = Button.builder()
-                .item(new ItemStack(PixelmonItems.porygonPieces))
-                .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "General Settings")
-                .onClick(() -> {
-                    GeneralSettingsUI generalUI = new GeneralSettingsUI(player, bossEntity);
-                    generalUI.open();
-                })
-                .build();
+            Button generalSettings = Button.builder()
+                    .item(new ItemStack(PixelmonItems.porygonPieces))
+                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "General Settings")
+                    .onClick(() -> {
+                        GeneralSettingsUI generalUI = new GeneralSettingsUI(player, bossEntity);
+                        generalUI.open();
+                    })
+                    .build();
 
-        Button battleSettings = Button.builder()
-                .item(new ItemStack(PixelmonItemsPokeballs.pokeBall))
-                .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Battle Settings")
-                .onClick(() -> {})
-                .build();
+            Button battleSettings = Button.builder()
+                    .item(new ItemStack(PixelmonItemsPokeballs.pokeBall))
+                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Battle Settings")
+                    .onClick(() -> {
+                        BattleSettingsUI battleSettingsUI = new BattleSettingsUI(player, bossEntity);
+                        battleSettingsUI.open();
+                    })
+                    .build();
 
-        Button back = Button.builder()
-                .item(new ItemStack(Blocks.BARRIER))
-                .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Go Back")
-                .onClick(() -> {
-                    BossOptionsUI bossOptions = new BossOptionsUI(player, bossEntity);
-                    bossOptions.open();
-                })
-                .build();
+            Button back = Button.builder()
+                    .item(new ItemStack(Blocks.BARRIER))
+                    .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Go Back")
+                    .onClick(() -> {
+                        BossOptionsUI bossOptions = new BossOptionsUI(player, bossEntity);
+                        bossOptions.open();
+                    })
+                    .build();
 
-        Template template = Template.builder(5)
-                .line(LineType.Horizontal, 1, 0, 9, getWhiteFiller())
-                .line(LineType.Horizontal, 3, 0, 9, getWhiteFiller())
-                .border(0,0, 5,9, getBlueFiller())
-                .set(0, 4, getBossButton())
-                .set(2, 2, spawningSettings)
-                .set(2, 4, generalSettings)
-                .set(2, 6, battleSettings)
-                .set(3, 4, back)
-                .build();
+            Template template = Template.builder(5)
+                    .line(LineType.Horizontal, 1, 0, 9, getWhiteFiller())
+                    .line(LineType.Horizontal, 3, 0, 9, getWhiteFiller())
+                    .border(0,0, 5,9, getBlueFiller())
+                    .set(0, 4, getBossButton())
+                    .set(2, 2, spawningSettings)
+                    .set(2, 4, generalSettings)
+                    .set(2, 6, battleSettings)
+                    .set(3, 4, back)
+                    .build();
 
-        Page page = Page.builder()
-                .template(template)
-                .title(TextFormatting.BLUE + "" + TextFormatting.BOLD + "Editor")
-                .build();
+            Page page = Page.builder()
+                    .template(template)
+                    .title(TextFormatting.BLUE + "" + TextFormatting.BOLD + "Editor")
+                    .build();
 
-        page.forceOpenPage(player);
+            page.forceOpenPage(player);
+        }
     }
 
 }

@@ -4,31 +4,40 @@ import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.battles.IBattleRestraint;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.events.BossBattleEndedEvent;
+import ca.landonjw.remoraids.api.events.BossDeathEvent;
 import ca.landonjw.remoraids.internal.config.MessageConfig;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Set;
 
-public class PreventRebattleRestraint implements IBattleRestraint {
+public class PreventRebattleRestraint extends BaseBattleRestraint {
 
+    /** The retraint's identifier. */
+    public static final String ID = "Prevent Rebattle Restraint";
+
+    /** The boss entity to apply restraint to. */
     private IBossEntity bossEntity;
     private Set<EntityPlayerMP> restrainedPlayers = new HashSet<>();
 
     public PreventRebattleRestraint(@Nonnull IBossEntity bossEntity){
+        super(ID);
         this.bossEntity = bossEntity;
         RemoRaids.EVENT_BUS.register(this);
     }
 
     @Override
     public boolean validatePlayer(EntityPlayerMP player) {
-        if(restrainedPlayers.contains(player)){
-            player.sendMessage(new TextComponentString(RemoRaids.getMessageConfig().get(MessageConfig.RAID_NO_REBATLLE)));
-        }
         return !restrainedPlayers.contains(player);
+    }
+
+    @Override
+    public String getRejectionMessage(@Nonnull EntityPlayerMP player) {
+        return RemoRaids.getMessageConfig().get(MessageConfig.RAID_NO_REBATLLE);
     }
 
     @SubscribeEvent
@@ -36,7 +45,16 @@ public class PreventRebattleRestraint implements IBattleRestraint {
         if(event.getBossEntity().equals(bossEntity)){
             restrainedPlayers.add(event.getPlayer());
         }
-        if(!RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(bossEntity).isPresent()){
+    }
+
+    /**
+     * Terminates the restraint's listeners once the stored boss entity has died.
+     *
+     * @param event called when a boss dies
+     */
+    @SubscribeEvent
+    public void onBossDeath(BossDeathEvent event){
+        if(event.getBossEntity().equals(bossEntity)){
             RemoRaids.EVENT_BUS.unregister(this);
         }
     }

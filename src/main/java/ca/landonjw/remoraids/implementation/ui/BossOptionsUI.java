@@ -1,8 +1,13 @@
 package ca.landonjw.remoraids.implementation.ui;
 
+import ca.landonjw.remoraids.RemoRaids;
+import ca.landonjw.remoraids.api.battles.IBossBattle;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
+import ca.landonjw.remoraids.implementation.battles.restraints.HaltedBattleRestraint;
 import ca.landonjw.remoraids.internal.inventory.api.*;
 import com.pixelmonmod.pixelmon.config.PixelmonBlocks;
+import com.pixelmonmod.pixelmon.config.PixelmonItems;
+import com.pixelmonmod.pixelmon.items.ItemShrineOrb;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -16,6 +21,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 
 /**
  * A user interface that displays various options for the boss.
@@ -66,13 +72,47 @@ public class BossOptionsUI extends BaseBossUI {
                 })
                 .build();
 
-        Button delete = Button.builder()
+        Button.Builder preventBattlesBuilder = Button.builder()
+                .item(new ItemStack(Blocks.TORCH))
+                .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Halt Battles")
+                .lore(Arrays.asList(TextFormatting.WHITE + "This feature is currently unavailable."));
+
+        if(RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(bossEntity).isPresent()){
+            IBossBattle battle = RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(bossEntity).get();
+            if(battle.getBattleRules().containsBattleRestraint(HaltedBattleRestraint.ID)){
+                ItemStack fullOrb = new ItemStack(PixelmonItems.tresOrb);
+                fullOrb.setItemDamage(ItemShrineOrb.full);
+
+                preventBattlesBuilder = preventBattlesBuilder
+                        .item(new ItemStack(Blocks.REDSTONE_TORCH))
+                        .lore(Arrays.asList(TextFormatting.WHITE + "Toggled on"))
+                        .onClick(() -> {
+                            battle.getBattleRules().removeBattleRestraint(HaltedBattleRestraint.ID);
+                            open();
+                        });
+            }
+            else{
+                preventBattlesBuilder = preventBattlesBuilder
+                        .lore(Arrays.asList(TextFormatting.WHITE + "Toggled off"))
+                        .onClick(() -> {
+                            battle.getBattleRules().addBattleRestraint(new HaltedBattleRestraint());
+                            for(EntityPlayerMP player : battle.getPlayersInBattle()){
+                                player.sendMessage(new TextComponentString(TextFormatting.RED + "You have been kicked from battle due to ongoing boss editing."));
+                            }
+                            battle.endAllBattles();
+                            open();
+                        });
+            }
+        }
+        Button preventBattles = preventBattlesBuilder.build();
+
+        Button despawn = Button.builder()
                 .item(new ItemStack(PixelmonBlocks.trashcanBlock))
-                .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Delete")
+                .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Despawn")
                 .onClick(() -> {
                     bossEntity.despawn();
                     InventoryAPI.getInstance().closePlayerInventory(player);
-                    player.sendMessage(new TextComponentString(TextFormatting.GREEN + "Boss Pokemon deleted."));
+                    player.sendMessage(new TextComponentString(TextFormatting.GREEN + "Boss Pokemon despawned."));
                 })
                 .build();
 
@@ -90,9 +130,10 @@ public class BossOptionsUI extends BaseBossUI {
                 .line(LineType.Horizontal, 3, 0, 9, getWhiteFiller())
                 .border(0,0, 5,9, getBlueFiller())
                 .set(0, 4, getBossButton())
-                .set(2, 2, teleport)
-                .set(2, 4, edit)
-                .set(2, 6, delete)
+                .set(2, 1, teleport)
+                .set(2, 3, edit)
+                .set(2, 5, preventBattles)
+                .set(2, 7, despawn)
                 .set(3, 4, back)
                 .build();
 

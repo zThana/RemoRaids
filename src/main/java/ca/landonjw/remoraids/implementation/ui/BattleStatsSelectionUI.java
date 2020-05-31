@@ -49,8 +49,7 @@ public class BattleStatsSelectionUI extends BaseBossUI {
 
         Button health;
 
-        if(!RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(bossEntity).isPresent()
-                || RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(bossEntity).get().getPlayersInBattle().size() == 0){
+        if(RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(bossEntity).get().getPlayersInBattle().size() == 0){
             health = Button.builder()
                     .item(new ItemStack(PixelmonItemsHeld.powerWeight))
                     .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Health")

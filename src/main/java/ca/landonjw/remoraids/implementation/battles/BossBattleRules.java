@@ -9,10 +9,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Implementation of {@link IBossBattleRules).
@@ -65,6 +62,32 @@ public class BossBattleRules implements IBossBattleRules {
 
     /** {@inheritDoc} */
     @Override
+    public void removeBattleRestraint(@Nonnull String id){
+        IBattleRestraint toRemove = null;
+        for(IBattleRestraint restraint : battleRestraints){
+            if(restraint.getId().equals(id)){
+                toRemove = restraint;
+                break;
+            }
+        }
+        if(toRemove != null){
+            battleRestraints.remove(toRemove);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean containsBattleRestraint(@Nonnull String id){
+        for(IBattleRestraint restraint : battleRestraints){
+            if(restraint.getId().equals(id)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public boolean validate(EntityPlayerMP player) {
         boolean validationPassed = true;
         for(IBattleRestraint restraint : battleRestraints){
@@ -77,6 +100,18 @@ public class BossBattleRules implements IBossBattleRules {
             validationPassed = battleRules.validateTeam(playerTeam) == null;
         }
         return validationPassed;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public List<String> getRejectionMessages(EntityPlayerMP player) {
+        List<String> rejectionMessages = new ArrayList<>();
+        for(IBattleRestraint restraint : battleRestraints){
+            if(!restraint.validatePlayer(player)){
+                rejectionMessages.add(restraint.getRejectionMessage(player));
+            }
+        }
+        return rejectionMessages;
     }
 
 }

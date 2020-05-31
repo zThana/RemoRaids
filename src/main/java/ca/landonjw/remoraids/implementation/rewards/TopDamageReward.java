@@ -16,7 +16,7 @@ import java.util.UUID;
  * @author landonjw
  * @since  1.0.0
  */
-public class HighestDamageReward extends DropRewardBase {
+public class TopDamageReward extends DropRewardBase {
 
     /** The number of players to receive this reward. Setting this as x would be top x damage dealers. */
     private int numberReceivers;
@@ -27,7 +27,7 @@ public class HighestDamageReward extends DropRewardBase {
      * @param numberReceivers the number of players to receive the reward.
      * @param contents        the contents of the reward.
      */
-    public HighestDamageReward(int numberReceivers, IRewardContent... contents){
+    public TopDamageReward(int numberReceivers, IRewardContent... contents){
         super(contents);
         this.numberReceivers = numberReceivers;
     }
@@ -50,7 +50,7 @@ public class HighestDamageReward extends DropRewardBase {
     /** {@inheritDoc} */
     @Override
     public String getDescription() {
-        return "Highest Damage Reward";
+        return "Top Damage Reward";
     }
 
 }

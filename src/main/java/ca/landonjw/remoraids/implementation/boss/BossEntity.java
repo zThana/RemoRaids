@@ -27,16 +27,36 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Implementation of {@link IBossEntity}.
+ *
+ * Contains one EntityStatue that serves to be scaled and appear for players, and one
+ * invisible EntityPixelmon that is used as a medium for players to battle.
+ *
+ * @author landonjw
+ * @since  1.0.0
+ */
 public class BossEntity implements IBossEntity {
 
+    /** The UUID of the boss entity. */
     private UUID uniqueId;
 
+    /** The boss entity is created from. */
     private IBoss boss;
+    /** The visual representation of the boss entity. */
     private EntityStatue entity;
+    /** Entity that produces participants for players to fight. */
     private EntityPixelmon battleEntity;
-
+    /** Used for players to engage battles with the boss entity. */
     private IBossEngager bossEngager;
 
+    /**
+     * Constructor for the boss entity.
+     *
+     * @param boss         boss entity is created from
+     * @param entity       visual representation of the boss entity
+     * @param battleEntity the entity used to produce participants for players to fight
+     */
     public BossEntity(@Nonnull IBoss boss,
                       @Nonnull EntityStatue entity,
                       @Nonnull EntityPixelmon battleEntity){
@@ -47,11 +67,13 @@ public class BossEntity implements IBossEntity {
         setEngager();
         vanishBattleEntity();
 
-        BossEntityRegistry registry = BossEntityRegistry.getInstance();
-        registry.register(this);
-        BossBattleRegistry.getInstance().registerBossBattle(this);
+        BossEntityRegistry.getInstance().register(this);
+        BossBattleRegistry.getInstance().createBossBattle(this);
     }
 
+    /**
+     * Sets the engager of the entity depending on configuration values.
+     */
     private void setEngager(){
         switch(RemoRaids.getGeneralConfig().get(GeneralConfig.ENGAGE_MESSAGE_TYPE)){
             case 1:
@@ -88,6 +110,9 @@ public class BossEntity implements IBossEntity {
         }
     }
 
+    /**
+     * Keeps the battle entity permanently vanished to all players in the area.
+     */
     private void vanishBattleEntity(){
         Task.builder()
                 .execute((task) -> {
@@ -141,11 +166,9 @@ public class BossEntity implements IBossEntity {
     @Override
     public void despawn() {
         BossBattleRegistry battleRegistry = BossBattleRegistry.getInstance();
-        Optional<IBossBattle> battle = battleRegistry.getBossBattle(this);
-        battleRegistry.deregisterBossBattle(this);
-
-        BossDeathEvent deathEvent = battle.map(iBossBattle -> new BossDeathEvent(this, iBossBattle))
-                .orElseGet(() -> new BossDeathEvent(this, null));
+        IBossBattle battle = battleRegistry.getBossBattle(this).get();
+        battleRegistry.removeBossBattle(this);
+        BossDeathEvent deathEvent = new BossDeathEvent(this, battle);
         RemoRaids.EVENT_BUS.post(deathEvent);
 
         entity.setDead();
@@ -161,6 +184,7 @@ public class BossEntity implements IBossEntity {
                 .build();
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -173,6 +197,7 @@ public class BossEntity implements IBossEntity {
                 Objects.equals(bossEngager, that.bossEngager);
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return Objects.hash(uniqueId, boss, entity, battleEntity, bossEngager);
