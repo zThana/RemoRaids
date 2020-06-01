@@ -4,8 +4,6 @@ import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.spawning.ISpawnAnnouncement;
 import ca.landonjw.remoraids.implementation.spawning.BossSpawnLocation;
-import ca.landonjw.remoraids.implementation.spawning.TimedBossSpawner;
-import ca.landonjw.remoraids.implementation.spawning.TimedSpawnListener;
 import ca.landonjw.remoraids.implementation.spawning.announcements.SpawnAnnouncement;
 import ca.landonjw.remoraids.implementation.spawning.announcements.TeleportableSpawnAnnouncement;
 import ca.landonjw.remoraids.internal.config.GeneralConfig;

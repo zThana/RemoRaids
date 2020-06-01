@@ -2,6 +2,7 @@ package ca.landonjw.remoraids.api.battles;
 
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import net.minecraft.entity.player.EntityPlayerMP;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.annotation.Nonnull;
 import java.util.List;

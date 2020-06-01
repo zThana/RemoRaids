@@ -20,7 +20,9 @@ import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * An implementation of {@link IBossSpawner} that simply spawns a {@link IBoss}.
@@ -36,6 +38,8 @@ public class BossSpawner implements IBossSpawner {
     private IBossSpawnLocation spawnLocation;
     /** The announcement to be sent to players when the boss is spawned. */
     private ISpawnAnnouncement announcement;
+    /** Associated Respawn Data */
+    private IRespawnData respawns;
 
     /**
      * Constructor for the boss spawner.
@@ -46,10 +50,17 @@ public class BossSpawner implements IBossSpawner {
      */
     public BossSpawner(@Nonnull IBoss boss,
                        @Nonnull IBossSpawnLocation spawnLocation,
-                       @Nullable ISpawnAnnouncement announcement){
+                       @Nullable ISpawnAnnouncement announcement,
+                       @Nullable IRespawnData respawns){
         this.boss = boss;
         this.spawnLocation = spawnLocation;
         this.announcement = announcement;
+        this.respawns = respawns;
+    }
+
+    @Override
+    public String getKey() {
+        return "default";
     }
 
     /** {@inheritDoc} */
@@ -67,7 +78,7 @@ public class BossSpawner implements IBossSpawner {
                 announcement.sendAnnouncement(this);
             }
 
-            IBossEntity bossEntity = new BossEntity(this.getBoss(), statue, battleEntity);
+            IBossEntity bossEntity = new BossEntity(this, this.getBoss(), statue, battleEntity);
 
             BossSpawnedEvent spawnedEvent = new BossSpawnedEvent(bossEntity, this);
             RemoRaids.EVENT_BUS.post(spawnedEvent);
@@ -170,13 +181,71 @@ public class BossSpawner implements IBossSpawner {
         return announcement;
     }
 
+    @Override
+    public Optional<IRespawnData> getRespawnData() {
+        return Optional.ofNullable(this.respawns);
+    }
+
+    @Override
+    public IRespawnData createRespawnData() {
+        return this.respawns = IRespawnData.builder().build();
+    }
+
     /** {@inheritDoc} */
     @Override
     public JObject serialize() {
         return new JObject()
+                .add("key", this.getKey())
                 .add("boss", this.boss.serialize())
                 .add("announcement", this.announcement.serialize())
-                .add("location", this.spawnLocation.serialize());
+                .add("location", this.spawnLocation.serialize())
+                .when(this.respawns, Objects::nonNull, o -> o.add("respawning", this.respawns.serialize()));
     }
 
+    public static class BossSpawnerBuilder implements IBossSpawnerBuilder {
+
+        private IBoss boss;
+        private IBossSpawnLocation location;
+        private ISpawnAnnouncement announcement;
+        private IRespawnData data;
+
+        @Override
+        public IBossSpawnerBuilder boss(IBoss boss) {
+            this.boss = boss;
+            return this;
+        }
+
+        @Override
+        public IBossSpawnerBuilder location(IBossSpawnLocation location) {
+            this.location = location;
+            return this;
+        }
+
+        @Override
+        public IBossSpawnerBuilder announcement(ISpawnAnnouncement announcement) {
+            this.announcement = announcement;
+            return this;
+        }
+
+        @Override
+        public IBossSpawnerBuilder respawns(IRespawnData data) {
+            this.data = data;
+            return this;
+        }
+
+        @Override
+        public IBossSpawnerBuilder from(IBossSpawner input) {
+            return this;
+        }
+
+        @Override
+        public IBossSpawner build() {
+            return new BossSpawner(
+                    this.boss,
+                    this.location,
+                    this.announcement,
+                    this.data
+            );
+        }
+    }
 }

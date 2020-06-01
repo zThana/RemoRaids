@@ -2,8 +2,6 @@ package ca.landonjw.remoraids.implementation.ui;
 
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.implementation.spawning.BossSpawnLocation;
-import ca.landonjw.remoraids.implementation.spawning.TimedBossSpawner;
-import ca.landonjw.remoraids.implementation.spawning.TimedSpawnListener;
 import ca.landonjw.remoraids.internal.inventory.api.Button;
 import ca.landonjw.remoraids.internal.inventory.api.LineType;
 import ca.landonjw.remoraids.internal.inventory.api.Page;

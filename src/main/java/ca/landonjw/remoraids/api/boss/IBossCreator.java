@@ -8,17 +8,30 @@ import ca.landonjw.remoraids.api.util.IBuilder;
 import net.minecraft.world.World;
 
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 /**
  * Provides a builder like construction to create a boss. This can be used to simplify the overall
  * process of creating a boss from a third party perspective, and allows for easier control of plugins
  * implementing the design.
  */
+@SuppressWarnings("UnusedReturnValue")
 public interface IBossCreator extends IBuilder<IBossSpawner, IBossCreator> {
 
 	static IBossCreator initialize() {
 		return IBossAPI.getInstance().getRaidRegistry().createBuilder(IBossCreator.class);
 	}
+
+	/**
+	 * Allows for finer control of the resulting spawner. By setting this, all additional fields set here
+	 * will then be applied to the custom spawner type provided by the third party executor.
+	 *
+	 * Note: This is an optional field. Not setting it will simply default to the original designs.
+	 *
+	 * @param key A key that maps to a spawner builder
+	 * @return The current instance of the builder
+	 */
+	IBossCreator controller(String key);
 
 	/**
 	 * Sets the raid boss that will be the pokemon that players must face off against.
@@ -84,5 +97,14 @@ public interface IBossCreator extends IBuilder<IBossSpawner, IBossCreator> {
 	 * @return The current instance of the builder
 	 */
 	IBossCreator respawns(int amount, long time, TimeUnit unit);
+
+	/**
+	 * Specifies whether or not this boss can respawn. Unlike it's counterpart, this call marks the associated
+	 * set of newly generated Respawn Data with the infinite flag. This means that the raid boss will constantly
+	 * respawn until it has been deleted entirely.
+	 *
+	 * @return The current instance of the builder
+	 */
+	IBossCreator respawns();
 
 }

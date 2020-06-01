@@ -38,11 +38,25 @@ import java.util.function.Supplier;
 
 public class JObject implements JElement<JsonObject> {
 
-	private final JsonObject object = new JsonObject();
+	public static final Gson PRETTY = new GsonBuilder().setPrettyPrinting().create();
+
+	private final JsonObject object;
 
 	@Override
 	public JsonObject toJson() {
 		return this.object;
+	}
+
+	public JObject() {
+		this.object = new JsonObject();
+	}
+
+	private JObject(JsonObject json) {
+		this.object = json;
+	}
+
+	public static JObject from(JsonObject json) {
+		return new JObject(json);
 	}
 
 	public JObject add(String key, JsonElement value) {
@@ -102,8 +116,6 @@ public class JObject implements JElement<JsonObject> {
 		consumer.accept(this);
 		return this;
 	}
-
-	static final Gson PRETTY = new GsonBuilder().setPrettyPrinting().create();
 
 	@Override
 	public String toString() {

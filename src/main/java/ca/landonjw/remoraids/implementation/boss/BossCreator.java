@@ -1,14 +1,13 @@
 package ca.landonjw.remoraids.implementation.boss;
 
 import ca.landonjw.remoraids.RemoRaids;
+import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.boss.IBoss;
 import ca.landonjw.remoraids.api.boss.IBossCreator;
 import ca.landonjw.remoraids.api.spawning.IBossSpawnLocation;
 import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import ca.landonjw.remoraids.api.spawning.ISpawnAnnouncement;
 import ca.landonjw.remoraids.implementation.spawning.BossSpawnLocation;
-import ca.landonjw.remoraids.implementation.spawning.BossSpawner;
-import ca.landonjw.remoraids.implementation.spawning.TimedBossSpawner;
 import ca.landonjw.remoraids.implementation.spawning.announcements.SpawnAnnouncement;
 import ca.landonjw.remoraids.implementation.spawning.announcements.TeleportableSpawnAnnouncement;
 import ca.landonjw.remoraids.internal.config.MessageConfig;
@@ -19,13 +18,18 @@ import java.util.concurrent.TimeUnit;
 
 public class BossCreator implements IBossCreator {
 
+	private IBossSpawner.IBossSpawnerBuilder controller = IBossAPI.getInstance().getRaidRegistry().createSpawnerBuilder("default");
+
 	private IBoss boss;
 	private IBossSpawnLocation location;
 	private ISpawnAnnouncement announcement;
+	private IBossSpawner.IRespawnData respawnData;
 
-	private int amount;
-	private long ticks;
-	private boolean respawns;
+	@Override
+	public IBossCreator controller(String key) {
+		this.controller = IBossAPI.getInstance().getRaidRegistry().createSpawnerBuilder(key);
+		return this;
+	}
 
 	@Override
 	public IBossCreator boss(IBoss boss) {
@@ -65,9 +69,16 @@ public class BossCreator implements IBossCreator {
 
 	@Override
 	public IBossCreator respawns(int amount, long time, TimeUnit unit) {
-		this.respawns = true;
-		this.amount = amount;
-		this.ticks = unit.toSeconds(time) * 20;
+		this.respawnData = IBossSpawner.IRespawnData.builder()
+				.count(amount)
+				.period(time, unit)
+				.build();
+		return this;
+	}
+
+	@Override
+	public IBossCreator respawns() {
+		this.respawnData = IBossSpawner.IRespawnData.builder().infinite(true).build();
 		return this;
 	}
 
@@ -86,10 +97,11 @@ public class BossCreator implements IBossCreator {
 			this.announcement(false, RemoRaids.getMessageConfig().get(MessageConfig.RAID_SPAWN_ANNOUNCE));
 		}
 
-		if(this.respawns) {
-			return new TimedBossSpawner(boss, location, announcement, amount, ticks);
-		} else {
-			return new BossSpawner(boss, location, announcement);
-		}
+		return this.controller
+				.boss(this.boss)
+				.location(this.location)
+				.announcement(this.announcement)
+				.respawns(this.respawnData)
+				.build();
 	}
 }

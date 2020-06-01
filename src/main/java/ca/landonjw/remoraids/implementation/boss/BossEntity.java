@@ -6,6 +6,7 @@ import ca.landonjw.remoraids.api.boss.IBoss;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.boss.engage.IBossEngager;
 import ca.landonjw.remoraids.api.events.BossDeathEvent;
+import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import ca.landonjw.remoraids.implementation.battles.BossBattleRegistry;
 import ca.landonjw.remoraids.implementation.boss.engage.ActionBarEngager;
 import ca.landonjw.remoraids.implementation.boss.engage.BossBarEngager;
@@ -21,10 +22,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.SPacketDestroyEntities;
 import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.world.BossInfo;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-import javax.annotation.Nonnull;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -41,6 +41,8 @@ public class BossEntity implements IBossEntity {
     /** The UUID of the boss entity. */
     private UUID uniqueId;
 
+    /** The spawner this entity was created from */
+    private IBossSpawner spawner;
     /** The boss entity is created from. */
     private IBoss boss;
     /** The visual representation of the boss entity. */
@@ -53,14 +55,17 @@ public class BossEntity implements IBossEntity {
     /**
      * Constructor for the boss entity.
      *
+     * @param spawner      The spawner responsible for creating this entity
      * @param boss         boss entity is created from
      * @param entity       visual representation of the boss entity
      * @param battleEntity the entity used to produce participants for players to fight
      */
-    public BossEntity(@Nonnull IBoss boss,
-                      @Nonnull EntityStatue entity,
-                      @Nonnull EntityPixelmon battleEntity){
+    public BossEntity(@NonNull IBossSpawner spawner,
+                      @NonNull IBoss boss,
+                      @NonNull EntityStatue entity,
+                      @NonNull EntityPixelmon battleEntity){
         this.uniqueId = UUID.randomUUID();
+        this.spawner = Objects.requireNonNull(spawner, "spawner cannot be null");
         this.boss = Objects.requireNonNull(boss, "boss must not be null");
         this.entity = entity;
         this.battleEntity = battleEntity;
@@ -142,6 +147,11 @@ public class BossEntity implements IBossEntity {
     @Override
     public IBoss getBoss() {
         return boss;
+    }
+
+    @Override
+    public IBossSpawner getSpawner() {
+        return null;
     }
 
     /** {@inheritDoc} */

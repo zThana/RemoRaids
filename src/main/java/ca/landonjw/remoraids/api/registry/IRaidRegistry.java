@@ -1,5 +1,6 @@
 package ca.landonjw.remoraids.api.registry;
 
+import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import ca.landonjw.remoraids.api.util.IBuilder;
 
 import java.util.Optional;
@@ -50,7 +51,7 @@ public interface IRaidRegistry {
 	 * @param builder The implementation of the builder
 	 * @param <T> The common type pairing between the declaration and implementation
 	 */
-	<T extends IBuilder> void registerBuilderSupplier(Class<T> type, Supplier<? extends T> builder);
+	<T extends IBuilder<?, ?>> void registerBuilderSupplier(Class<T> type, Supplier<? extends T> builder);
 
 	/**
 	 * Constructs a new builder based on the input builder type.
@@ -60,7 +61,33 @@ public interface IRaidRegistry {
 	 * @return A new builder matching the input typing
 	 * @throws IllegalArgumentException If no builder is available that matches that typing
 	 */
-	<T extends IBuilder> T createBuilder(Class<T> type);
+	<T extends IBuilder<?, ?>> T createBuilder(Class<T> type);
+
+	/**
+	 * Registers a builder specific to the creation of a boss spawner. Unlike all other builders, these builders
+	 * are referenced via a String key. This is to allow for dynamic loading during deserialization of a boss
+	 * spawner.
+	 *
+	 * @param key The key this spawner should be attached to. This key is what will be referenced when attempting
+	 *            to deserialize the spawner.
+	 * @param builder The supplier that will provide the new instance of a builder.
+	 * @param <T> An implementation of the {@link ca.landonjw.remoraids.api.spawning.IBossSpawner.IBossSpawnerBuilder
+	 *            IBossSpawnerBuilder}
+	 */
+	<T extends IBossSpawner.IBossSpawnerBuilder> void registerSpawnerBuilderSupplier(String key, Supplier<T> builder);
+
+	/**
+	 * Using the specified key, creates a new builder from the mapping of suppliers, should the key
+	 * exist.
+	 *
+	 * @param key The key this spawner should be attached to. This key is what will be referenced when attempting
+	 *            to deserialize the spawner.
+	 * @param <T> An implementation of the {@link ca.landonjw.remoraids.api.spawning.IBossSpawner.IBossSpawnerBuilder
+	 *            IBossSpawnerBuilder}
+	 * @return A newly created builder mapped to the specific key
+	 * @throws IllegalArgumentException If no builder is available that matches that key
+	 */
+	<T extends IBossSpawner.IBossSpawnerBuilder> T createSpawnerBuilder(String key);
 
 	/**
 	 * This class acts as a wrapper to avoid Java Generic issues. This should really only be handled
