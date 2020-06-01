@@ -151,7 +151,7 @@ public class BossEntity implements IBossEntity {
 
     @Override
     public IBossSpawner getSpawner() {
-        return null;
+        return this.spawner;
     }
 
     /** {@inheritDoc} */
