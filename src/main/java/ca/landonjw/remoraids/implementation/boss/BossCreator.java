@@ -78,7 +78,7 @@ public class BossCreator implements IBossCreator {
 
 	@Override
 	public IBossCreator respawns() {
-		this.respawnData = IBossSpawner.IRespawnData.builder().infinite(true).build();
+		this.respawnData = IBossSpawner.IRespawnData.builder().infinite(true).period(5, TimeUnit.SECONDS).build();
 		return this;
 	}
 

@@ -1,4 +1,4 @@
-package ca.landonjw.remoraids.implementation.listeners;
+package ca.landonjw.remoraids.implementation.listeners.pixelmon;
 
 import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.battles.IBossBattle;

@@ -17,6 +17,12 @@ public class RespawnData implements IBossSpawner.IRespawnData {
 	/** The amount of ticks it'll take to handle a respawn attempt */
 	private long rate;
 
+	private RespawnData(RespawnDataBuilder builder) {
+		this.infinite = builder.infinite;
+		this.total = builder.count;
+		this.rate = builder.period;
+	}
+
 	@Override
 	public boolean isInfinite() {
 		return this.infinite;
@@ -29,7 +35,7 @@ public class RespawnData implements IBossSpawner.IRespawnData {
 
 	@Override
 	public int getRemainingRespawns() {
-		return this.total - this.respawns;
+		return this.isInfinite() ? 1 : this.total - this.respawns;
 	}
 
 	@Override
@@ -46,6 +52,11 @@ public class RespawnData implements IBossSpawner.IRespawnData {
 	@Override
 	public int getTotalRespawns() {
 		return this.total;
+	}
+
+	@Override
+	public void setTotalRespawns(int amount) {
+		this.total = amount;
 	}
 
 	@Override
@@ -90,5 +101,41 @@ public class RespawnData implements IBossSpawner.IRespawnData {
 					this.task = null;
 				})
 				.build();
+	}
+
+	public static class RespawnDataBuilder implements IRespawnDataBuilder {
+
+		private boolean infinite;
+
+		private int count;
+		private long period;
+
+		@Override
+		public IRespawnDataBuilder infinite(boolean state) {
+			this.infinite = state;
+			return this;
+		}
+
+		@Override
+		public IRespawnDataBuilder count(int count) {
+			this.count = count;
+			return this;
+		}
+
+		@Override
+		public IRespawnDataBuilder period(long time, TimeUnit unit) {
+			this.period = unit.toSeconds(time) * 20;
+			return this;
+		}
+
+		@Override
+		public IRespawnDataBuilder from(IBossSpawner.IRespawnData input) {
+			return this;
+		}
+
+		@Override
+		public IBossSpawner.IRespawnData build() {
+			return new RespawnData(this);
+		}
 	}
 }

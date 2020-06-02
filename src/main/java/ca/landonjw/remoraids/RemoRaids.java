@@ -10,11 +10,13 @@ import ca.landonjw.remoraids.implementation.BossAPI;
 import ca.landonjw.remoraids.implementation.boss.Boss;
 import ca.landonjw.remoraids.implementation.boss.BossCreator;
 import ca.landonjw.remoraids.implementation.commands.RaidsCommand;
-import ca.landonjw.remoraids.implementation.listeners.BossDropListener;
-import ca.landonjw.remoraids.implementation.listeners.BossUpdateListener;
-import ca.landonjw.remoraids.implementation.listeners.EngageListener;
-import ca.landonjw.remoraids.implementation.listeners.StatueInteractListener;
+import ca.landonjw.remoraids.implementation.listeners.pixelmon.BossDropListener;
+import ca.landonjw.remoraids.implementation.listeners.forge.BossUpdateListener;
+import ca.landonjw.remoraids.implementation.listeners.pixelmon.EngageListener;
+import ca.landonjw.remoraids.implementation.listeners.pixelmon.StatueInteractListener;
+import ca.landonjw.remoraids.implementation.listeners.raids.RaidBossDeathListener;
 import ca.landonjw.remoraids.implementation.spawning.BossSpawner;
+import ca.landonjw.remoraids.implementation.spawning.respawning.RespawnData;
 import ca.landonjw.remoraids.internal.api.APIRegistrationUtil;
 import ca.landonjw.remoraids.internal.api.config.Config;
 import ca.landonjw.remoraids.internal.config.GeneralConfig;
@@ -92,11 +94,12 @@ public class RemoRaids {
 
         getBossAPI().getRaidRegistry().registerBuilderSupplier(IBossCreator.class, BossCreator::new);
         getBossAPI().getRaidRegistry().registerBuilderSupplier(IBoss.IBossBuilder.class, Boss.BossBuilder::new);
-        getBossAPI().getRaidRegistry().registerBuilderSupplier(IBossSpawner.IRespawnData.IRespawnDataBuilder.class, null);
+        getBossAPI().getRaidRegistry().registerBuilderSupplier(IBossSpawner.IRespawnData.IRespawnDataBuilder.class, RespawnData.RespawnDataBuilder::new);
 
         getBossAPI().getRaidRegistry().registerSpawnerBuilderSupplier("default", BossSpawner.BossSpawnerBuilder::new);
 
         RemoRaids.EVENT_BUS.register(this);
+        RemoRaids.EVENT_BUS.register(new RaidBossDeathListener());
         RaidsDropPacketHandler.initialize();
     }
 
@@ -118,6 +121,7 @@ public class RemoRaids {
                 )
                 .announcement(false, "This is a test announcement message")
                 .location(FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld(), 69, 69, 420, 90f)
+                .respawns()
                 .build();
         System.out.println(test.serialize());
         JsonObject json = JObject.PRETTY.fromJson(test.serialize().toString(), JsonObject.class);

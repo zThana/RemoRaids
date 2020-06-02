@@ -1,6 +1,7 @@
 package ca.landonjw.remoraids.implementation.ui;
 
 import ca.landonjw.remoraids.api.boss.IBossEntity;
+import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import ca.landonjw.remoraids.implementation.spawning.BossSpawnLocation;
 import ca.landonjw.remoraids.internal.inventory.api.Button;
 import ca.landonjw.remoraids.internal.inventory.api.LineType;
@@ -59,15 +60,15 @@ public class RespawnSettingsUI extends BaseBossUI {
                     .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Set Respawn Cooldown")
                     .lore(Arrays.asList(TextFormatting.WHITE + "You must increase the respawn limit for this functionality."));
 
-            if(TimedSpawnListener.getInstance().getTimedBossSpawner(bossEntity).isPresent()){
-                TimedBossSpawner spawner = TimedSpawnListener.getInstance().getTimedBossSpawner(bossEntity).get();
-                if(spawner.getRespawnLimit() > spawner.getTimesRespawned()){
+            if(this.bossEntity.getSpawner().getRespawnData().isPresent()) {
+                IBossSpawner.IRespawnData data = this.bossEntity.getSpawner().getRespawnData().get();
+                if(data.getRemainingRespawns() > 0){
                     spawnLocationBuilder = spawnLocationBuilder
                             .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Set Respawn Location")
                             .lore(null)
                             .onClick(() -> {
                                 BossSpawnLocation newLocation = new BossSpawnLocation(player);
-                                spawner.setSpawnLocation(newLocation);
+                                this.bossEntity.getSpawner().setSpawnLocation(newLocation);
                                 player.sendMessage(new TextComponentString(TextFormatting.GREEN + "New respawn location set."));
                             });
 

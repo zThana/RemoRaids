@@ -2,6 +2,7 @@ package ca.landonjw.remoraids.implementation.ui;
 
 import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
+import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import ca.landonjw.remoraids.api.spawning.ISpawnAnnouncement;
 import ca.landonjw.remoraids.implementation.spawning.BossSpawnLocation;
 import ca.landonjw.remoraids.implementation.spawning.announcements.SpawnAnnouncement;
@@ -22,6 +23,7 @@ import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A user interface to edit the spawn limit of a boss.
@@ -63,22 +65,24 @@ public class RespawnLimitEditorUI extends BaseBossUI {
                     .set(3, 4, back);
 
             int spawnLimit = 0;
-            if(TimedSpawnListener.getInstance().getTimedBossSpawner(bossEntity).isPresent()){
-                TimedBossSpawner spawner = TimedSpawnListener.getInstance().getTimedBossSpawner(bossEntity).get();
-                spawnLimit = spawner.getRespawnLimit();
+            if(this.bossEntity.getSpawner().getRespawnData().isPresent()){
+                IBossSpawner spawner = this.bossEntity.getSpawner();
+                IBossSpawner.IRespawnData respawns = spawner.getRespawnData().get();
+
+                spawnLimit = respawns.getTotalRespawns();
 
                 Button spawnAmount = Button.builder()
                         .item(new ItemStack(Items.PAPER))
-                        .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Respawn Limit: " + spawner.getRespawnLimit())
-                        .lore(Arrays.asList(TextFormatting.WHITE + "Times Respawned: " + spawner.getTimesRespawned()))
+                        .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Respawn Limit: " + respawns.getTotalRespawns())
+                        .lore(Arrays.asList(TextFormatting.WHITE + "Times Respawned: " + (respawns.getTotalRespawns() - respawns.getRemainingRespawns())))
                         .build();
 
                 Button decrementSpawns = Button.builder()
                         .item(new ItemStack(PixelmonItems.LtradeHolderLeft))
                         .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Decrease Spawn Limit")
                         .onClick(() -> {
-                            if(spawner.getRespawnLimit() > 0){
-                                spawner.setRespawnLimit(spawner.getRespawnLimit() - 1);
+                            if(respawns.getTotalRespawns() > 0){
+                                respawns.setTotalRespawns(respawns.getTotalRespawns() - 1);
                             }
                             open();
                         })
@@ -88,7 +92,7 @@ public class RespawnLimitEditorUI extends BaseBossUI {
                         .item(new ItemStack(PixelmonItems.tradeHolderRight))
                         .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Increase Spawn Limit")
                         .onClick(() -> {
-                            spawner.setRespawnLimit(spawner.getRespawnLimit() + 1);
+                            respawns.setTotalRespawns(respawns.getTotalRespawns() + 1);
                             open();
                         })
                         .build();
@@ -114,21 +118,9 @@ public class RespawnLimitEditorUI extends BaseBossUI {
                         .item(new ItemStack(PixelmonItems.tradeHolderRight))
                         .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Increase Spawn Limit")
                         .onClick(() -> {
-                            EntityStatue statue = bossEntity.getEntity();
-                            BossSpawnLocation location = new BossSpawnLocation(statue.world, statue.posX, statue.posY, statue.posZ, statue.getRotation());
-                            ISpawnAnnouncement announcement = null;
-
-                            if(RemoRaids.getGeneralConfig().get(GeneralConfig.ANNOUNCEMENTS_ENABLED)){
-                                if(RemoRaids.getGeneralConfig().get(GeneralConfig.ANNOUNCEMENTS_ALLOW_TP)){
-                                    announcement = new TeleportableSpawnAnnouncement(RemoRaids.getMessageConfig().get(MessageConfig.RAID_SPAWN_ANNOUNCE));
-                                }
-                                else{
-                                    announcement = new SpawnAnnouncement(RemoRaids.getMessageConfig().get(MessageConfig.RAID_SPAWN_ANNOUNCE));
-                                }
-                            }
-
-                            TimedBossSpawner spawner = new TimedBossSpawner(bossEntity.getBoss(), location, announcement, 1, 100);
-                            TimedSpawnListener.getInstance().addRespawningEntity(bossEntity, spawner);
+                            IBossSpawner.IRespawnData data = this.bossEntity.getSpawner().createRespawnData();
+                            data.setTotalRespawns(1);
+                            data.setTotalWaitPeriod(5, TimeUnit.SECONDS);
                             open();
                         })
                         .build();

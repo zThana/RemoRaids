@@ -1,5 +1,6 @@
-package ca.landonjw.remoraids.implementation.listeners;
+package ca.landonjw.remoraids.implementation.listeners.pixelmon;
 
+import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.implementation.BossAPI;
 import com.pixelmonmod.pixelmon.api.events.StatueEvent;
@@ -24,7 +25,7 @@ public class StatueInteractListener {
      */
     @SubscribeEvent
     public void onStatueDestroy(StatueEvent.DestroyStatue event){
-        for(IBossEntity entity : BossAPI.getInstance().getBossEntityRegistry().getAllBossEntities()){
+        for(IBossEntity entity : IBossAPI.getInstance().getBossEntityRegistry().getAllBossEntities()){
             if(entity.getEntity().getUniqueID().equals(event.statue.getUniqueID())){
                 event.setCanceled(true);
                 event.player.sendMessage(new TextComponentString(TextFormatting.RED + "You may not perform this action on a raid boss!"));
@@ -40,7 +41,7 @@ public class StatueInteractListener {
      */
     @SubscribeEvent
     public void onStatueModify(StatueEvent.ModifyStatue event){
-        for(IBossEntity entity : BossAPI.getInstance().getBossEntityRegistry().getAllBossEntities()){
+        for(IBossEntity entity : IBossAPI.getInstance().getBossEntityRegistry().getAllBossEntities()){
             if(entity.getEntity().getUniqueID().equals(event.getStatue().getUniqueID())){
                 event.setCanceled(true);
                 event.player.sendMessage(new TextComponentString(TextFormatting.RED + "You may not perform this action on a raid boss!"));

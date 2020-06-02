@@ -165,6 +165,8 @@ public class BossSpawner implements IBossSpawner {
         return spawnLocation;
     }
 
+    /** {@inheritDoc} */
+    @Override
     public void setSpawnLocation(IBossSpawnLocation spawnLocation) {
         this.spawnLocation = spawnLocation;
     }

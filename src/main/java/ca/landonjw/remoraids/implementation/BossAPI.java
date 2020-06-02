@@ -10,7 +10,6 @@ import ca.landonjw.remoraids.internal.registry.InternalRaidsRegistry;
 
 public class BossAPI implements IBossAPI {
 
-    private static BossAPI instance;
     private IRaidRegistry registry = new InternalRaidsRegistry();
 
     @Override
@@ -26,13 +25,6 @@ public class BossAPI implements IBossAPI {
     @Override
     public IBossBattleRegistry getBossBattleRegistry() {
         return BossBattleRegistry.getInstance();
-    }
-
-    public static BossAPI getInstance(){
-        if(instance == null){
-            instance = new BossAPI();
-        }
-        return instance;
     }
 
 }

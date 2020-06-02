@@ -1,6 +1,7 @@
 package ca.landonjw.remoraids.implementation.ui;
 
 import ca.landonjw.remoraids.api.boss.IBossEntity;
+import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import ca.landonjw.remoraids.internal.inventory.api.Button;
 import ca.landonjw.remoraids.internal.inventory.api.LineType;
 import ca.landonjw.remoraids.internal.inventory.api.Page;
@@ -74,11 +75,12 @@ public class RespawnCooldownEditorUI extends BaseBossUI {
             Button.Builder timeValueBuilder = Button.builder()
                     .item(new ItemStack(PixelmonItems.hourglassSilver));
 
-            if(TimedSpawnListener.getInstance().getTimedBossSpawner(bossEntity).isPresent()){
-                TimedBossSpawner spawner = TimedSpawnListener.getInstance().getTimedBossSpawner(bossEntity).get();
+            if(this.bossEntity.getSpawner().getRespawnData().isPresent()){
+                IBossSpawner spawner = this.bossEntity.getSpawner();
+                IBossSpawner.IRespawnData respawns = spawner.getRespawnData().get();
 
                 if(currentTimeUnitOrdinal == -1){
-                    long cooldownSeconds = spawner.getCooldownTime(TimeUnit.SECONDS);
+                    long cooldownSeconds = respawns.getTotalWaitPeriod(TimeUnit.SECONDS);
 
                     if(cooldownSeconds % SECONDS_IN_DAY == 0){
                         currentTimeUnitOrdinal = 3;
@@ -110,7 +112,7 @@ public class RespawnCooldownEditorUI extends BaseBossUI {
                         .onClick(() -> {
                             TimeUnit oldUnit = validTimeUnits[currentTimeUnitOrdinal];
                             currentTimeUnitOrdinal = (currentTimeUnitOrdinal - 1 + validTimeUnits.length) % validTimeUnits.length;
-                            spawner.setCooldownTime(spawner.getCooldownTime(oldUnit), validTimeUnits[currentTimeUnitOrdinal]);
+                            respawns.setTotalWaitPeriod(respawns.getTotalWaitPeriod(oldUnit), validTimeUnits[currentTimeUnitOrdinal]);
                             open();
                         });
                 incrementTimeUnitBuilder = incrementTimeUnitBuilder
@@ -119,7 +121,7 @@ public class RespawnCooldownEditorUI extends BaseBossUI {
                         .onClick(() -> {
                             TimeUnit oldUnit = validTimeUnits[currentTimeUnitOrdinal];
                             currentTimeUnitOrdinal = (currentTimeUnitOrdinal + 1) % validTimeUnits.length;
-                            spawner.setCooldownTime(spawner.getCooldownTime(oldUnit), validTimeUnits[currentTimeUnitOrdinal]);
+                            respawns.setTotalWaitPeriod(respawns.getTotalWaitPeriod(oldUnit), validTimeUnits[currentTimeUnitOrdinal]);
                             open();
                         });
 
@@ -130,18 +132,18 @@ public class RespawnCooldownEditorUI extends BaseBossUI {
                         .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Decrement Cooldown Time")
                         .onClick(() -> {
                             TimeUnit currentUnit = validTimeUnits[currentTimeUnitOrdinal];
-                            spawner.setCooldownTime(spawner.getCooldownTime(currentUnit) - 1, currentUnit);
+                            respawns.setTotalWaitPeriod(respawns.getTotalWaitPeriod(currentUnit) - 1, currentUnit);
                             open();
                         });
                 incrementTimeValueBuilder = incrementTimeValueBuilder
                         .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Increment Cooldown Time")
                         .onClick(() -> {
                             TimeUnit currentUnit = validTimeUnits[currentTimeUnitOrdinal];
-                            spawner.setCooldownTime(spawner.getCooldownTime(currentUnit) + 1, currentUnit);
+                            respawns.setTotalWaitPeriod(respawns.getTotalWaitPeriod(currentUnit) + 1, currentUnit);
                             open();
                         });
                 timeValueBuilder = timeValueBuilder
-                        .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Cooldown Time: " + spawner.getCooldownTime(validTimeUnits[currentTimeUnitOrdinal]));
+                        .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Cooldown Time: " + respawns.getTotalWaitPeriod(validTimeUnits[currentTimeUnitOrdinal]));
             }
             else{
                 decrementTimeUnitBuilder = decrementTimeUnitBuilder

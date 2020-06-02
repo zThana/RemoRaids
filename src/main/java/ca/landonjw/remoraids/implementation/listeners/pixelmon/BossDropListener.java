@@ -1,4 +1,4 @@
-package ca.landonjw.remoraids.implementation.listeners;
+package ca.landonjw.remoraids.implementation.listeners.pixelmon;
 
 import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.boss.IBossEntity;

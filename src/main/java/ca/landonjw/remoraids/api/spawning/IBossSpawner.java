@@ -1,5 +1,6 @@
 package ca.landonjw.remoraids.api.spawning;
 
+import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.boss.IBoss;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.util.DataSerializable;
@@ -55,6 +56,14 @@ public interface IBossSpawner extends DataSerializable {
      * @return The spawn location manager for this spawner
      */
     IBossSpawnLocation getSpawnLocation();
+
+    /**
+     * Applies a new spawn location to this raid boss. This will only come into effect during spawning, aka,
+     * respawns or initial spawns.
+     *
+     * @param location The desired location
+     */
+    void setSpawnLocation(IBossSpawnLocation location);
 
     /**
      * Specifies the announcement system that will be used to advertise the boss as it is spawned in.
@@ -167,6 +176,13 @@ public interface IBossSpawner extends DataSerializable {
         int getTotalRespawns();
 
         /**
+         * Sets the amount of respawns available to the spawner
+         *
+         * @param amount The amount of respawns you wish to max this spawner to
+         */
+        void setTotalRespawns(int amount);
+
+        /**
          * Specifies the amount of time remaining until this spawner will actually spawn the raid boss.
          * If the raid boss is alive, this time will always match the result of {@link #getTotalWaitPeriod(TimeUnit)}
          *
@@ -200,9 +216,12 @@ public interface IBossSpawner extends DataSerializable {
         void setTotalWaitPeriod(long time, TimeUnit unit);
 
         /**
+         * Runs the task responsible for respawning the associated raid boss.
          *
+         * <p>This should realistically only be called by the provided death listener. Other uses
+         * of this call will likely produce unwanted results.</p>
          *
-         * @param spawner
+         * @param spawner The spawner this respawn data is associated to
          */
         void run(IBossSpawner spawner);
 
@@ -213,7 +232,7 @@ public interface IBossSpawner extends DataSerializable {
          * @return A new Respawn Data builder
          */
         static IRespawnDataBuilder builder() {
-            return BossAPI.getInstance().getRaidRegistry().createBuilder(IRespawnDataBuilder.class);
+            return IBossAPI.getInstance().getRaidRegistry().createBuilder(IRespawnDataBuilder.class);
         }
 
         interface IRespawnDataBuilder extends IBuilder<IRespawnData, IRespawnDataBuilder> {
