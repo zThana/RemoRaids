@@ -29,11 +29,11 @@ public class BossUIRegistry implements IBossUIRegistry {
     private static BossUIRegistry instance;
 
     private Map<Class<? extends IReward>, IEditorUI<? extends IReward>> rewardEditors = new HashMap<>();
-    private Map<Class<? extends IReward>, ICreatorUI> rewardCreators = new HashMap<>();
+    private Map<Class<? extends IReward>, ICreatorUI<IReward>> rewardCreators = new HashMap<>();
     private Map<Class<? extends IRewardContent>, IEditorUI<? extends IRewardContent>> rewardContentEditors = new HashMap<>();
-    private Map<Class<? extends IRewardContent>, ICreatorUI> rewardContentCreators = new HashMap<>();
+    private Map<Class<? extends IRewardContent>, ICreatorUI<IRewardContent>> rewardContentCreators = new HashMap<>();
     private Map<Class<? extends IBattleRestraint>, IEditorUI<? extends IBattleRestraint>> restraintEditors = new HashMap<>();
-    private Map<Class<? extends IBattleRestraint>, ICreatorUI> restraintCreators = new HashMap<>();
+    private Map<Class<? extends IBattleRestraint>, ICreatorUI<IBattleRestraint>> restraintCreators = new HashMap<>();
 
     private BossUIRegistry(){
         registerRewardCreator(ParticipationReward.class, new ParticipationRewardCreator());
@@ -53,24 +53,25 @@ public class BossUIRegistry implements IBossUIRegistry {
 
     /** {@inheritDoc} */
     @Override
-    public <T extends IReward> void registerRewardCreator(Class<T> clazz, ICreatorUI creator) {
+    public <T extends IReward> void registerRewardCreator(Class<T> clazz, ICreatorUI<IReward> creator) {
         rewardCreators.put(clazz, creator);
     }
 
     /** {@inheritDoc} */
     @Override
+    @SuppressWarnings("unchecked")
     public <T extends IReward> Optional<IEditorUI<T>> getRewardEditor(Class<T> editor) {
         return Optional.ofNullable((IEditorUI<T>) rewardEditors.get(editor));
     }
 
     /** {@inheritDoc} */
     @Override
-    public Optional<ICreatorUI> getRewardCreator(Class<? extends IReward> creator) {
+    public Optional<ICreatorUI<IReward>> getRewardCreator(Class<? extends IReward> creator) {
         return Optional.ofNullable(rewardCreators.get(creator));
     }
 
     @Override
-    public List<ICreatorUI> getRewardCreators() {
+    public List<ICreatorUI<IReward>> getRewardCreators() {
         return new ArrayList<>(rewardCreators.values());
     }
 
@@ -82,24 +83,25 @@ public class BossUIRegistry implements IBossUIRegistry {
 
     /** {@inheritDoc} */
     @Override
-    public <T extends IRewardContent> void registerRewardContentCreator(Class<T> clazz, ICreatorUI creator) {
+    public <T extends IRewardContent> void registerRewardContentCreator(Class<T> clazz, ICreatorUI<IRewardContent> creator) {
         rewardContentCreators.put(clazz, creator);
     }
 
     /** {@inheritDoc} */
     @Override
+    @SuppressWarnings("unchecked")
     public <T extends IRewardContent> Optional<IEditorUI<T>> getRewardContentEditor(Class<T> editor) {
         return Optional.ofNullable((IEditorUI<T>) rewardContentEditors.get(editor));
     }
 
     /** {@inheritDoc} */
     @Override
-    public Optional<ICreatorUI> getRewardContentCreator(Class<? extends IRewardContent> creator) {
+    public Optional<ICreatorUI<IRewardContent>> getRewardContentCreator(Class<? extends IRewardContent> creator) {
         return Optional.ofNullable(rewardContentCreators.get(creator));
     }
 
     @Override
-    public List<ICreatorUI> getRewardContentCreators() {
+    public List<ICreatorUI<IRewardContent>> getRewardContentCreators() {
         return new ArrayList<>(rewardContentCreators.values());
     }
 
@@ -111,24 +113,25 @@ public class BossUIRegistry implements IBossUIRegistry {
 
     /** {@inheritDoc} */
     @Override
-    public <T extends IBattleRestraint> void registerRestraintCreator(Class<T> clazz, ICreatorUI creator) {
+    public <T extends IBattleRestraint> void registerRestraintCreator(Class<T> clazz, ICreatorUI<IBattleRestraint> creator) {
         restraintCreators.put(clazz, creator);
     }
 
     /** {@inheritDoc} */
     @Override
+    @SuppressWarnings("unchecked")
     public <T extends IBattleRestraint> Optional<IEditorUI<T>> getRestraintEditor(Class<T> editor) {
         return Optional.ofNullable((IEditorUI<T>) restraintCreators.get(editor));
     }
 
     /** {@inheritDoc} */
     @Override
-    public Optional<ICreatorUI> getRestraintCreator(Class<? extends IBossUI> creator) {
+    public Optional<ICreatorUI<IBattleRestraint>> getRestraintCreator(Class<? extends IBossUI> creator) {
         return Optional.ofNullable(restraintCreators.get(creator));
     }
 
     @Override
-    public List<ICreatorUI> getRestraintCreators() {
+    public List<ICreatorUI<IBattleRestraint>> getRestraintCreators() {
         return new ArrayList<>(restraintCreators.values());
     }
 

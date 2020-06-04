@@ -32,6 +32,7 @@ public class RaidsDropPacketHandler extends ServerItemDropPacket.Handler {
     /**
      * Replaces the old handler with an instance of the new one through reflection.
      */
+    @SuppressWarnings("unchecked")
     public static void initialize(){
         // Get the channels and handlers used in the network wrapper.
         Field channelsField = ObfuscationReflectionHelper.findField(SimpleNetworkWrapper.class, "channels");

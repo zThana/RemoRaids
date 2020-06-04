@@ -99,6 +99,7 @@ public class RestraintsConfig implements ConfigKeyHolder {
 			.collect(Collectors.toList())
 	);
 
+	@SuppressWarnings("unchecked")
 	public static ConfigKey<List<BattleClause>> BANNED_CLAUSES = customKey(adapter -> {
 		List<AbilityClause> abilities = adapter.getStringList("banned-clauses.abilities", Lists.newArrayList(
 					"Aftermath",

@@ -8,12 +8,14 @@ import ca.landonjw.remoraids.api.util.IBuilder;
 import net.minecraft.world.World;
 
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 /**
  * Provides a builder like construction to create a boss. This can be used to simplify the overall
  * process of creating a boss from a third party perspective, and allows for easier control of plugins
  * implementing the design.
+ *
+ * @author NickImpact
+ * @since 1.0.0
  */
 @SuppressWarnings("UnusedReturnValue")
 public interface IBossCreator extends IBuilder<IBossSpawner, IBossCreator> {

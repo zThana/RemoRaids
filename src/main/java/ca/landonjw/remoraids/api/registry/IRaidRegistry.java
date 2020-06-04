@@ -6,6 +6,14 @@ import ca.landonjw.remoraids.api.util.IBuilder;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+/**
+ * Represents a collection tool that maps objects to an interface or referencable typing. The goal
+ * of the raid registry is to provide a common area for objects that can be referenced in a simple
+ * call.
+ *
+ * @author NickImpact
+ * @since 1.0.0
+ */
 public interface IRaidRegistry {
 
 	/**

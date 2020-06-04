@@ -22,6 +22,9 @@ import java.util.Optional;
  * <p>
  * A boss can be customized as much as a user desires, and external third party options
  * are free to use a raid boss's data for any necessary means they desire.
+ *
+ * @author NickImpact
+ * @since 1.0.0
  */
 public interface IBoss extends DataSerializable {
 

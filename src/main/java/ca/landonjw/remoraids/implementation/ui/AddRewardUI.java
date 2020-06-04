@@ -45,7 +45,7 @@ public class AddRewardUI extends BaseBossUI {
 
         List<Button> creatorButtons = new ArrayList<>();
         List<IReward> bossRewardsList = RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(bossEntity).get().getDefeatRewards();
-        for(ICreatorUI creator : BossUIRegistry.getInstance().getRewardCreators()){
+        for(ICreatorUI<IReward> creator : BossUIRegistry.getInstance().getRewardCreators()){
             Button creatorButton = Button.builder()
                     .item(creator.getCreatorIcon())
                     .displayName(creator.getCreatorTitle())

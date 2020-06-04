@@ -4,6 +4,7 @@ import ca.landonjw.remoraids.internal.inventory.api.Button;
 import ca.landonjw.remoraids.internal.inventory.api.InventoryAPI;
 import ca.landonjw.remoraids.internal.inventory.api.Page;
 import ca.landonjw.remoraids.internal.inventory.api.Template;
+import ca.landonjw.remoraids.internal.obfuscation.Remapper;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.client.CPacketCloseWindow;
 import net.minecraft.network.play.server.SPacketCloseWindow;
@@ -48,7 +49,7 @@ public class BaseInventoryAPI implements InventoryAPI {
     public void closePlayerInventory(@Nullable EntityPlayerMP player){
         if(player != null){
             CPacketCloseWindow pclient = new CPacketCloseWindow();
-            ObfuscationReflectionHelper.setPrivateValue(
+            Remapper.setPrivateValue(
                     CPacketCloseWindow.class,
                     pclient,
                     player.openContainer.windowId,

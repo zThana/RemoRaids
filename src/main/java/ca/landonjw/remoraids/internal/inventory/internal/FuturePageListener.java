@@ -1,6 +1,7 @@
 package ca.landonjw.remoraids.internal.inventory.internal;
 
 import ca.landonjw.remoraids.internal.inventory.api.Page;
+import ca.landonjw.remoraids.internal.obfuscation.Remapper;
 import ca.landonjw.remoraids.internal.tasks.Task;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.client.CPacketCloseWindow;
@@ -52,7 +53,7 @@ public class FuturePageListener {
             //If the player's open container is their inventory, force open the page.
             if(player != null && player.openContainer == player.inventoryContainer){
                 CPacketCloseWindow pclient = new CPacketCloseWindow();
-                ObfuscationReflectionHelper.setPrivateValue(CPacketCloseWindow.class, pclient, player.openContainer.windowId, 0);
+                Remapper.setPrivateValue(CPacketCloseWindow.class, pclient, player.openContainer.windowId, 0);
                 SPacketCloseWindow pserver = new SPacketCloseWindow(player.openContainer.windowId);
                 player.connection.processCloseWindow(pclient);
                 player.connection.sendPacket(pserver);

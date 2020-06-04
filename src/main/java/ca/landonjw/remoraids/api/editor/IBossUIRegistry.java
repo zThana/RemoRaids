@@ -34,7 +34,7 @@ public interface IBossUIRegistry {
      * @param creator the reward creator
      * @param <T>     the reward to register creator for
      */
-    <T extends IReward> void registerRewardCreator(Class<T> clazz, ICreatorUI creator);
+    <T extends IReward> void registerRewardCreator(Class<T> clazz, ICreatorUI<IReward> creator);
 
     /**
      * Gets the editor for a {@link IReward}.
@@ -51,14 +51,14 @@ public interface IBossUIRegistry {
      * @param clazz the class of reward to get editor for
      * @return Creator for reward, if present
      */
-    Optional<ICreatorUI> getRewardCreator(Class<? extends IReward> clazz);
+    Optional<ICreatorUI<IReward>> getRewardCreator(Class<? extends IReward> clazz);
 
     /**
      * Gets a list of all reward creators in the registry.
      *
      * @return list of all reward creators in the registry
      */
-    List<ICreatorUI> getRewardCreators();
+    List<ICreatorUI<IReward>> getRewardCreators();
 
     /**
      * Registers an editor to a given {@link IRewardContent}.
@@ -76,7 +76,7 @@ public interface IBossUIRegistry {
      * @param creator the reward content creator
      * @param <T>     the reward content to register creator for
      */
-    <T extends IRewardContent> void registerRewardContentCreator(Class<T> clazz, ICreatorUI creator);
+    <T extends IRewardContent> void registerRewardContentCreator(Class<T> clazz, ICreatorUI<IRewardContent> creator);
 
     /**
      * Gets the editor for a {@link IRewardContent}.
@@ -93,14 +93,14 @@ public interface IBossUIRegistry {
      * @param clazz the class of reward content to get editor for
      * @return Creator for reward content, if present
      */
-    Optional<ICreatorUI> getRewardContentCreator(Class<? extends IRewardContent> clazz);
+    Optional<ICreatorUI<IRewardContent>> getRewardContentCreator(Class<? extends IRewardContent> clazz);
 
     /**
      * Gets a list of all reward content creators in the registry.
      *
      * @return list of all reward content creators in the registry
      */
-    List<ICreatorUI> getRewardContentCreators();
+    List<ICreatorUI<IRewardContent>> getRewardContentCreators();
 
     /**
      * Registers an editor to a given {@link IBattleRestraint}.
@@ -118,7 +118,7 @@ public interface IBossUIRegistry {
      * @param creator the restraint creator
      * @param <T>     the restraint to register creator for
      */
-    <T extends IBattleRestraint> void registerRestraintCreator(Class<T> clazz, ICreatorUI creator);
+    <T extends IBattleRestraint> void registerRestraintCreator(Class<T> clazz, ICreatorUI<IBattleRestraint> creator);
 
     /**
      * Gets the editor for a {@link IBattleRestraint}.
@@ -135,14 +135,14 @@ public interface IBossUIRegistry {
      * @param clazz the class of restraint to get editor for
      * @return Creator for restraint, if present
      */
-    Optional<ICreatorUI> getRestraintCreator(Class<? extends IBossUI> clazz);
+    Optional<ICreatorUI<IBattleRestraint>> getRestraintCreator(Class<? extends IBossUI> clazz);
 
     /**
      * Gets a list of all restraint creators in the registry.
      *
      * @return list of all restraint creators in the registry
      */
-    List<ICreatorUI> getRestraintCreators();
+    List<ICreatorUI<IBattleRestraint>> getRestraintCreators();
 
     /**
      * Gets an instance of the registry.

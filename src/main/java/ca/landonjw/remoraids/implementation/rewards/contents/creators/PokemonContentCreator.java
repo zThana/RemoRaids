@@ -2,6 +2,7 @@ package ca.landonjw.remoraids.implementation.rewards.contents.creators;
 
 import ca.landonjw.remoraids.api.editor.IBossUI;
 import ca.landonjw.remoraids.api.editor.ICreatorUI;
+import ca.landonjw.remoraids.api.rewards.contents.IRewardContent;
 import ca.landonjw.remoraids.implementation.rewards.contents.PokemonContent;
 import ca.landonjw.remoraids.internal.inventory.api.Button;
 import ca.landonjw.remoraids.internal.inventory.api.InventoryAPI;
@@ -18,10 +19,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class PokemonContentCreator implements ICreatorUI {
+public class PokemonContentCreator implements ICreatorUI<IRewardContent> {
 
     @Override
-    public void open(@Nonnull IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull List toAddTo) {
+    public void open(@Nonnull IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull List<IRewardContent> toAddTo) {
         new Creator(source, player, toAddTo);
     }
 
@@ -39,9 +40,9 @@ public class PokemonContentCreator implements ICreatorUI {
 
         private IBossUI source;
         private EntityPlayerMP player;
-        private List toAddTo;
+        private List<IRewardContent> toAddTo;
 
-        public Creator(IBossUI source, EntityPlayerMP player, List toAddTo){
+        public Creator(IBossUI source, EntityPlayerMP player, List<IRewardContent> toAddTo){
             this.source = source;
             this.player = player;
             this.toAddTo = toAddTo;

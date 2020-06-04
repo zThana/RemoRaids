@@ -57,6 +57,13 @@ repositories {
     }
 }
 
+gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:deprecation"
+        options.compilerArgs << "-Xlint:unchecked"
+    }
+}
+
 dependencies {
     compile 'com.google.guava:guava:27.1-jre'
     shadow 'reforged:server:7.3.1@Pixelmon-1.12.2-7.3.1-server.jar'

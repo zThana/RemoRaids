@@ -129,6 +129,10 @@ public class RemoRaids {
         System.out.println(jo);
     }
 
+    public static RemoRaids getInstance() {
+        return instance;
+    }
+
     public static IBossAPI getBossAPI(){
         return BossAPIProvider.get();
     }

@@ -1,5 +1,7 @@
 package ca.landonjw.remoraids.api.editor;
 
+import ca.landonjw.remoraids.api.rewards.IReward;
+import ca.landonjw.remoraids.api.rewards.contents.IRewardContent;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 
@@ -9,7 +11,7 @@ import java.util.List;
 /**
  * Represents a user interface used to create a reward, reward content, or battle restraint in the native
  * boss editor user interface. The boss editor will iterate through all registered creators via {@link IBossUIRegistry}
- * and invoke {@link #open(IBossUI, EntityPlayerMP, List)} in order to open the appropriate creator.
+ * and invoke {@link #open(IBossUI, EntityPlayerMP, List<T>)} in order to open the appropriate creator.
  *
  * This allows for custom implementations of rewards, reward contents, and battle restraints to be
  * managed through the already existing boss editor user interface.
@@ -17,7 +19,7 @@ import java.util.List;
  * @author landonjw
  * @since  1.0.0
  */
-public interface ICreatorUI {
+public interface ICreatorUI<T> {
 
     /**
      * Opens the user interface for a player.
@@ -27,7 +29,7 @@ public interface ICreatorUI {
      * @param toAddTo used for adding the newly created item to boss. The boss editor will
      *                automatically select the appropriate list to append new item to.
      */
-    void open(@Nonnull IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull List toAddTo);
+    void open(@Nonnull IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull List<T> toAddTo);
 
     /**
      * Gets the icon to be displayed in the boss editor.
