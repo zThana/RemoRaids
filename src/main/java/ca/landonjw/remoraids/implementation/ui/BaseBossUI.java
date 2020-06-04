@@ -2,6 +2,7 @@ package ca.landonjw.remoraids.implementation.ui;
 
 import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
+import ca.landonjw.remoraids.api.editor.IBossUI;
 import ca.landonjw.remoraids.internal.inventory.api.Button;
 import com.pixelmonmod.pixelmon.items.ItemPixelmonSprite;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -11,7 +12,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A base for user interfaces within the ingame boss editor.
@@ -19,8 +22,9 @@ import java.util.Objects;
  * @author landonjw
  * @since  1.0.0
  */
-public abstract class BaseBossUI {
+public abstract class BaseBossUI implements IBossUI {
 
+    protected IBossUI source;
     /** The player using the user interface. */
     protected EntityPlayerMP player;
     /** The boss entity being edited. */
@@ -40,10 +44,12 @@ public abstract class BaseBossUI {
     /**
      * Default constructor.
      *
+     * @param source     the user interface that opened this user interface, may be null if no previous UI opened this
      * @param player     the player using the user interface
      * @param bossEntity the boss entity being edited
      */
-    public BaseBossUI(@Nonnull EntityPlayerMP player, @Nonnull IBossEntity bossEntity){
+    public BaseBossUI(@Nullable IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull IBossEntity bossEntity){
+        this.source = source;
         this.player = Objects.requireNonNull(player);
         this.bossEntity = Objects.requireNonNull(bossEntity);
     }
@@ -91,9 +97,14 @@ public abstract class BaseBossUI {
                 .build();
     }
 
-    /**
-     * Opens the user interface for the player.
-     */
-    public abstract void open();
+    @Override
+    public Optional<IBossUI> getSource() {
+        return Optional.ofNullable(source);
+    }
+
+    @Override
+    public IBossEntity getBossEntity() {
+        return bossEntity;
+    }
 
 }

@@ -1,6 +1,7 @@
 package ca.landonjw.remoraids.implementation.ui;
 
 import ca.landonjw.remoraids.api.boss.IBossEntity;
+import ca.landonjw.remoraids.api.editor.IBossUI;
 import ca.landonjw.remoraids.internal.inventory.api.Button;
 import ca.landonjw.remoraids.internal.inventory.api.LineType;
 import ca.landonjw.remoraids.internal.inventory.api.Page;
@@ -14,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * A user interface to open the main page of the editor.
@@ -25,13 +27,14 @@ import javax.annotation.Nonnull;
 public class EditorUI extends BaseBossUI {
 
     /**
-     * Constructor for the user interface.
+     * Default constructor.
      *
+     * @param source     the user interface that opened this user interface, may be null if no previous UI opened this
      * @param player     the player using the user interface
-     * @param bossEntity the boss being edited
+     * @param bossEntity the boss entity being edited
      */
-    public EditorUI(@Nonnull EntityPlayerMP player, @Nonnull IBossEntity bossEntity){
-        super(player, bossEntity);
+    public EditorUI(@Nullable IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull IBossEntity bossEntity){
+        super(source, player, bossEntity);
     }
 
     /** {@inheritDoc} */
@@ -41,7 +44,7 @@ public class EditorUI extends BaseBossUI {
                     .item(new ItemStack(PixelmonItemsHeld.luckyEgg))
                     .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Respawn Settings")
                     .onClick(() -> {
-                        RespawnSettingsUI spawnSettings = new RespawnSettingsUI(player, bossEntity);
+                        RespawnSettingsUI spawnSettings = new RespawnSettingsUI(this, player, bossEntity);
                         spawnSettings.open();
                     })
                     .build();
@@ -50,7 +53,7 @@ public class EditorUI extends BaseBossUI {
                     .item(new ItemStack(PixelmonItems.porygonPieces))
                     .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "General Settings")
                     .onClick(() -> {
-                        GeneralSettingsUI generalUI = new GeneralSettingsUI(player, bossEntity);
+                        GeneralSettingsUI generalUI = new GeneralSettingsUI(this, player, bossEntity);
                         generalUI.open();
                     })
                     .build();
@@ -59,7 +62,7 @@ public class EditorUI extends BaseBossUI {
                     .item(new ItemStack(PixelmonItemsPokeballs.pokeBall))
                     .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Battle Settings")
                     .onClick(() -> {
-                        BattleSettingsUI battleSettingsUI = new BattleSettingsUI(player, bossEntity);
+                        BattleSettingsUI battleSettingsUI = new BattleSettingsUI(this, player, bossEntity);
                         battleSettingsUI.open();
                     })
                     .build();
@@ -68,8 +71,7 @@ public class EditorUI extends BaseBossUI {
                     .item(new ItemStack(Blocks.BARRIER))
                     .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Go Back")
                     .onClick(() -> {
-                        BossOptionsUI bossOptions = new BossOptionsUI(player, bossEntity);
-                        bossOptions.open();
+                        source.open();
                     })
                     .build();
 

@@ -3,6 +3,7 @@ package ca.landonjw.remoraids.implementation.ui;
 import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.battles.IBossBattle;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
+import ca.landonjw.remoraids.api.editor.IBossUI;
 import ca.landonjw.remoraids.internal.inventory.api.Button;
 import ca.landonjw.remoraids.internal.inventory.api.LineType;
 import ca.landonjw.remoraids.internal.inventory.api.Page;
@@ -15,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * A user interface to edit a stat of a boss.
@@ -28,14 +30,14 @@ public class BossStatEditorUI extends BaseBossUI {
     private StatsType type;
 
     /**
-     * Constructor for the user interface.
+     * Default constructor.
      *
+     * @param source     the user interface that opened this user interface, may be null if no previous UI opened this
      * @param player     the player using the user interface
-     * @param bossEntity the boss being edited
-     * @param type       the stat type being modified
+     * @param bossEntity the boss entity being edited
      */
-    public BossStatEditorUI(@Nonnull EntityPlayerMP player, @Nonnull IBossEntity bossEntity, @Nonnull StatsType type) {
-        super(player, bossEntity);
+    public BossStatEditorUI(@Nullable IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull IBossEntity bossEntity, StatsType type){
+        super(source, player, bossEntity);
         this.type = type;
     }
 
@@ -47,8 +49,7 @@ public class BossStatEditorUI extends BaseBossUI {
                     .item(new ItemStack(Blocks.BARRIER))
                     .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Go Back")
                     .onClick(() -> {
-                        BattleStatsSelectionUI statsSelection = new BattleStatsSelectionUI(player, bossEntity);
-                        statsSelection.open();
+                        source.open();
                     })
                     .build();
 

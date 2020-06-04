@@ -3,6 +3,7 @@ package ca.landonjw.remoraids.implementation.ui;
 import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.battles.IBossBattle;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
+import ca.landonjw.remoraids.api.editor.IBossUI;
 import ca.landonjw.remoraids.implementation.battles.restraints.HaltedBattleRestraint;
 import ca.landonjw.remoraids.internal.inventory.api.*;
 import com.pixelmonmod.pixelmon.config.PixelmonBlocks;
@@ -21,6 +22,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 
 /**
@@ -34,13 +36,14 @@ import java.util.Arrays;
 public class BossOptionsUI extends BaseBossUI {
 
     /**
-     * Constructor for the user interface.
+     * Default constructor.
      *
+     * @param source     the user interface that opened this user interface, may be null if no previous UI opened this
      * @param player     the player using the user interface
-     * @param bossEntity the boss being edited
+     * @param bossEntity the boss entity being edited
      */
-    public BossOptionsUI(@Nonnull EntityPlayerMP player, @Nonnull IBossEntity bossEntity){
-        super(player, bossEntity);
+    public BossOptionsUI(@Nullable IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull IBossEntity bossEntity){
+        super(source, player, bossEntity);
     }
 
     /** {@inheritDoc} */
@@ -67,7 +70,7 @@ public class BossOptionsUI extends BaseBossUI {
                 .item(new ItemStack(Items.WRITABLE_BOOK))
                 .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit")
                 .onClick(() -> {
-                    EditorUI editor = new EditorUI(player, bossEntity);
+                    EditorUI editor = new EditorUI(this, player, bossEntity);
                     editor.open();
                 })
                 .build();

@@ -73,7 +73,7 @@ public class RegistryUI {
                     .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Boss " + bossEntity.getBoss().getPokemon().getSpecies().name)
                     .lore(UIUtils.getPokemonLore(bossEntity))
                     .onClick((action) -> {
-                        BossOptionsUI options = new BossOptionsUI(player, bossEntity);
+                        BossOptionsUI options = new BossOptionsUI(null, player, bossEntity);
                         options.open();
                     })
                     .build();

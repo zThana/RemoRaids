@@ -3,6 +3,7 @@ package ca.landonjw.remoraids.implementation.ui;
 import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.battles.IBossBattle;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
+import ca.landonjw.remoraids.api.editor.IBossUI;
 import ca.landonjw.remoraids.api.rewards.IReward;
 import ca.landonjw.remoraids.api.rewards.contents.IRewardContent;
 import ca.landonjw.remoraids.internal.inventory.api.*;
@@ -13,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,11 +32,12 @@ public class RewardsUI extends BaseBossUI {
     /**
      * Default constructor.
      *
+     * @param source     the user interface that opened this user interface, may be null if no previous UI opened this
      * @param player     the player using the user interface
      * @param bossEntity the boss entity being edited
      */
-    public RewardsUI(@Nonnull EntityPlayerMP player, @Nonnull IBossEntity bossEntity) {
-        super(player, bossEntity);
+    public RewardsUI(@Nullable IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull IBossEntity bossEntity){
+        super(source, player, bossEntity);
     }
 
     /** {@inheritDoc} */
@@ -45,8 +48,7 @@ public class RewardsUI extends BaseBossUI {
                     .item(new ItemStack(Blocks.BARRIER))
                     .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Go Back")
                     .onClick(() -> {
-                        BattleSettingsUI battleSettingsUI = new BattleSettingsUI(player, bossEntity);
-                        battleSettingsUI.open();
+                        source.open();
                     })
                     .build();
 
@@ -77,7 +79,10 @@ public class RewardsUI extends BaseBossUI {
             Button addReward = Button.builder()
                     .item(new ItemStack(PixelmonItems.pokemonEditor))
                     .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Add Reward")
-                    .onClick(() -> {})
+                    .onClick(() -> {
+                        AddRewardUI addRewardUI = new AddRewardUI(this, player, bossEntity);
+                        addRewardUI.open();
+                    })
                     .build();
 
             Button prevPage = Button.builder()

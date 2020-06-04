@@ -2,6 +2,7 @@ package ca.landonjw.remoraids.implementation.ui;
 
 import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
+import ca.landonjw.remoraids.api.editor.IBossUI;
 import ca.landonjw.remoraids.internal.inventory.api.Button;
 import ca.landonjw.remoraids.internal.inventory.api.LineType;
 import ca.landonjw.remoraids.internal.inventory.api.Page;
@@ -14,7 +15,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * A user interface to select a stat to modify within the boss editor.
@@ -26,13 +29,14 @@ import java.util.Arrays;
 public class BattleStatsSelectionUI extends BaseBossUI {
 
     /**
-     * Constructor for the user interface.
+     * Default constructor.
      *
+     * @param source     the user interface that opened this user interface, may be null if no previous UI opened this
      * @param player     the player using the user interface
-     * @param bossEntity the boss being edited
+     * @param bossEntity the boss entity being edited
      */
-    public BattleStatsSelectionUI(@Nonnull EntityPlayerMP player, @Nonnull IBossEntity bossEntity) {
-        super(player, bossEntity);
+    public BattleStatsSelectionUI(@Nullable IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull IBossEntity bossEntity){
+        super(source, player, bossEntity);
     }
 
     /** {@inheritDoc} */
@@ -42,8 +46,7 @@ public class BattleStatsSelectionUI extends BaseBossUI {
                 .item(new ItemStack(Blocks.BARRIER))
                 .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Go Back")
                 .onClick(() -> {
-                    GeneralSettingsUI general = new GeneralSettingsUI(player, bossEntity);
-                    general.open();
+                    source.open();
                 })
                 .build();
 
@@ -54,7 +57,7 @@ public class BattleStatsSelectionUI extends BaseBossUI {
                     .item(new ItemStack(PixelmonItemsHeld.powerWeight))
                     .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Health")
                     .onClick(() -> {
-                        BossStatEditorUI statEditor = new BossStatEditorUI(player, bossEntity, StatsType.HP);
+                        BossStatEditorUI statEditor = new BossStatEditorUI(this, player, bossEntity, StatsType.HP);
                         statEditor.open();
                     })
                     .build();
@@ -71,7 +74,7 @@ public class BattleStatsSelectionUI extends BaseBossUI {
                 .item(new ItemStack(PixelmonItemsHeld.powerBracer))
                 .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Attack")
                 .onClick(() -> {
-                    BossStatEditorUI statEditor = new BossStatEditorUI(player, bossEntity, StatsType.Attack);
+                    BossStatEditorUI statEditor = new BossStatEditorUI(this, player, bossEntity, StatsType.Attack);
                     statEditor.open();
                 })
                 .build();
@@ -80,7 +83,7 @@ public class BattleStatsSelectionUI extends BaseBossUI {
                 .item(new ItemStack(PixelmonItemsHeld.powerBelt))
                 .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Defence")
                 .onClick(() -> {
-                    BossStatEditorUI statEditor = new BossStatEditorUI(player, bossEntity, StatsType.Defence);
+                    BossStatEditorUI statEditor = new BossStatEditorUI(this, player, bossEntity, StatsType.Defence);
                     statEditor.open();
                 })
                 .build();
@@ -89,7 +92,7 @@ public class BattleStatsSelectionUI extends BaseBossUI {
                 .item(new ItemStack(PixelmonItemsHeld.powerLens))
                 .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Special Attack")
                 .onClick(() -> {
-                    BossStatEditorUI statEditor = new BossStatEditorUI(player, bossEntity, StatsType.SpecialAttack);
+                    BossStatEditorUI statEditor = new BossStatEditorUI(this, player, bossEntity, StatsType.SpecialAttack);
                     statEditor.open();
                 })
                 .build();
@@ -98,7 +101,7 @@ public class BattleStatsSelectionUI extends BaseBossUI {
                 .item(new ItemStack(PixelmonItemsHeld.powerBand))
                 .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Special Defence")
                 .onClick(() -> {
-                    BossStatEditorUI statEditor = new BossStatEditorUI(player, bossEntity, StatsType.SpecialDefence);
+                    BossStatEditorUI statEditor = new BossStatEditorUI(this, player, bossEntity, StatsType.SpecialDefence);
                     statEditor.open();
                 })
                 .build();
@@ -107,7 +110,7 @@ public class BattleStatsSelectionUI extends BaseBossUI {
                 .item(new ItemStack(PixelmonItemsHeld.powerAnklet))
                 .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Speed")
                 .onClick(() -> {
-                    BossStatEditorUI statEditor = new BossStatEditorUI(player, bossEntity, StatsType.Speed);
+                    BossStatEditorUI statEditor = new BossStatEditorUI(this, player, bossEntity, StatsType.Speed);
                     statEditor.open();
                 })
                 .build();

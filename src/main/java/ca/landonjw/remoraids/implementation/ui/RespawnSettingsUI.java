@@ -1,6 +1,7 @@
 package ca.landonjw.remoraids.implementation.ui;
 
 import ca.landonjw.remoraids.api.boss.IBossEntity;
+import ca.landonjw.remoraids.api.editor.IBossUI;
 import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import ca.landonjw.remoraids.implementation.spawning.BossSpawnLocation;
 import ca.landonjw.remoraids.internal.inventory.api.Button;
@@ -16,6 +17,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 
 /**
@@ -28,13 +30,14 @@ import java.util.Arrays;
 public class RespawnSettingsUI extends BaseBossUI {
 
     /**
-     * Constructor for the user interface.
+     * Default constructor.
      *
+     * @param source     the user interface that opened this user interface, may be null if no previous UI opened this
      * @param player     the player using the user interface
-     * @param bossEntity the boss being edited
+     * @param bossEntity the boss entity being edited
      */
-    public RespawnSettingsUI(@Nonnull EntityPlayerMP player, @Nonnull IBossEntity bossEntity) {
-        super(player, bossEntity);
+    public RespawnSettingsUI(@Nullable IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull IBossEntity bossEntity){
+        super(source, player, bossEntity);
     }
 
     /** {@inheritDoc} */
@@ -45,8 +48,7 @@ public class RespawnSettingsUI extends BaseBossUI {
                     .item(new ItemStack(Items.PAPER))
                     .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Respawn Limit")
                     .onClick(() -> {
-                        RespawnLimitEditorUI spawnAmount = new RespawnLimitEditorUI(player, bossEntity);
-                        spawnAmount.open();
+                        source.open();
                     })
                     .build();
 
@@ -76,7 +78,7 @@ public class RespawnSettingsUI extends BaseBossUI {
                             .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Set Respawn Cooldown")
                             .lore(null)
                             .onClick(() -> {
-                                RespawnCooldownEditorUI respawnCooldownEditorUI = new RespawnCooldownEditorUI(player, bossEntity);
+                                RespawnCooldownEditorUI respawnCooldownEditorUI = new RespawnCooldownEditorUI(this, player, bossEntity);
                                 respawnCooldownEditorUI.open();
                             });
                 }
@@ -89,7 +91,7 @@ public class RespawnSettingsUI extends BaseBossUI {
                     .item(new ItemStack(Blocks.BARRIER))
                     .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Go Back")
                     .onClick(() -> {
-                        EditorUI editor = new EditorUI(player, bossEntity);
+                        EditorUI editor = new EditorUI(this, player, bossEntity);
                         editor.open();
                     })
                     .build();

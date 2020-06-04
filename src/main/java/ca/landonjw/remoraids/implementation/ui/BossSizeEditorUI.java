@@ -1,6 +1,7 @@
 package ca.landonjw.remoraids.implementation.ui;
 
 import ca.landonjw.remoraids.api.boss.IBossEntity;
+import ca.landonjw.remoraids.api.editor.IBossUI;
 import ca.landonjw.remoraids.internal.inventory.api.Button;
 import ca.landonjw.remoraids.internal.inventory.api.LineType;
 import ca.landonjw.remoraids.internal.inventory.api.Page;
@@ -12,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * A user interface to edit the size of a boss.
@@ -23,13 +25,14 @@ import javax.annotation.Nonnull;
 public class BossSizeEditorUI extends BaseBossUI {
 
     /**
-     * Constructor for the user interface.
+     * Default constructor.
      *
+     * @param source     the user interface that opened this user interface, may be null if no previous UI opened this
      * @param player     the player using the user interface
-     * @param bossEntity the boss being edited
+     * @param bossEntity the boss entity being edited
      */
-    public BossSizeEditorUI(@Nonnull EntityPlayerMP player, @Nonnull IBossEntity bossEntity){
-        super(player, bossEntity);
+    public BossSizeEditorUI(@Nullable IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull IBossEntity bossEntity){
+        super(source, player, bossEntity);
     }
 
     /** {@inheritDoc} */
@@ -56,8 +59,7 @@ public class BossSizeEditorUI extends BaseBossUI {
                 .item(new ItemStack(Blocks.BARRIER))
                 .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Go Back")
                 .onClick(() -> {
-                    GeneralSettingsUI general = new GeneralSettingsUI(player, bossEntity);
-                    general.open();
+                    source.open();
                 })
                 .build();
 
