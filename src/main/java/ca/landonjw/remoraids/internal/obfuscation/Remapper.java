@@ -2,7 +2,6 @@ package ca.landonjw.remoraids.internal.obfuscation;
 
 
 import ca.landonjw.remoraids.RemoRaids;
-import ca.landonjw.remoraids.api.IBossAPI;
 
 import java.lang.reflect.Field;
 

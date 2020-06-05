@@ -11,7 +11,9 @@ import com.google.common.collect.ImmutableMap;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class MessageConfig implements ConfigKeyHolder {
 
@@ -43,6 +45,24 @@ public class MessageConfig implements ConfigKeyHolder {
         public String get(ConfigurationAdapter adapter) {
             return super.get(adapter).replace("&", "\u00a7");
         }
+    }
+
+    private static ListTranslationKey listTranslationKey(String path, List<String> def) {
+        KeyFactory<List<String>> factory = ConfigurationAdapter::getStringList;
+        return new ListTranslationKey(factory, path, def);
+    }
+
+    private static class ListTranslationKey extends FunctionalKey<List<String>> implements ConfigKey<List<String>> {
+
+        ListTranslationKey(KeyFactory<List<String>> factory, String path, List<String> def) {
+            super(factory, path, def);
+        }
+
+        @Override
+        public List<String> get(ConfigurationAdapter adapter) {
+            return super.get(adapter).stream().map(x -> x.replace("&", "\u00a7")).collect(Collectors.toList());
+        }
+
     }
 
     private static final Map<String, ConfigKey<?>> KEYS;

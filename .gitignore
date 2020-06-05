@@ -1,1 +1,32 @@
-/.idea
+# eclipse
+bin
+*.launch
+.settings
+.metadata
+.classpath
+.project
+
+# idea
+out
+*.ipr
+*.iws
+*.iml
+.idea
+
+# gradle
+build
+.gradle
+
+# other
+eclipse
+run
+
+gradlew
+*.bat
+*.jar
+*.properties
+*.png
+*.gif
+
+.git/*
+
