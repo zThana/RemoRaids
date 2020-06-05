@@ -14,10 +14,13 @@ import ca.landonjw.remoraids.implementation.spawning.announcements.TeleportableS
 import ca.landonjw.remoraids.internal.commands.RaidsCommandExecutor;
 import ca.landonjw.remoraids.internal.config.GeneralConfig;
 import ca.landonjw.remoraids.internal.config.MessageConfig;
+import com.google.common.collect.Lists;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
+import com.pixelmonmod.pixelmon.enums.EnumSpecies;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -26,9 +29,12 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import static net.minecraft.command.CommandBase.getListOfStringsMatchingLastWord;
 
 public class CreateRaidBossExecutor implements RaidsCommandExecutor {
 
@@ -126,6 +132,11 @@ public class CreateRaidBossExecutor implements RaidsCommandExecutor {
 		} catch (Exception e) {
 			source.sendMessage(new TextComponentString(TextFormatting.RED + e.getMessage()));
 		}
+	}
+
+	@Override
+	public List<String> getTabCompletionOptions(String[] args) {
+		return getListOfStringsMatchingLastWord(args, EnumSpecies.getNameList());
 	}
 
 }

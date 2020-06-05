@@ -52,6 +52,4 @@ public interface IBossAPI {
      */
     IBossBattleRegistry getBossBattleRegistry();
 
-
-
 }

@@ -215,7 +215,7 @@ public interface IBoss extends DataSerializable {
 		 * Allows for applying a custom texture to the raid pokemon.
 		 *
 		 * <p>If you aim to have no texture for this pokemon, use "". If null is placed here,
-		 * the call will fail exceptionally. Blame pixelmon for this design decision.</p>
+		 * the call will fail exceptionally. Blame Reforged for this design decision.</p>
 		 *
 		 * @param texture The texture to use for the raid boss.
 		 * @return The builder after being modified by this call

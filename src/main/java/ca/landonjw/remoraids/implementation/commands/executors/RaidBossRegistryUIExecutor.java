@@ -8,6 +8,9 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Sub-command used for opening the registry UI, which contains all raids currently spawned and registered within the
  * {@link IBossEntityRegistry}.
@@ -28,6 +31,11 @@ public class RaidBossRegistryUIExecutor implements RaidsCommandExecutor {
 	public void execute(MinecraftServer server, ICommandSender source, String[] args) throws CommandException {
 		RegistryUI registry = new RegistryUI((EntityPlayerMP) source);
 		registry.open();
+	}
+
+	@Override
+	public List<String> getTabCompletionOptions(String[] args) {
+		return Collections.emptyList();
 	}
 
 }

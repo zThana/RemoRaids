@@ -4,10 +4,14 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 
+import java.util.List;
+
 public interface RaidsCommandExecutor {
 
 	String getUsage(ICommandSender source);
 
 	void execute(MinecraftServer server, ICommandSender source, String[] args) throws CommandException;
+
+	List<String> getTabCompletionOptions(String[] args);
 
 }
