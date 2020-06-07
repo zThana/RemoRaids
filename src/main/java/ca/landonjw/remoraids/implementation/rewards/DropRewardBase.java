@@ -51,7 +51,7 @@ public abstract class DropRewardBase implements IReward {
     /** {@inheritDoc} **/
     @Override
     public List<IRewardContent> getContents() {
-        return new ArrayList<>(contents);
+        return contents;
     }
 
     /** {@inheritDoc} **/

@@ -1,7 +1,6 @@
 package ca.landonjw.remoraids.implementation.rewards;
 
 import ca.landonjw.remoraids.api.battles.IBossBattle;
-import ca.landonjw.remoraids.api.rewards.IReward;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.PlayerList;
 import net.minecraftforge.fml.common.FMLCommonHandler;

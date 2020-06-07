@@ -9,18 +9,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
+import javax.annotation.Nullable;
+
 /**
  * Currency that is given from a {@link IReward}.
  *
  * @author landonjw
  * @since  1.0.0
  */
-public class CurrencyContent implements IRewardContent {
+public class CurrencyContent extends RewardContentBase {
 
     /** Amount of currency to be given. */
     private int amount;
-    /** A custom description to be used for the reward. */
-    private String customDescription;
 
     /**
      * Default constructor for the pokemon content.
@@ -28,18 +28,18 @@ public class CurrencyContent implements IRewardContent {
      * @param  amount the amount of currency to be rewarded
      */
     public CurrencyContent(int amount){
+        super("Currency: " + amount);
         this.amount = amount;
     }
 
     /**
      * Constructor that allows for user to supply a custom description.
      *
-     * @param amount            the amount of currency to be rewarded
-     * @param customDescription custom description for the reward content
+     * @param amount      the amount of currency to be rewarded
+     * @param description description for the reward content
      */
-    public CurrencyContent(int amount, String customDescription){
-        this.amount = amount;
-        this.customDescription = customDescription;
+    public CurrencyContent(int amount, @Nullable String description){
+        super(description == null ? "Currency: " + amount : description);
     }
 
     /** {@inheritDoc} */
@@ -50,18 +50,6 @@ public class CurrencyContent implements IRewardContent {
             account.updatePlayer();
             player.sendMessage(new TextComponentString(TextFormatting.GREEN + "You have received " + amount + " dollars!"));
         });
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getDescription() {
-        if(customDescription == null){
-            String defaultDescription = "Currency: " + amount;
-            return defaultDescription;
-        }
-        else{
-            return customDescription;
-        }
     }
 
     /** {@inheritDoc} */

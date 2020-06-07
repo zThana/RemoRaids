@@ -21,15 +21,13 @@ import java.util.Objects;
  * @author landonjw
  * @since  1.0.0
  */
-public class PokemonContent implements IRewardContent {
+public class PokemonContent extends RewardContentBase {
 
 
     /** The Pokemon to be rewarded. */
     private PokemonSpec spec;
     /** The sprite to be used for item. Created in constructor from supplied spec. */
     private ItemStack pokemonSprite;
-    /** A custom description to be used for the reward. */
-    private String customDescription;
 
     /**
      * Default constructor for the pokemon content.
@@ -38,7 +36,8 @@ public class PokemonContent implements IRewardContent {
      * @throws NullPointerException if spec is null
      */
     public PokemonContent(@Nonnull PokemonSpec spec){
-        this.spec = Objects.requireNonNull(spec);
+        super("Pokemon: " + spec.name);
+        this.spec = spec;
         pokemonSprite = ItemPixelmonSprite.getPhoto(Pixelmon.pokemonFactory.create(spec));
     }
 
@@ -46,12 +45,12 @@ public class PokemonContent implements IRewardContent {
      * Constructor that allows for user to supply a custom description.
      *
      * @param spec              the pokemon to be rewarded
-     * @param customDescription custom description for the reward content
+     * @param description custom description for the reward content
      * @throws NullPointerException if spec is null
      */
-    public PokemonContent(@Nonnull PokemonSpec spec, @Nullable String customDescription){
+    public PokemonContent(@Nonnull PokemonSpec spec, @Nullable String description){
+        super(description == null ? "Pokemon: " + spec.name : description);
         this.spec = Objects.requireNonNull(spec);
-        this.customDescription = customDescription;
         pokemonSprite = ItemPixelmonSprite.getPhoto(Pixelmon.pokemonFactory.create(spec));
     }
 
@@ -61,18 +60,6 @@ public class PokemonContent implements IRewardContent {
         Pokemon pokemon = Pixelmon.pokemonFactory.create(spec);
         Pixelmon.storageManager.getParty(player).add(pokemon);
         player.sendMessage(new TextComponentString(TextFormatting.GREEN + "You have received a " + pokemon.getDisplayName() + "!"));
-    }
-
-    /** {@inheritDoc} **/
-    @Override
-    public String getDescription() {
-        if(customDescription == null){
-            String defaultDescription = "Pokemon: " + spec.name;
-            return defaultDescription;
-        }
-        else{
-            return customDescription;
-        }
     }
 
     /** {@inheritDoc} */

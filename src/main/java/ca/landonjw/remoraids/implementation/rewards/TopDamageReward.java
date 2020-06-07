@@ -53,4 +53,22 @@ public class TopDamageReward extends DropRewardBase {
         return "Top Damage Reward";
     }
 
+    /**
+     * Gets the number of players that can receive the reward.
+     *
+     * @return the number of players that can receive the reward
+     */
+    public int getNumberReceivers() {
+        return numberReceivers;
+    }
+
+    /**
+     * Sets the number of players that can receive the reward.
+     *
+     * @param numberReceivers new number of receivers
+     */
+    public void setNumberReceivers(int numberReceivers) {
+        this.numberReceivers = numberReceivers;
+    }
+
 }

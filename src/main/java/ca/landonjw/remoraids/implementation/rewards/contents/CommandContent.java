@@ -18,12 +18,10 @@ import java.util.Objects;
  * @author landonjw
  * @since  1.0.0
  */
-public class CommandContent implements IRewardContent {
+public class CommandContent extends RewardContentBase {
 
     /** Command to be executed. */
     private String command;
-    /** A custom description to be used for the item. */
-    private String customDescription;
 
     /**
      * Default constructor for the command content.
@@ -32,19 +30,20 @@ public class CommandContent implements IRewardContent {
      * @throws NullPointerException if command is null
      */
     public CommandContent(@Nonnull String command){
+        super("Command: " + command);
         this.command = Objects.requireNonNull(command);
     }
 
     /**
      * Constructor that allows for user to supply a custom description.
      *
-     * @param command              the command to be rewarded
-     * @param customDescription custom description for the reward content
+     * @param command     the command to be rewarded
+     * @param description description for the reward content
      * @throws NullPointerException if command is null
      */
-    public CommandContent(@Nonnull String command, @Nullable String customDescription){
-        this.command = Objects.requireNonNull(command);
-        this.customDescription = customDescription;
+    public CommandContent(@Nonnull String command, @Nullable String description){
+        super(description == null ? "Command: " + command : description);
+        this.command = command;
     }
 
     /** {@inheritDoc} */
@@ -53,18 +52,6 @@ public class CommandContent implements IRewardContent {
         String parsedCommand = command.replace("{player}", player.getName());
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
         server.getCommandManager().executeCommand(server, parsedCommand);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getDescription() {
-        if(customDescription == null){
-            String defaultDescription = "Command: " + command;
-            return defaultDescription;
-        }
-        else{
-            return customDescription;
-        }
     }
 
     /** {@inheritDoc} */

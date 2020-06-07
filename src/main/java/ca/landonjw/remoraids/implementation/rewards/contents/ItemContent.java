@@ -15,12 +15,10 @@ import java.util.Objects;
  * @author landonjw
  * @since  1.0.0
  */
-public class ItemContent implements IRewardContent {
+public class ItemContent extends RewardContentBase {
 
     /** The item to be rewarded. */
     private ItemStack item;
-    /** A custom description to be used for the item. */
-    private String customDescription;
 
     /**
      * Default constructor for the item content.
@@ -29,6 +27,7 @@ public class ItemContent implements IRewardContent {
      * @throws NullPointerException if itemstack is null
      */
     public ItemContent(@Nonnull ItemStack item){
+        super("Item: " + item.getDisplayName());
         this.item = Objects.requireNonNull(item);
     }
 
@@ -36,33 +35,18 @@ public class ItemContent implements IRewardContent {
      * Constructor that allows for user to supply a custom description.
      *
      * @param item              the item to be rewarded
-     * @param customDescription custom description for the reward content
+     * @param description description for the reward content
      * @throws NullPointerException if itemstack is null
      */
-    public ItemContent(@Nonnull ItemStack item, @Nullable String customDescription){
+    public ItemContent(@Nonnull ItemStack item, @Nullable String description){
+        super(description == null ? "Item: " + item.getDisplayName() : description);
         this.item = Objects.requireNonNull(item);
-        this.customDescription = customDescription;
     }
 
     /** {@inheritDoc} **/
     @Override
     public void give(EntityPlayerMP player) {
         player.inventory.addItemStackToInventory(item);
-    }
-
-    /** {@inheritDoc} **/
-    @Override
-    public String getDescription() {
-        if(customDescription == null){
-            String defaultDescription = "Item: " + item.getDisplayName();
-            if(item.getCount() > 1){
-                defaultDescription.concat(" (x" + item.getCount());
-            }
-            return defaultDescription;
-        }
-        else{
-            return customDescription;
-        }
     }
 
     /** {@inheritDoc} */

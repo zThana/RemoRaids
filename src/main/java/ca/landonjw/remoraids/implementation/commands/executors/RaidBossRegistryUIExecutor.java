@@ -1,7 +1,7 @@
 package ca.landonjw.remoraids.implementation.commands.executors;
 
 import ca.landonjw.remoraids.api.boss.IBossEntityRegistry;
-import ca.landonjw.remoraids.implementation.ui.RegistryUI;
+import ca.landonjw.remoraids.implementation.ui.pages.RegistryUI;
 import ca.landonjw.remoraids.internal.commands.RaidsCommandExecutor;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
