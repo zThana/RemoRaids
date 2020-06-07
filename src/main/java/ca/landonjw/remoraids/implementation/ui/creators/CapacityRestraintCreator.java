@@ -1,9 +1,9 @@
 package ca.landonjw.remoraids.implementation.ui.creators;
 
-import ca.landonjw.remoraids.api.rewards.contents.IRewardContent;
+import ca.landonjw.remoraids.api.battles.IBattleRestraint;
 import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.api.ui.ICreatorUI;
-import ca.landonjw.remoraids.implementation.rewards.contents.CurrencyContent;
+import ca.landonjw.remoraids.implementation.battles.restraints.CapacityRestraint;
 import ca.landonjw.remoraids.internal.inventory.api.InventoryAPI;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
@@ -17,30 +17,24 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import javax.annotation.Nonnull;
 import java.util.Collection;
 
-/**
- * The {@link ICreatorUI} used for creating a new {@link CurrencyContent}.
- *
- * @author landonjw
- * @since  1.0.0
- */
-public class CurrencyContentCreator implements ICreatorUI<IRewardContent> {
+public class CapacityRestraintCreator implements ICreatorUI<IBattleRestraint> {
 
     /** {@inheritDoc} */
     @Override
-    public void open(@Nonnull IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull Collection<IRewardContent> toAddTo) {
+    public void open(@Nonnull IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull Collection<IBattleRestraint> toAddTo) {
         new Creator(source, player, toAddTo);
     }
 
     /** {@inheritDoc} */
     @Override
     public ItemStack getCreatorIcon() {
-        return new ItemStack(Items.GOLD_NUGGET);
+        return new ItemStack(Items.DIAMOND);
     }
 
     /** {@inheritDoc} */
     @Override
     public String getCreatorTitle() {
-        return TextFormatting.AQUA + "" + TextFormatting.BOLD + "Currency Content";
+        return TextFormatting.AQUA + "" + TextFormatting.BOLD + "Capacity Restraint";
     }
 
     class Creator {
@@ -50,7 +44,7 @@ public class CurrencyContentCreator implements ICreatorUI<IRewardContent> {
         /** The player that the user interface is intended for. */
         private EntityPlayerMP player;
         /** The collection of reward contents to append creation to. */
-        private Collection<IRewardContent> toAddTo;
+        private Collection<IBattleRestraint> toAddTo;
 
         /**
          * Constructor for the creator user interface.
@@ -59,18 +53,18 @@ public class CurrencyContentCreator implements ICreatorUI<IRewardContent> {
          * @param player  player that user interface is intended for
          * @param toAddTo collection of reward contents to append creation to
          */
-        public Creator(IBossUI source, EntityPlayerMP player, Collection<IRewardContent> toAddTo){
+        public Creator(IBossUI source, EntityPlayerMP player, Collection<IBattleRestraint> toAddTo){
             this.source = source;
             this.player = player;
             this.toAddTo = toAddTo;
 
             InventoryAPI.getInstance().closePlayerInventory(player);
-            player.sendMessage(new TextComponentString(TextFormatting.GREEN + "Enter an amount (ie. '100') or 'cancel' to cancel!"));
+            player.sendMessage(new TextComponentString(TextFormatting.GREEN + "Enter capacity (ie. '10') or 'cancel' to cancel!"));
             MinecraftForge.EVENT_BUS.register(this);
         }
 
         /**
-         * Used to receive message from player to determine the amount of money for the reward content.
+         * Used to receive message from player to determine what command he wants to execute from the reward content.
          *
          * @param event called when a player sends message on server
          */
@@ -79,27 +73,23 @@ public class CurrencyContentCreator implements ICreatorUI<IRewardContent> {
             if(event.getPlayer().equals(player)){
                 event.setCanceled(true);
                 String message = event.getMessage();
-                if(!message.equalsIgnoreCase("cancel")){
-                    try{
-                        int amount = Integer.parseInt(message);
 
-                        if(amount > 0){
-                            CurrencyContent content = new CurrencyContent(amount);
-                            toAddTo.add(content);
-                            source.getSource().get().open();
-                            MinecraftForge.EVENT_BUS.unregister(this);
-                        }
-                        else{
-                            player.sendMessage(new TextComponentString(TextFormatting.RED + "Incorrect amount. Try again."));
-                        }
-                    }
-                    catch (NumberFormatException e){
-                        player.sendMessage(new TextComponentString(TextFormatting.RED + "Incorrect amount. Try again."));
-                    }
+                if(message.equalsIgnoreCase("cancel")){
+                    MinecraftForge.EVENT_BUS.unregister(this);
+                    source.getSource().get().open();
                 }
                 else{
-                    source.getSource().get().open();
-                    MinecraftForge.EVENT_BUS.unregister(this);
+                    try{
+                        int capacity = Integer.parseInt(message);
+
+                        CapacityRestraint restraint = new CapacityRestraint(source.getBossEntity(), capacity);
+                        toAddTo.add(restraint);
+                        MinecraftForge.EVENT_BUS.unregister(this);
+                        source.getSource().get().open();
+                    }
+                    catch (NumberFormatException e){
+                        player.sendMessage(new TextComponentString(TextFormatting.RED + "Incorrect capacity value. Try again."));
+                    }
                 }
             }
         }

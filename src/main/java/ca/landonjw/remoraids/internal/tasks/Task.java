@@ -14,6 +14,9 @@ public class Task {
     /** The consumer to be run when the time ticks remaining hits 0. */
     private Consumer<Task> consumer;
 
+    /** The identifier for the task. This allows for identifying what the task is. */
+    private String identifier;
+
     /** The number of ticks before the task should be run again. */
     private long interval;
     /** The number of times the task has been run. */
@@ -25,11 +28,8 @@ public class Task {
     private long ticksRemaining;
     /** If the task is expired and ready to be removed. */
     private boolean expired;
-
     /** States whether or not the task is currently paused from executing */
     private boolean paused;
-
-    private String identifier;
 
     /**
      * Constructor for a task.
@@ -75,10 +75,16 @@ public class Task {
         expired = true;
     }
 
+    /**
+     * Pauses the task. This will prevent any further invokations of the task until it is resumed.
+     */
     public void pause() {
         this.paused = true;
     }
 
+    /**
+     * Resumes the task.
+     */
     public void resume() {
         this.paused = false;
     }
@@ -247,4 +253,5 @@ public class Task {
     public int hashCode() {
         return Objects.hash(consumer, interval, currentIteration, iterations, ticksRemaining, expired);
     }
+
 }

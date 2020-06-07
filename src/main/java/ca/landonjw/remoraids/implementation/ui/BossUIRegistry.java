@@ -7,6 +7,9 @@ import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.api.ui.IBossUIRegistry;
 import ca.landonjw.remoraids.api.ui.ICreatorUI;
 import ca.landonjw.remoraids.api.ui.IEditorUI;
+import ca.landonjw.remoraids.implementation.battles.restraints.CapacityRestraint;
+import ca.landonjw.remoraids.implementation.battles.restraints.CooldownRestraint;
+import ca.landonjw.remoraids.implementation.battles.restraints.PreventRebattleRestraint;
 import ca.landonjw.remoraids.implementation.rewards.KillerReward;
 import ca.landonjw.remoraids.implementation.rewards.ParticipationReward;
 import ca.landonjw.remoraids.implementation.rewards.TopDamageReward;
@@ -47,6 +50,12 @@ public class BossUIRegistry implements IBossUIRegistry {
         registerRewardContentEditor(ItemContent.class, new ItemContentEditor());
         registerRewardContentCreator(PokemonContent.class, new PokemonContentCreator());
         registerRewardContentEditor(PokemonContent.class, new PokemonContentEditor());
+
+        registerRestraintCreator(CapacityRestraint.class, new CapacityRestraintCreator());
+        registerRestraintEditor(CapacityRestraint.class, new CapacityRestraintEditor());
+        registerRestraintCreator(CooldownRestraint.class, new CooldownRestraintCreator());
+        registerRestraintEditor(CooldownRestraint.class, new CooldownRestraintEditor());
+        registerRestraintCreator(PreventRebattleRestraint.class, new PreventRebattleRestraintCreator());
     }
 
     /** {@inheritDoc} */
@@ -122,7 +131,7 @@ public class BossUIRegistry implements IBossUIRegistry {
     /** {@inheritDoc} */
     @Override
     public <T extends IBattleRestraint> Optional<IEditorUI<T>> getRestraintEditor(Class<T> editor) {
-        return Optional.ofNullable((IEditorUI<T>) restraintCreators.get(editor));
+        return Optional.ofNullable((IEditorUI<T>) restraintEditors.get(editor));
     }
 
     /** {@inheritDoc} */

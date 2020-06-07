@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ public class TopDamageRewardCreator implements ICreatorUI<IReward> {
 
     /** {@inheritDoc} */
     @Override
-    public void open(@Nonnull IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull List<IReward> toAddTo) {
+    public void open(@Nonnull IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull Collection<IReward> toAddTo) {
         toAddTo.add(new TopDamageReward(1));
         source.getSource().get().open();
     }

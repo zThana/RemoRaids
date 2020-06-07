@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class MessageConfig implements ConfigKeyHolder {
 
     public static final ConfigKey<String> RAID_CAPACITY_REACHED = translationKey("restraints.capacity-reached", "&cThere are too many players currently battling the boss...");
-    public static final ConfigKey<String> RAID_COOLDOWN = translationKey("restraints.cooldown", "&cYou cannot battle the boss for another {minute} minute(s) and {trimmed-seconds} second(s)...");
+    public static final ConfigKey<String> RAID_COOLDOWN = translationKey("restraints.cooldown", "&cYou cannot battle the boss for another {hours} hour(s), {trimmed-minutes} minute(s) and {trimmed-seconds} second(s)...");
     public static final ConfigKey<String> RAID_NO_REBATLLE = translationKey("restraints.no-rebattle", "&cYou cannot attempt to battle this raid boss again...");
 
     public static final ConfigKey<String> RAID_ENGAGE = translationKey("engage-message", "&a&lRelease a pokemon to engage the boss!");
@@ -117,4 +117,5 @@ public class MessageConfig implements ConfigKeyHolder {
     public int getSize() {
         return SIZE;
     }
+
 }

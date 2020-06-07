@@ -1,4 +1,4 @@
-package ca.landonjw.remoraids.implementation.ui.pages;
+package ca.landonjw.remoraids.implementation.ui.pages.battle;
 
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.ui.IBossUI;
@@ -6,6 +6,8 @@ import ca.landonjw.remoraids.api.ui.IBossUIRegistry;
 import ca.landonjw.remoraids.api.ui.IEditorUI;
 import ca.landonjw.remoraids.api.rewards.IReward;
 import ca.landonjw.remoraids.api.rewards.contents.IRewardContent;
+import ca.landonjw.remoraids.implementation.ui.pages.BaseBossUI;
+import ca.landonjw.remoraids.implementation.ui.pages.battle.AddRewardContentUI;
 import ca.landonjw.remoraids.internal.inventory.api.*;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
 import net.minecraft.entity.player.EntityPlayerMP;

@@ -17,6 +17,7 @@ import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ public class PokemonContentCreator implements ICreatorUI<IRewardContent> {
 
     /** {@inheritDoc} */
     @Override
-    public void open(@Nonnull IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull List<IRewardContent> toAddTo) {
+    public void open(@Nonnull IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull Collection<IRewardContent> toAddTo) {
         new Creator(source, player, toAddTo);
     }
 
@@ -51,17 +52,17 @@ public class PokemonContentCreator implements ICreatorUI<IRewardContent> {
         private IBossUI source;
         /** The player that the user interface is intended for. */
         private EntityPlayerMP player;
-        /** The list of reward contents to append creation to. */
-        private List<IRewardContent> toAddTo;
+        /** The collection of reward contents to append creation to. */
+        private Collection<IRewardContent> toAddTo;
 
         /**
          * Constructor for the creator user interface.
          *
          * @param source  source that opened this creator
          * @param player  player that user interface is intended for
-         * @param toAddTo list of reward contents to append creation to
+         * @param toAddTo collection of reward contents to append creation to
          */
-        public Creator(IBossUI source, EntityPlayerMP player, List<IRewardContent> toAddTo){
+        public Creator(IBossUI source, EntityPlayerMP player, Collection<IRewardContent> toAddTo){
             this.source = source;
             this.player = player;
             this.toAddTo = toAddTo;

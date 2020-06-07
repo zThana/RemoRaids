@@ -27,6 +27,11 @@ public interface IRewardContent {
      */
     String getDescription();
 
+    /**
+     * Converts the content into an item stack for user interfaces
+     *
+     * @return content as an item stack
+     */
     ItemStack toItemStack();
 
 }

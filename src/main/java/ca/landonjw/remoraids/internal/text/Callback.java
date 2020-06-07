@@ -72,7 +72,7 @@ public class Callback extends CommandBase {
      * @param callbackUUID the uuid of the callback
      * @param consumer     the consumer to run when command is properly executed
      */
-    public static void addCallback(UUID callbackUUID, Consumer<ICommandSender> consumer) {
+    static void addCallback(UUID callbackUUID, Consumer<ICommandSender> consumer) {
         consumerMap.put(callbackUUID, consumer);
     }
 
@@ -82,7 +82,7 @@ public class Callback extends CommandBase {
      * @param callbackUUID the uuid of the callback
      * @param runnable     the runnable to run when command is properly executed
      */
-    public static void addCallback(UUID callbackUUID, Runnable runnable){
+    static void addCallback(UUID callbackUUID, Runnable runnable){
         consumerMap.put(callbackUUID, (task) -> runnable.run());
     }
 

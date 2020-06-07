@@ -87,11 +87,11 @@ public class CooldownRestraint extends BaseBattleRestraint {
         String message = RemoRaids.getMessageConfig().get(MessageConfig.RAID_COOLDOWN);
 
         long secondsRemaining = cooldownSeconds - timeElapsed.getSeconds();
-        long minutesRemaining = secondsRemaining / 60;
-        long hoursRemaining = minutesRemaining / 60;
+        long minutesRemaining = TimeUnit.MINUTES.convert(secondsRemaining, TimeUnit.SECONDS);
+        long hoursRemaining = TimeUnit.HOURS.convert(secondsRemaining, TimeUnit.SECONDS);
 
-        long trimmedSecondsRemaining = secondsRemaining - (minutesRemaining * 60) - (hoursRemaining * 3600);
-        long trimmedMinutesRemaining = hoursRemaining - (minutesRemaining * 60);
+        long trimmedSecondsRemaining = secondsRemaining - (minutesRemaining * 60);
+        long trimmedMinutesRemaining = minutesRemaining - (hoursRemaining * 60);
 
         message = message
                 .replaceAll("\\{seconds}", "" + secondsRemaining)
@@ -132,8 +132,12 @@ public class CooldownRestraint extends BaseBattleRestraint {
      *
      * @return cooldown in seconds before plays may reenter battle with the boss, after they have left.
      */
-    public long getCooldown() {
-        return cooldownSeconds;
+    public long getCooldown(TimeUnit unit) {
+        return unit.convert(cooldownSeconds, TimeUnit.SECONDS);
+    }
+
+    public void setCooldown(long time, TimeUnit unit){
+        this.cooldownSeconds = unit.toSeconds(time);
     }
 
     /**

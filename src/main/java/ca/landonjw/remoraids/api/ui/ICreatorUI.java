@@ -4,12 +4,13 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
 import java.util.List;
 
 /**
  * Represents a user interface used to create a reward, reward content, or battle restraint in the native
  * boss editor user interface. The boss editor will iterate through all registered creators via {@link IBossUIRegistry}
- * and invoke {@link #open(IBossUI, EntityPlayerMP, List<T>)} in order to open the appropriate creator.
+ * and invoke {@link #open(IBossUI, EntityPlayerMP, Collection<T>)} in order to open the appropriate creator.
  *
  * This allows for custom implementations of rewards, reward contents, and battle restraints to be
  * managed through the already existing boss editor user interface.
@@ -27,7 +28,7 @@ public interface ICreatorUI<T> {
      * @param toAddTo used for adding the newly created item to boss. The boss editor will
      *                automatically select the appropriate list to append new item to.
      */
-    void open(@Nonnull IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull List<T> toAddTo);
+    void open(@Nonnull IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull Collection<T> toAddTo);
 
     /**
      * Gets the icon to be displayed in the boss editor.

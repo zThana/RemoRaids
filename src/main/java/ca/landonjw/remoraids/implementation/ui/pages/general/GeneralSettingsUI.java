@@ -1,7 +1,10 @@
-package ca.landonjw.remoraids.implementation.ui.pages;
+package ca.landonjw.remoraids.implementation.ui.pages.general;
 
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.ui.IBossUI;
+import ca.landonjw.remoraids.implementation.ui.pages.BaseBossUI;
+import ca.landonjw.remoraids.implementation.ui.pages.general.BattleStatsSelectionUI;
+import ca.landonjw.remoraids.implementation.ui.pages.general.BossSizeEditorUI;
 import ca.landonjw.remoraids.internal.inventory.api.Button;
 import ca.landonjw.remoraids.internal.inventory.api.LineType;
 import ca.landonjw.remoraids.internal.inventory.api.Page;

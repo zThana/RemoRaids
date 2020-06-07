@@ -1,11 +1,12 @@
-package ca.landonjw.remoraids.implementation.ui.pages;
+package ca.landonjw.remoraids.implementation.ui.pages.battle;
 
+import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.api.ui.IBossUIRegistry;
 import ca.landonjw.remoraids.api.ui.ICreatorUI;
 import ca.landonjw.remoraids.api.rewards.IReward;
-import ca.landonjw.remoraids.api.rewards.contents.IRewardContent;
+import ca.landonjw.remoraids.implementation.ui.pages.BaseBossUI;
 import ca.landonjw.remoraids.internal.inventory.api.*;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -18,18 +19,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A user interface to select a new reward content to create.
- * This will go through all reward content creators registered in the {@link IBossUIRegistry}
- * and add them.
- *
- * @author landonjw
- * @since  1.0.0
- */
-public class AddRewardContentUI extends BaseBossUI {
-
-    /** reward to add new reward content to */
-    private IReward reward;
+public class AddRewardUI extends BaseBossUI {
 
     /**
      * Default constructor.
@@ -37,17 +27,11 @@ public class AddRewardContentUI extends BaseBossUI {
      * @param source     the user interface that opened this user interface, may be null if no previous UI opened this
      * @param player     the player using the user interface
      * @param bossEntity the boss entity being edited
-     * @param reward     reward to add new reward content to
      */
-    public AddRewardContentUI(@Nullable IBossUI source,
-                              @Nonnull EntityPlayerMP player,
-                              @Nonnull IBossEntity bossEntity,
-                              @Nonnull IReward reward) {
+    public AddRewardUI(@Nullable IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull IBossEntity bossEntity) {
         super(source, player, bossEntity);
-        this.reward = reward;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void open() {
         Button back = Button.builder()
@@ -59,12 +43,12 @@ public class AddRewardContentUI extends BaseBossUI {
                 .build();
 
         List<Button> creatorButtons = new ArrayList<>();
-        List<IRewardContent> rewardContentsList = reward.getContents();
-        for(ICreatorUI<IRewardContent> creator : IBossUIRegistry.getInstance().getRewardContentCreators()){
+        List<IReward> bossRewardsList = RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(bossEntity).get().getDefeatRewards();
+        for(ICreatorUI<IReward> creator : IBossUIRegistry.getInstance().getRewardCreators()){
             Button creatorButton = Button.builder()
                     .item(creator.getCreatorIcon())
                     .displayName(creator.getCreatorTitle())
-                    .onClick(() -> creator.open(this, player, rewardContentsList))
+                    .onClick(() -> creator.open(this, player, bossRewardsList))
                     .build();
 
             creatorButtons.add(creatorButton);
@@ -97,7 +81,7 @@ public class AddRewardContentUI extends BaseBossUI {
                 .template(template)
                 .dynamicContentArea(2, 2, 1, 5)
                 .dynamicContents(creatorButtons)
-                .title(TextFormatting.BLUE + "" + TextFormatting.BOLD + "Add Reward Content")
+                .title(TextFormatting.BLUE + "" + TextFormatting.BOLD + "Add Reward")
                 .build();
 
         page.forceOpenPage(player);

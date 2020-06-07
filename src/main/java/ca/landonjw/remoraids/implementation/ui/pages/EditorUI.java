@@ -2,6 +2,9 @@ package ca.landonjw.remoraids.implementation.ui.pages;
 
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.ui.IBossUI;
+import ca.landonjw.remoraids.implementation.ui.pages.battle.BattleSettingsUI;
+import ca.landonjw.remoraids.implementation.ui.pages.general.GeneralSettingsUI;
+import ca.landonjw.remoraids.implementation.ui.pages.spawning.RespawnSettingsUI;
 import ca.landonjw.remoraids.internal.inventory.api.Button;
 import ca.landonjw.remoraids.internal.inventory.api.LineType;
 import ca.landonjw.remoraids.internal.inventory.api.Page;

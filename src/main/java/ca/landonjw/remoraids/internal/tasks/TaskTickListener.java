@@ -7,6 +7,11 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Listens for ticks and invokes the ticking mechanism in tasks.
+ *
+ * @author landonjw
+ */
 public class TaskTickListener {
 
     /** List of active tasks to be ticked by the listener. */
@@ -34,7 +39,7 @@ public class TaskTickListener {
      *
      * @param task the task to add
      */
-    protected static void addTask(@Nonnull Task task){
+    static void addTask(@Nonnull Task task){
         tasks.add(task);
     }
 

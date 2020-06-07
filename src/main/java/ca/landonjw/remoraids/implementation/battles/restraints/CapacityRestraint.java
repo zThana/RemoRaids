@@ -29,9 +29,11 @@ public class CapacityRestraint extends BaseBattleRestraint {
     /** The boss entity to apply restraint to. */
     protected IBossEntity bossEntity;
     /** The capacity of the boss. */
-    protected int capacity;
+    private int capacity;
     /** The number of players currently in battle with the boss. */
-    protected int playerNum;
+    private int playerNum;
+    /** If the capacity reduces on each player battle end. */
+    private boolean diminishing;
 
     /**
      * Constructor for the capacity restraint.
@@ -58,6 +60,22 @@ public class CapacityRestraint extends BaseBattleRestraint {
         return RemoRaids.getMessageConfig().get(MessageConfig.RAID_CAPACITY_REACHED);
     }
 
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public void setDiminishing(boolean diminishing) {
+        this.diminishing = diminishing;
+    }
+
+    public boolean isDiminishing() {
+        return diminishing;
+    }
+
     /**
      * When a battle starts with the stored boss entity, this will increment the player number.
      *
@@ -79,6 +97,9 @@ public class CapacityRestraint extends BaseBattleRestraint {
     public void onBattleEnd(BossBattleEndedEvent event){
         if(event.getBossEntity().equals(bossEntity)){
             playerNum--;
+            if(diminishing){
+                capacity--;
+            }
         }
     }
 

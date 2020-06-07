@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * The {@link ICreatorUI} used for creating a new {@link KillerReward}.
@@ -22,7 +22,7 @@ public class KillerRewardCreator implements ICreatorUI<IReward> {
 
     /** {@inheritDoc} */
     @Override
-    public void open(@Nonnull IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull List<IReward> toAddTo) {
+    public void open(@Nonnull IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull Collection<IReward> toAddTo) {
         toAddTo.add(new KillerReward());
         source.getSource().get().open();
     }

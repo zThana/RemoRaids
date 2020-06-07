@@ -1,4 +1,4 @@
-package ca.landonjw.remoraids.implementation.ui.pages;
+package ca.landonjw.remoraids.implementation.ui.pages.battle;
 
 import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.battles.IBossBattle;
@@ -8,19 +8,22 @@ import ca.landonjw.remoraids.api.ui.IBossUIRegistry;
 import ca.landonjw.remoraids.api.ui.IEditorUI;
 import ca.landonjw.remoraids.api.rewards.IReward;
 import ca.landonjw.remoraids.api.rewards.contents.IRewardContent;
+import ca.landonjw.remoraids.implementation.ui.pages.BaseBossUI;
+import ca.landonjw.remoraids.implementation.ui.pages.battle.AddRewardUI;
 import ca.landonjw.remoraids.internal.inventory.api.*;
+import ca.landonjw.remoraids.internal.text.TextUtils;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-
-//TODO: Complete
 
 /**
  * A user interface that displays all rewards for the boss entity.

@@ -3,15 +3,13 @@ package ca.landonjw.remoraids.implementation.ui.editors;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.api.ui.IEditorUI;
-import ca.landonjw.remoraids.implementation.rewards.TopDamageReward;
+import ca.landonjw.remoraids.implementation.battles.restraints.CapacityRestraint;
 import ca.landonjw.remoraids.implementation.ui.pages.BaseBossUI;
-import ca.landonjw.remoraids.implementation.ui.pages.battle.RewardContentsUI;
 import ca.landonjw.remoraids.internal.inventory.api.Button;
 import ca.landonjw.remoraids.internal.inventory.api.LineType;
 import ca.landonjw.remoraids.internal.inventory.api.Page;
 import ca.landonjw.remoraids.internal.inventory.api.Template;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
-import com.pixelmonmod.pixelmon.config.PixelmonItemsValuables;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -21,16 +19,17 @@ import net.minecraft.util.text.TextFormatting;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class TopDamageRewardEditor implements IEditorUI<TopDamageReward> {
+public class CapacityRestraintEditor implements IEditorUI<CapacityRestraint> {
+
 
     @Override
-    public void open(@Nonnull IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull TopDamageReward topDamageReward) {
-        new Editor(source, player, source.getBossEntity(), topDamageReward).open();
+    public void open(@Nonnull IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull CapacityRestraint capacityRestraint) {
+        new Editor(source, player, source.getBossEntity(), capacityRestraint).open();
     }
 
     class Editor extends BaseBossUI {
 
-        private TopDamageReward reward;
+        private CapacityRestraint restraint;
 
         /**
          * Default constructor.
@@ -39,9 +38,9 @@ public class TopDamageRewardEditor implements IEditorUI<TopDamageReward> {
          * @param player     the player using the user interface
          * @param bossEntity the boss entity being edited
          */
-        public Editor(@Nullable IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull IBossEntity bossEntity, @Nonnull TopDamageReward reward) {
+        public Editor(@Nullable IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull IBossEntity bossEntity, CapacityRestraint restraint) {
             super(source, player, bossEntity);
-            this.reward = reward;
+            this.restraint = restraint;
         }
 
         @Override
@@ -54,69 +53,84 @@ public class TopDamageRewardEditor implements IEditorUI<TopDamageReward> {
                     })
                     .build();
 
-            Button editContents = Button.builder()
-                    .item(new ItemStack(PixelmonItemsValuables.nugget))
-                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Reward Contents")
+            Button setCapacity = Button.builder()
+                    .item(new ItemStack(Items.GLOWSTONE_DUST))
+                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Set Capacity")
                     .onClick(() -> {
-                        RewardContentsUI contentsUI = new RewardContentsUI(this, player, bossEntity, reward);
-                        contentsUI.open();
+                        openCapacityEditor();
                     })
                     .build();
 
-            Button setReceiverLimit = Button.builder()
-                    .item(new ItemStack(Items.PAPER))
-                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Receiver Limit")
-                    .onClick(this::openReceiverLimitEditor)
-                    .build();
+            Button setDiminishing;
+            if(restraint.isDiminishing()){
+                setDiminishing = Button.builder()
+                        .item(new ItemStack(Blocks.REDSTONE_TORCH))
+                        .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Disable Diminishing")
+                        .onClick(() -> {
+                            restraint.setDiminishing(false);
+                            open();
+                        })
+                        .build();
+            }
+            else{
+                setDiminishing = Button.builder()
+                        .item(new ItemStack(Blocks.TORCH))
+                        .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Enable Diminishing")
+                        .onClick(() -> {
+                            restraint.setDiminishing(true);
+                            open();
+                        })
+                        .build();
+            }
 
             Template template = Template.builder(5)
                     .line(LineType.Horizontal, 1, 0, 9, getWhiteFiller())
                     .line(LineType.Horizontal, 3, 0, 9, getWhiteFiller())
                     .border(0,0, 5,9, getBlueFiller())
                     .set(0, 4, getBossButton())
-                    .set(2, 2, setReceiverLimit)
-                    .set(2, 6, editContents)
+                    .set(2, 2, setCapacity)
+                    .set(2, 6, setDiminishing)
                     .set(3, 4, back)
                     .build();
 
             Page page = Page.builder()
                     .template(template)
-                    .title(TextFormatting.BLUE + "" + TextFormatting.BOLD + "Reward Settings")
+                    .title(TextFormatting.BLUE + "" + TextFormatting.BOLD + "Edit Capacity Restraint")
                     .build();
 
             page.forceOpenPage(player);
         }
 
-        private void openReceiverLimitEditor(){
+        public void openCapacityEditor(){
             Button back = Button.builder()
                     .item(new ItemStack(Blocks.BARRIER))
                     .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Go Back")
-                    .onClick(this::open)
+                    .onClick(() -> {
+                        open();
+                    })
                     .build();
 
-            Button receiverLimit = Button.builder()
-                    .item(new ItemStack(Items.PAPER))
-                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Receiver Limit: " + reward.getNumberReceivers())
-                    .build();
-
-            Button decrementLimit = Button.builder()
+            Button decrementCapacity = Button.builder()
                     .item(new ItemStack(PixelmonItems.LtradeHolderLeft))
-                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Decrease Receiver Limit")
+                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Decrease Capacity")
                     .onClick(() -> {
-                        if(reward.getNumberReceivers() > 1){
-                            reward.setNumberReceivers(reward.getNumberReceivers() - 1);
-                            openReceiverLimitEditor();
-                        }
+                        restraint.setCapacity(restraint.getCapacity() - 1);
+                        open();
                     })
                     .build();
 
-            Button incrementLimit = Button.builder()
+            Button incrementCapacity = Button.builder()
                     .item(new ItemStack(PixelmonItems.tradeHolderRight))
-                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Increase Receiver Limit")
+                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Increase Capacity")
                     .onClick(() -> {
-                        reward.setNumberReceivers(reward.getNumberReceivers() + 1);
-                        openReceiverLimitEditor();
+                        restraint.setCapacity(restraint.getCapacity() + 1);
+                        openCapacityEditor();
                     })
+                    .build();
+
+            Button currentCapacity = Button.builder()
+                    .item(new ItemStack(Items.GLOWSTONE_DUST))
+                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Capacity: " + restraint.getCapacity())
                     .build();
 
             Template template = Template.builder(5)
@@ -124,15 +138,15 @@ public class TopDamageRewardEditor implements IEditorUI<TopDamageReward> {
                     .line(LineType.Horizontal, 3, 0, 9, getWhiteFiller())
                     .border(0,0, 5,9, getBlueFiller())
                     .set(0, 4, getBossButton())
-                    .set(2, 3, decrementLimit)
-                    .set(2, 4, receiverLimit)
-                    .set(2, 5, incrementLimit)
+                    .set(2, 3, incrementCapacity)
+                    .set(2, 4, currentCapacity)
+                    .set(2, 5, decrementCapacity)
                     .set(3, 4, back)
                     .build();
 
             Page page = Page.builder()
                     .template(template)
-                    .title(TextFormatting.BLUE + "" + TextFormatting.BOLD + "Edit Receiver Limit (" + reward.getNumberReceivers() + ")")
+                    .title(TextFormatting.BLUE + "" + TextFormatting.BOLD + "Edit Capacity (" + restraint.getCapacity() + ")")
                     .build();
 
             page.forceOpenPage(player);

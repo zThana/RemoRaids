@@ -5,7 +5,7 @@ import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.api.ui.IEditorUI;
 import ca.landonjw.remoraids.implementation.rewards.ParticipationReward;
 import ca.landonjw.remoraids.implementation.ui.pages.BaseBossUI;
-import ca.landonjw.remoraids.implementation.ui.pages.RewardContentsUI;
+import ca.landonjw.remoraids.implementation.ui.pages.battle.RewardContentsUI;
 import ca.landonjw.remoraids.internal.inventory.api.Button;
 import ca.landonjw.remoraids.internal.inventory.api.LineType;
 import ca.landonjw.remoraids.internal.inventory.api.Page;

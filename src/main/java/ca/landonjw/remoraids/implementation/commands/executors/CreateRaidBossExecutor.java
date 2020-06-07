@@ -125,8 +125,6 @@ public class CreateRaidBossExecutor implements RaidsCommandExecutor {
 
 			spawner.spawn().ifPresent(entity -> {
 				BossBattleRules rules = new BossBattleRules();
-				rules.addBattleRestraint(new PreventRebattleRestraint(entity));
-
 				RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(entity).get().setBattleRules(rules);
 			});
 		} catch (Exception e) {
