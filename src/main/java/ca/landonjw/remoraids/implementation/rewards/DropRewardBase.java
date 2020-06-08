@@ -30,8 +30,6 @@ import java.util.UUID;
  */
 public abstract class DropRewardBase implements IReward {
 
-    /** A list of players that have received the reward. This will prevent players from being able to access the reward several times. */
-    List<UUID> playersReceived = new ArrayList<>();
     /** A list of all of the {@link IRewardContent} to be given from the reward. */
     protected List<IRewardContent> contents = new ArrayList<>();
 
@@ -85,23 +83,19 @@ public abstract class DropRewardBase implements IReward {
                     + "Click to receive!");
 
             rewardText = TextUtils.addCallback(rewardText, (sender) -> {
-                if(!playersReceived.contains(player.getUniqueID())){
-                    RaidDropQuery rewardQuery = new RaidDropQuery(new Vec3d(0,0,0), player.getUniqueID(), this);
-                    DropItemQueryList.queryList.add(rewardQuery);
+                RaidDropQuery rewardQuery = new RaidDropQuery(new Vec3d(0,0,0), player.getUniqueID(), this);
+                DropItemQueryList.queryList.add(rewardQuery);
 
 
-                    TextComponentTranslation title = ChatHandler.getMessage(
-                            "gui.guiItemDrops.beatPokemon",
-                            "the raid boss " + TextFormatting.DARK_RED + "" + TextFormatting.BOLD
-                                    + battle.getBossEntity().getBoss().getPokemon().getDisplayName() + TextFormatting.RESET
-                    );
+                TextComponentTranslation title = ChatHandler.getMessage(
+                        "gui.guiItemDrops.beatPokemon",
+                        "the raid boss " + TextFormatting.DARK_RED + "" + TextFormatting.BOLD
+                                + battle.getBossEntity().getBoss().getPokemon().getDisplayName() + TextFormatting.RESET
+                );
 
-                    ItemDropPacket packet = new ItemDropPacket(ItemDropMode.NormalPokemon, title, getDropItemList());
-                    Pixelmon.network.sendTo(packet, player);
-
-                    playersReceived.add(player.getUniqueID());
-                }
-            });
+                ItemDropPacket packet = new ItemDropPacket(ItemDropMode.NormalPokemon, title, getDropItemList());
+                Pixelmon.network.sendTo(packet, player);
+            }, true);
 
             player.sendMessage(rewardText);
         }

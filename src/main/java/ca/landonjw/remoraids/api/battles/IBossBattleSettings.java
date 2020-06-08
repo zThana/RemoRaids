@@ -1,10 +1,12 @@
 package ca.landonjw.remoraids.api.battles;
 
 import ca.landonjw.remoraids.api.boss.IBoss;
+import ca.landonjw.remoraids.api.rewards.IReward;
 import com.pixelmonmod.pixelmon.battles.rules.BattleRules;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -15,7 +17,7 @@ import java.util.Set;
  * @author landonjw
  * @since  1.0.0
  */
-public interface IBossBattleRules {
+public interface IBossBattleSettings {
 
     /**
      * Gets the native battle rules to be enforced, if available.
@@ -24,35 +26,27 @@ public interface IBossBattleRules {
      */
     Optional<BattleRules> getBattleRules();
 
+    void setBattleRules(@Nullable BattleRules battleRules);
+
     /**
      * Gets a set of restraints to be enforced before battle
-     * This should be empty of no battle restraints are present.
+     * This will be empty if no battle restraints are present.
      *
-     * @return
+     * @return set of restraints to be enforced before battle
      */
     Set<IBattleRestraint> getBattleRestraints();
 
-    /**
-     * Adds a {@link IBattleRestraint} to the rules.
-     *
-     * @param restraint the battle restraint to add
-     */
-    void addBattleRestraint(@Nonnull IBattleRestraint restraint);
+    boolean containsBattleRestraint(String id);
+
+    void removeBattleRestraint(String id);
 
     /**
-     * Removes a battle restraint based on it's ID.
+     * Gets a set of rewards to be distributed after the boss dies.
+     * This will be empty if no rewards are present.
      *
-     * @param id the id of battle restraint to remove
+     * @return set of rewards to be distributed after boss dies
      */
-    void removeBattleRestraint(@Nonnull String id);
-
-    /**
-     * Checks if a battle restraint with specified id is contained within the battle rules.
-     *
-     * @param id the id of battle restraint to check
-     * @return true if battle rules contains the restraint, false if they don't
-     */
-    boolean containsBattleRestraint(@Nonnull String id);
+    Set<IReward> getRewards();
 
     /**
      * Checks if a player passes all of the battle restraints and native Pixelmon battle rules if available.

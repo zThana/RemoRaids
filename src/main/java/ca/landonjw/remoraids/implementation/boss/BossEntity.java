@@ -38,9 +38,6 @@ import java.util.UUID;
  */
 public class BossEntity implements IBossEntity {
 
-    /** The UUID of the boss entity. */
-    private UUID uniqueId;
-
     /** The spawner this entity was created from */
     private IBossSpawner spawner;
     /** The boss entity is created from. */
@@ -64,7 +61,6 @@ public class BossEntity implements IBossEntity {
                       @NonNull IBoss boss,
                       @NonNull EntityStatue entity,
                       @NonNull EntityPixelmon battleEntity){
-        this.uniqueId = UUID.randomUUID();
         this.spawner = Objects.requireNonNull(spawner, "spawner cannot be null");
         this.boss = Objects.requireNonNull(boss, "boss must not be null");
         this.entity = entity;
@@ -139,12 +135,6 @@ public class BossEntity implements IBossEntity {
 
     /** {@inheritDoc} */
     @Override
-    public UUID getUniqueId() {
-        return uniqueId;
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public IBoss getBoss() {
         return boss;
     }
@@ -200,8 +190,7 @@ public class BossEntity implements IBossEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BossEntity that = (BossEntity) o;
-        return Objects.equals(uniqueId, that.uniqueId) &&
-                Objects.equals(boss, that.boss) &&
+        return Objects.equals(boss, that.boss) &&
                 Objects.equals(entity, that.entity) &&
                 Objects.equals(battleEntity, that.battleEntity) &&
                 Objects.equals(bossEngager, that.bossEngager);
@@ -210,6 +199,6 @@ public class BossEntity implements IBossEntity {
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
-        return Objects.hash(uniqueId, boss, entity, battleEntity, bossEngager);
+        return Objects.hash(boss, entity, battleEntity, bossEngager);
     }
 }

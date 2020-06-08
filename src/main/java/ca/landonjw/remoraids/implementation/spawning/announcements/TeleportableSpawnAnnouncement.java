@@ -56,7 +56,7 @@ public class TeleportableSpawnAnnouncement extends SpawnAnnouncement {
             }
         };
 
-        return TextUtils.addCallback(text, teleportConsumer);
+        return TextUtils.addCallback(text, teleportConsumer, false);
     }
 
 }

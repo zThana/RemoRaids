@@ -85,7 +85,7 @@ public class BossOptionsUI extends BaseBossUI {
 
         if(RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(bossEntity).isPresent()){
             IBossBattle battle = RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(bossEntity).get();
-            if(battle.getBattleRules().containsBattleRestraint(HaltedBattleRestraint.ID)){
+            if(bossEntity.getBoss().getBattleSettings().containsBattleRestraint(HaltedBattleRestraint.ID)){
                 ItemStack fullOrb = new ItemStack(PixelmonItems.tresOrb);
                 fullOrb.setItemDamage(ItemShrineOrb.full);
 
@@ -93,7 +93,7 @@ public class BossOptionsUI extends BaseBossUI {
                         .item(new ItemStack(Blocks.REDSTONE_TORCH))
                         .lore(Arrays.asList(TextFormatting.WHITE + "Toggled on"))
                         .onClick(() -> {
-                            battle.getBattleRules().removeBattleRestraint(HaltedBattleRestraint.ID);
+                            bossEntity.getBoss().getBattleSettings().removeBattleRestraint(HaltedBattleRestraint.ID);
                             open();
                         });
             }
@@ -101,7 +101,7 @@ public class BossOptionsUI extends BaseBossUI {
                 preventBattlesBuilder = preventBattlesBuilder
                         .lore(Arrays.asList(TextFormatting.WHITE + "Toggled off"))
                         .onClick(() -> {
-                            battle.getBattleRules().addBattleRestraint(new HaltedBattleRestraint());
+                            bossEntity.getBoss().getBattleSettings().getBattleRestraints().add(new HaltedBattleRestraint());
                             for(EntityPlayerMP player : battle.getPlayersInBattle()){
                                 player.sendMessage(new TextComponentString(TextFormatting.RED + "You have been kicked from battle due to ongoing boss editing."));
                             }

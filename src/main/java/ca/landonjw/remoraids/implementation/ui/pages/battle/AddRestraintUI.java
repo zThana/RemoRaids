@@ -45,7 +45,7 @@ public class AddRestraintUI extends BaseBossUI {
                 .build();
 
         List<Button> creatorButtons = new ArrayList<>();
-        Set<IBattleRestraint> bossRestraintsList = RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(bossEntity).get().getBattleRules().getBattleRestraints();
+        Set<IBattleRestraint> bossRestraintsList = bossEntity.getBoss().getBattleSettings().getBattleRestraints();
         for(ICreatorUI<IBattleRestraint> creator : IBossUIRegistry.getInstance().getRestraintCreators()){
             Button creatorButton = Button.builder()
                     .item(creator.getCreatorIcon())

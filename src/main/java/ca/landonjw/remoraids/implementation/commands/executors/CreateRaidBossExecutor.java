@@ -6,21 +6,17 @@ import ca.landonjw.remoraids.api.boss.IBossCreator;
 import ca.landonjw.remoraids.api.spawning.IBossSpawnLocation;
 import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import ca.landonjw.remoraids.api.spawning.ISpawnAnnouncement;
-import ca.landonjw.remoraids.implementation.battles.BossBattleRules;
-import ca.landonjw.remoraids.implementation.battles.restraints.PreventRebattleRestraint;
 import ca.landonjw.remoraids.implementation.spawning.BossSpawnLocation;
 import ca.landonjw.remoraids.implementation.spawning.announcements.SpawnAnnouncement;
 import ca.landonjw.remoraids.implementation.spawning.announcements.TeleportableSpawnAnnouncement;
 import ca.landonjw.remoraids.internal.commands.RaidsCommandExecutor;
 import ca.landonjw.remoraids.internal.config.GeneralConfig;
 import ca.landonjw.remoraids.internal.config.MessageConfig;
-import com.google.common.collect.Lists;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -123,10 +119,7 @@ public class CreateRaidBossExecutor implements RaidsCommandExecutor {
 					.boss(boss.spec(design).build())
 					.build();
 
-			spawner.spawn().ifPresent(entity -> {
-				BossBattleRules rules = new BossBattleRules();
-				RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(entity).get().setBattleRules(rules);
-			});
+			spawner.spawn();
 		} catch (Exception e) {
 			source.sendMessage(new TextComponentString(TextFormatting.RED + e.getMessage()));
 		}

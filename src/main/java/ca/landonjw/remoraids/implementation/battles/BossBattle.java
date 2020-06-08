@@ -2,7 +2,7 @@ package ca.landonjw.remoraids.implementation.battles;
 
 import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.battles.IBossBattle;
-import ca.landonjw.remoraids.api.battles.IBossBattleRules;
+import ca.landonjw.remoraids.api.battles.IBossBattleSettings;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.events.BossBattleEndedEvent;
 import ca.landonjw.remoraids.api.events.BossBattleStartedEvent;
@@ -12,10 +12,6 @@ import ca.landonjw.remoraids.api.rewards.IReward;
 import ca.landonjw.remoraids.implementation.battles.controller.BossStatusController;
 import ca.landonjw.remoraids.implementation.battles.controller.participants.BossParticipant;
 import ca.landonjw.remoraids.implementation.battles.controller.participants.BossPlayerParticipant;
-import ca.landonjw.remoraids.implementation.rewards.KillerReward;
-import ca.landonjw.remoraids.implementation.rewards.ParticipationReward;
-import ca.landonjw.remoraids.implementation.rewards.TopDamageReward;
-import ca.landonjw.remoraids.implementation.rewards.contents.CurrencyContent;
 import ca.landonjw.remoraids.internal.config.RestraintsConfig;
 import com.google.common.collect.Lists;
 import com.pixelmonmod.pixelmon.Pixelmon;
@@ -49,30 +45,20 @@ public class BossBattle implements IBossBattle {
     private IBossEntity bossEntity;
     /** The current health of the boss. This value is volatile. */
     private int currentHealth;
-    /** The rules imposed before and during battle with the boss. */
-    private IBossBattleRules bossBattleRules;
     /** Map of all players currently in battle with the boss, and the corresponding battle controllers. */
     private Map<EntityPlayerMP, BattleControllerBase> playerBattleMap = new HashMap<>();
     /** Map of player UUIDs and the amount of damage they have dealt to the boss. */
     private Map<UUID, Integer> playerDamageDealt = new HashMap<>();
     /** The UUID of the player who dealt the killing blow to the boss. May be null if boss is not dead. */
     private UUID killer;
-    /** A list of rewards to be distributed when the boss is slain. */
-    private List<IReward> defeatRewards;
 
     /**
      * Constructor for the boss battle.
      *
-     * @param bossEntity      the boss entity players will battle
-     * @param bossBattleRules the rules for the battle
-     * @param defeatRewards   the rewards to be distributed when the boss is slain
+     * @param bossEntity     the boss entity players will battle
      */
-    public BossBattle(@Nonnull IBossEntity bossEntity,
-                      @Nonnull IBossBattleRules bossBattleRules,
-                      @Nullable List<IReward> defeatRewards){
+    public BossBattle(@Nonnull IBossEntity bossEntity){
         this.bossEntity = bossEntity;
-        this.bossBattleRules = bossBattleRules;
-        this.defeatRewards = (defeatRewards != null) ? defeatRewards : new ArrayList<>();
         currentHealth = bossEntity.getBoss().getStat(StatsType.HP);
     }
 
@@ -84,20 +70,8 @@ public class BossBattle implements IBossBattle {
 
     /** {@inheritDoc} */
     @Override
-    public IBossBattleRules getBattleRules() {
-        return bossBattleRules;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void setBattleRules(@Nonnull IBossBattleRules battleRules) {
-        bossBattleRules = battleRules;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public List<IReward> getDefeatRewards() {
-        return defeatRewards;
+    public IBossBattleSettings getBattleSettings() {
+        return bossEntity.getBoss().getBattleSettings();
     }
 
     /** {@inheritDoc} */
@@ -158,8 +132,8 @@ public class BossBattle implements IBossBattle {
     @Override
     public void startBattle(@Nonnull EntityPlayerMP player, @Nullable EntityPixelmon startingPixelmon) {
         if(BattleRegistry.getBattle(player) == null){
-            if(!bossBattleRules.validate(player)){
-                List<String> rejectionReasons = bossBattleRules.getRejectionMessages(player);
+            if(!getBattleSettings().validate(player)){
+                List<String> rejectionReasons = getBattleSettings().getRejectionMessages(player);
                 for(String reason : rejectionReasons){
                     player.sendMessage(new TextComponentString(reason));
                 }
@@ -182,7 +156,7 @@ public class BossBattle implements IBossBattle {
                 BattleControllerBase battleController = BattleRegistry.startBattle(
                         new BattleParticipant[]{playerParticipant},
                         new BattleParticipant[]{bossParticipant},
-                        bossBattleRules.getBattleRules().orElse(new BattleRules())
+                        getBattleSettings().getBattleRules().orElse(new BattleRules())
                 );
 
                 battleController.globalStatusController = new BossStatusController(
@@ -265,6 +239,7 @@ public class BossBattle implements IBossBattle {
         List<EntityPlayerMP> contributors = getTopDamageDealers().stream()
                 .map(id -> FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(id))
                 .collect(Collectors.toList());
+        contributors.sort(Comparator.comparingInt(player -> getDamageDealt(player.getUniqueID()).get()));
 
         //Create output to send to players
         List<String> output = Lists.newArrayList();
@@ -297,7 +272,7 @@ public class BossBattle implements IBossBattle {
     /** {@inheritDoc} */
     @Override
     public void distributeRewards() {
-        for(IReward reward : defeatRewards){
+        for(IReward reward : getBattleSettings().getRewards()){
             reward.distributeReward(this);
         }
     }

@@ -50,7 +50,7 @@ public class RestraintsUI extends BaseBossUI {
 
             IBossBattle battle = RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(bossEntity).get();
 
-            Set<IBattleRestraint> restraints = battle.getBattleRules().getBattleRestraints();
+            Set<IBattleRestraint> restraints = bossEntity.getBoss().getBattleSettings().getBattleRestraints();
             List<Button> restraintButtons = new ArrayList<>();
 
             for(IBattleRestraint restraint : restraints){

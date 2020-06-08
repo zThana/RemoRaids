@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A user interface that displays all rewards for the boss entity.
@@ -58,9 +59,7 @@ public class RewardsUI extends BaseBossUI {
                     })
                     .build();
 
-            IBossBattle battle = RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(bossEntity).get();
-
-            List<IReward> rewards = battle.getDefeatRewards();
+            Set<IReward> rewards = bossEntity.getBoss().getBattleSettings().getRewards();
             List<Button> rewardButtons = new ArrayList<>();
 
             for(IReward reward : rewards){

@@ -66,6 +66,10 @@ public class BossSpawner implements IBossSpawner {
     /** {@inheritDoc} */
     @Override
     public Optional<IBossEntity> spawn(){
+        if(boss.getEntity().isPresent()){
+            return Optional.empty();
+        }
+
         BossSpawningEvent spawningEvent = new BossSpawningEvent(this.getBoss(), this);
         RemoRaids.EVENT_BUS.post(spawningEvent);
 

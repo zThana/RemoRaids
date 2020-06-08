@@ -2,9 +2,11 @@ package ca.landonjw.remoraids.internal.text;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -21,7 +23,7 @@ public class Callback extends CommandBase {
     public static final String CALLBACK_COMMAND = "rrcallback";
 
     /** Map of player callback UUIDs and consumers to be run when given correct UUID. */
-    private static Map<UUID, Consumer<ICommandSender>> consumerMap = new HashMap<>();
+    private static Map<UUID, TextCallback> callbackMap = new HashMap<>();
 
     /**
      * Gets the name of the command.
@@ -53,37 +55,44 @@ public class Callback extends CommandBase {
      */
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
-        if(args.length == 1){
-            try{
-                UUID uuid = UUID.fromString(args[0]);
-                if(consumerMap.containsKey(uuid)){
-                    consumerMap.get(uuid).accept(sender);
+        if(sender instanceof EntityPlayerMP){
+            EntityPlayerMP player = (EntityPlayerMP) sender;
+            if(args.length == 1){
+                try{
+                    UUID uuid = UUID.fromString(args[0]);
+                    if(callbackMap.containsKey(uuid)){
+                        callbackMap.get(uuid).tryInvokeConsumer(player);
+                    }
                 }
-            }
-            catch(IllegalArgumentException ignored){
+                catch(IllegalArgumentException ignored){
 
+                }
             }
         }
     }
 
     /**
-     * Adds a callback that can be executed via command.
+     * Creates a callback that can be executed via command.
      *
-     * @param callbackUUID the uuid of the callback
-     * @param consumer     the consumer to run when command is properly executed
+     * @param consumer       the consumer to run when command is properly executed
+     * @param invokeOnlyOnce if consumer should only be able to be invoked once by a given player
+     * @return the text callback created
      */
-    static void addCallback(UUID callbackUUID, Consumer<ICommandSender> consumer) {
-        consumerMap.put(callbackUUID, consumer);
+    static TextCallback createCallback(Consumer<ICommandSender> consumer, boolean invokeOnlyOnce) {
+        TextCallback callback = new TextCallback(consumer, invokeOnlyOnce);
+        callbackMap.put(callback.getUUID(), callback);
+        return callback;
     }
 
     /**
-     * Adds a callback that can be executed via command.
+     * Creates a callback that can be executed via command.
      *
-     * @param callbackUUID the uuid of the callback
      * @param runnable     the runnable to run when command is properly executed
+     * @param invokeOnlyOnce if consumer should only be able to be invoked once by a given player
+     * @return the text callback created
      */
-    static void addCallback(UUID callbackUUID, Runnable runnable){
-        consumerMap.put(callbackUUID, (task) -> runnable.run());
+    static TextCallback createCallback(Runnable runnable, boolean invokeOnlyOnce){
+        return createCallback((sender) -> runnable.run(), invokeOnlyOnce);
     }
 
     /**

@@ -46,7 +46,7 @@ public class ItemContent extends RewardContentBase {
     /** {@inheritDoc} **/
     @Override
     public void give(EntityPlayerMP player) {
-        player.inventory.addItemStackToInventory(item);
+        player.inventory.addItemStackToInventory(item.copy());
     }
 
     /** {@inheritDoc} */

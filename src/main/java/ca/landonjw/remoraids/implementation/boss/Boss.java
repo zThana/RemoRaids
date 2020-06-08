@@ -1,8 +1,11 @@
 package ca.landonjw.remoraids.implementation.boss;
 
+import ca.landonjw.remoraids.RemoRaids;
+import ca.landonjw.remoraids.api.battles.IBossBattleSettings;
 import ca.landonjw.remoraids.api.boss.IBoss;
+import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.util.gson.JObject;
-import ca.landonjw.remoraids.api.boss.IBoss.IBossBuilder;
+import ca.landonjw.remoraids.implementation.battles.BossBattleSettings;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
@@ -27,6 +30,7 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -38,10 +42,14 @@ import java.util.stream.Collectors;
  */
 public class Boss implements IBoss {
 
+    /** The UUID of the boss entity. */
+    private UUID uniqueId;
     /** The Boss Pokemon. This should be preserved and not used in battle due to death potentially reverting forms and stats. */
     private Pokemon pokemon;
     /** The size of the boss. */
     private float size;
+    /** The battle settings of the boss. */
+    private IBossBattleSettings battleSettings;
 
     /**
      * Default constructor for the boss.
@@ -49,8 +57,10 @@ public class Boss implements IBoss {
      * @param pokemon the pokemon to use as a boss
      */
     public Boss(@Nonnull Pokemon pokemon){
+        this.uniqueId = UUID.randomUUID();
         this.pokemon = Objects.requireNonNull(pokemon, "Pokemon must not be null");
         this.size = 1;
+        this.battleSettings = new BossBattleSettings();
     }
 
     /**
@@ -60,6 +70,7 @@ public class Boss implements IBoss {
      * @param builder the builder to use to construct boss
      */
     private Boss(@NonNull BossBuilder builder) {
+        this.uniqueId = UUID.randomUUID();
         this.pokemon = Pixelmon.pokemonFactory.create(builder.species);
         applyIfNotNull(builder.form, this.pokemon::setForm);
         applyIfNotNull(builder.level, this.pokemon::setLevel);
@@ -81,12 +92,23 @@ public class Boss implements IBoss {
 
         this.size = Math.max(1, builder.size);
         applyIfNotNull(builder.texture, this.pokemon::setCustomTexture);
+        this.battleSettings = (builder.battleSettings != null) ? battleSettings : new BossBattleSettings();
     }
 
     private static <T> void applyIfNotNull(T input, Consumer<T> consumer) {
         if(input != null) {
             consumer.accept(input);
         }
+    }
+
+    @Override
+    public UUID getUniqueId() {
+        return uniqueId;
+    }
+
+    @Override
+    public Optional<IBossEntity> getEntity() {
+        return RemoRaids.getBossAPI().getBossEntityRegistry().getBossEntity(uniqueId);
     }
 
     /** {@inheritDoc} */
@@ -162,6 +184,11 @@ public class Boss implements IBoss {
         this.pokemon.setCustomTexture(texture);
     }
 
+    @Override
+    public IBossBattleSettings getBattleSettings() {
+        return battleSettings;
+    }
+
     /** {@inheritDoc} */
 	@Override
 	public JObject serialize() {
@@ -212,6 +239,8 @@ public class Boss implements IBoss {
         private Gender gender;
         /** The moveset of the boss. May be null. */
         private Moveset moveset;
+        /** The battle settings of the boss. May be null. */
+        private IBossBattleSettings battleSettings;
         /** The size of the boss. */
         private float size;
         /** Map corresponding to each stat of the boss. Tuple represents a value, and if the value is intended as an amplification or flat value. */
@@ -311,6 +340,13 @@ public class Boss implements IBoss {
 		    return this;
 	    }
 
+	    /** {@inheritDoc} */
+        @Override
+        public IBossBuilder battleSettings(IBossBattleSettings battleSettings) {
+	        this.battleSettings = battleSettings;
+            return this;
+        }
+
         /** {@inheritDoc} */
 		@Override
 		public IBossBuilder fromJson(JObject json) {
@@ -356,6 +392,7 @@ public class Boss implements IBoss {
 		            .nature(input.getPokemon().getNature())
 		            .shiny(input.getPokemon().isShiny())
 		            .texture(input.getTexture().orElse(""))
+                    .battleSettings(input.getBattleSettings())
             ;
         }
 

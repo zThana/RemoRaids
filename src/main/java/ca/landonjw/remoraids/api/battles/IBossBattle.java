@@ -33,25 +33,11 @@ public interface IBossBattle {
     IBossEntity getBossEntity();
 
     /**
-     * Gets the {@link IBossBattleRules} that are validated and used during the boss battle.
+     * Gets the {@link IBossBattleSettings} that are validated and used during the boss battle.
      *
-     * @return the boss battle rules
+     * @return the boss battle settings
      */
-    IBossBattleRules getBattleRules();
-
-    /**
-     * Sets the {@link IBossBattleRules} that are used during the boss battle.
-     *
-     * @param battleRules the new battle rules
-     */
-    void setBattleRules(@Nonnull IBossBattleRules battleRules);
-
-    /**
-     * Gets a list of the rewards to be distributed when the boss is defeated.
-     *
-     * @return list of rewards to be distributed when the boss is defeated in battle
-     */
-    List<IReward> getDefeatRewards();
+    IBossBattleSettings getBattleSettings();
 
     /**
      * Gets the players that are currently in the boss battle.

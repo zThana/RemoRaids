@@ -23,13 +23,13 @@ public class TextUtils {
      * @return text component with callback added
      */
     public static ITextComponent addCallback(@Nonnull ITextComponent text,
-                                             @Nonnull Consumer<ICommandSender> consumer){
-        UUID callbackUUID = UUID.randomUUID();
-        Callback.addCallback(callbackUUID, consumer);
+                                             @Nonnull Consumer<ICommandSender> consumer,
+                                             boolean invokeOnlyOnce){
+        TextCallback callback = Callback.createCallback(consumer, invokeOnlyOnce);
 
         ClickEvent clickEvent = new ClickEvent(
                 ClickEvent.Action.RUN_COMMAND,
-                "/" + Callback.CALLBACK_COMMAND + " " + callbackUUID.toString()
+                "/" + Callback.CALLBACK_COMMAND + " " + callback.getUUID().toString()
         );
 
         text.getStyle().setClickEvent(clickEvent);

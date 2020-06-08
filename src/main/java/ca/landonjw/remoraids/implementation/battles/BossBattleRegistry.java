@@ -34,7 +34,7 @@ public class BossBattleRegistry implements IBossBattleRegistry {
             throw new IllegalStateException("boss is already registered in the battle registry");
         }
 
-        BossBattle battle = new BossBattle(boss, new BossBattleRules(), new ArrayList<>());
+        BossBattle battle = new BossBattle(boss);
         registry.put(boss, battle);
         return battle;
     }

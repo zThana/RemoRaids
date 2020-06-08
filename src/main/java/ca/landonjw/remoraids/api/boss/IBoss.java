@@ -1,6 +1,7 @@
 package ca.landonjw.remoraids.api.boss;
 
 import ca.landonjw.remoraids.api.IBossAPI;
+import ca.landonjw.remoraids.api.battles.IBossBattleSettings;
 import ca.landonjw.remoraids.api.util.DataSerializable;
 import ca.landonjw.remoraids.api.util.IBuilder;
 import ca.landonjw.remoraids.api.util.gson.JObject;
@@ -15,6 +16,7 @@ import com.pixelmonmod.pixelmon.enums.forms.IEnumForm;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * A IBoss represents the raid boss that will be used as a raid party host. In other words,
@@ -27,6 +29,10 @@ import java.util.Optional;
  * @since 1.0.0
  */
 public interface IBoss extends DataSerializable {
+
+	UUID getUniqueId();
+
+	Optional<IBossEntity> getEntity();
 
 	/**
 	 * Returns the pokemon that represents the raid boss. This boss is used to create the statue representing
@@ -96,6 +102,8 @@ public interface IBoss extends DataSerializable {
 	 * @param texture The texture to apply to the pokemon
 	 */
 	void setTexture(@NonNull String texture);
+
+	IBossBattleSettings getBattleSettings();
 
 	/**
 	 * Creates a new builder for a raid boss.
@@ -231,6 +239,8 @@ public interface IBoss extends DataSerializable {
 		 * @return The builder after being modified by this call
 		 */
 		IBossBuilder moveset(Moveset moveset);
+
+		IBossBuilder battleSettings(IBossBattleSettings battleSettings);
 
 		/**
 		 * Deserializes a set of JSON data to populate any set fields within the json data.

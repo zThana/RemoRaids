@@ -25,11 +25,14 @@ public class BossEntityRegistry implements IBossEntityRegistry {
     }
 
     void register(@Nonnull BossEntity entity){
-        bossEntities.put(entity.getUniqueId(), entity);
+        if(bossEntities.containsKey(entity.getBoss().getUniqueId())){
+            throw new IllegalStateException("boss already has a registered entity!");
+        }
+        bossEntities.put(entity.getBoss().getUniqueId(), entity);
     }
 
     void deregister(@Nonnull BossEntity entity){
-        bossEntities.remove(entity.getUniqueId());
+        bossEntities.remove(entity.getBoss().getUniqueId());
     }
 
     public static BossEntityRegistry getInstance(){

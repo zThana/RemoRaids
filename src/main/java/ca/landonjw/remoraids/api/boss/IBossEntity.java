@@ -9,8 +9,6 @@ import java.util.UUID;
 
 public interface IBossEntity {
 
-    UUID getUniqueId();
-
     IBoss getBoss();
 
     IBossSpawner getSpawner();

@@ -18,6 +18,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class AddRewardUI extends BaseBossUI {
 
@@ -43,7 +44,7 @@ public class AddRewardUI extends BaseBossUI {
                 .build();
 
         List<Button> creatorButtons = new ArrayList<>();
-        List<IReward> bossRewardsList = RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(bossEntity).get().getDefeatRewards();
+        Set<IReward> bossRewardsList = bossEntity.getBoss().getBattleSettings().getRewards();
         for(ICreatorUI<IReward> creator : IBossUIRegistry.getInstance().getRewardCreators()){
             Button creatorButton = Button.builder()
                     .item(creator.getCreatorIcon())

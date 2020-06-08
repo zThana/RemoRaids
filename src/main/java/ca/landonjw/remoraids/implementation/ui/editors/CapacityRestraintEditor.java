@@ -115,7 +115,7 @@ public class CapacityRestraintEditor implements IEditorUI<CapacityRestraint> {
                     .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Decrease Capacity")
                     .onClick(() -> {
                         restraint.setCapacity(restraint.getCapacity() - 1);
-                        open();
+                        openCapacityEditor();
                     })
                     .build();
 
@@ -138,9 +138,9 @@ public class CapacityRestraintEditor implements IEditorUI<CapacityRestraint> {
                     .line(LineType.Horizontal, 3, 0, 9, getWhiteFiller())
                     .border(0,0, 5,9, getBlueFiller())
                     .set(0, 4, getBossButton())
-                    .set(2, 3, incrementCapacity)
+                    .set(2, 3, decrementCapacity)
                     .set(2, 4, currentCapacity)
-                    .set(2, 5, decrementCapacity)
+                    .set(2, 5, incrementCapacity)
                     .set(3, 4, back)
                     .build();
 

@@ -1,7 +1,8 @@
 package ca.landonjw.remoraids.implementation.battles;
 
 import ca.landonjw.remoraids.api.battles.IBattleRestraint;
-import ca.landonjw.remoraids.api.battles.IBossBattleRules;
+import ca.landonjw.remoraids.api.battles.IBossBattleSettings;
+import ca.landonjw.remoraids.api.rewards.IReward;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.rules.BattleRules;
@@ -12,23 +13,26 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 /**
- * Implementation of {@link IBossBattleRules).
+ * Implementation of {@link IBossBattleSettings ).
  *
  * @author landonjw
  * @since  1.0.0
  */
-public class BossBattleRules implements IBossBattleRules {
+public class BossBattleSettings implements IBossBattleSettings {
 
     /** The restraints to validate before battle. */
     private Set<IBattleRestraint> battleRestraints;
     /** The native Pixelmon battle rules. */
     private BattleRules battleRules;
+    /** The rewards to be distributed after battle. */
+    private Set<IReward> rewards;
 
     /**
      * Constructor for a boss's rules upon entrance and during battle.
      */
-    public BossBattleRules(){
+    public BossBattleSettings(){
         this.battleRestraints = new HashSet<>();
+        this.rewards = new HashSet<>();
     }
 
     /**
@@ -37,9 +41,10 @@ public class BossBattleRules implements IBossBattleRules {
      * @param battleRestraints the restraints to validate before battle
      * @param battleRules      the native Pixelmon battle rules
      */
-    public BossBattleRules(@Nullable Set<IBattleRestraint> battleRestraints, @Nullable BattleRules battleRules){
+    public BossBattleSettings(@Nullable Set<IBattleRestraint> battleRestraints, @Nullable BattleRules battleRules, @Nullable Set<IReward> rewards){
         this.battleRestraints = (battleRestraints != null) ? battleRestraints : new HashSet<>();
         this.battleRules = battleRules;
+        this.rewards = (rewards != null) ? rewards : new HashSet<>();
     }
 
     /** {@inheritDoc} */
@@ -50,40 +55,43 @@ public class BossBattleRules implements IBossBattleRules {
 
     /** {@inheritDoc} */
     @Override
+    public void setBattleRules(@Nullable BattleRules battleRules) {
+        this.battleRules = battleRules;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public Set<IBattleRestraint> getBattleRestraints() {
         return battleRestraints;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public void addBattleRestraint(@Nonnull IBattleRestraint restraint) {
-        battleRestraints.add(restraint);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void removeBattleRestraint(@Nonnull String id){
-        IBattleRestraint toRemove = null;
+    public boolean containsBattleRestraint(String id) {
         for(IBattleRestraint restraint : battleRestraints){
-            if(restraint.getId().equals(id)){
-                toRemove = restraint;
-                break;
-            }
-        }
-        if(toRemove != null){
-            battleRestraints.remove(toRemove);
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean containsBattleRestraint(@Nonnull String id){
-        for(IBattleRestraint restraint : battleRestraints){
-            if(restraint.getId().equals(id)){
+            if(restraint.getId().equalsIgnoreCase(id)){
                 return true;
             }
         }
         return false;
+    }
+
+    @Override
+    public void removeBattleRestraint(String id) {
+        IBattleRestraint remove = null;
+        for(IBattleRestraint restraint : battleRestraints){
+            if(restraint.getId().equalsIgnoreCase(id)){
+                remove = restraint;
+                break;
+            }
+        }
+        if(remove != null){
+            battleRestraints.remove(remove);
+        }
+    }
+
+    @Override
+    public Set<IReward> getRewards() {
+        return rewards;
     }
 
     /** {@inheritDoc} */
