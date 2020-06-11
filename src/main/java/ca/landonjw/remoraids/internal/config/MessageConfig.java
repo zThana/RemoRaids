@@ -24,11 +24,18 @@ public class MessageConfig implements ConfigKeyHolder {
     public static final ConfigKey<String> RAID_ENGAGE = translationKey("engage-message", "&a&lRelease a pokemon to engage the boss!");
     public static final ConfigKey<String> RAID_SPAWN_ANNOUNCE = translationKey("spawn-announcement", "&6&lA boss &a&l{boss-species} &6&lhas spawned!");
 
-    // -------------------------------------------------------------------------------------------------
+
+	// -------------------------------------------------------------------------------------------------
     //
     //                                      UI Based Messaging
     //
     // -------------------------------------------------------------------------------------------------
+    public static final ConfigKey<String> UI_COMMON_NEXT_PAGE = translationKey("ui.common.next-page", "&bNext Page");
+    public static final ConfigKey<String> UI_COMMON_CURR_PAGE = translationKey("ui.common.current-page", "&bPage {current} / {total}");
+    public static final ConfigKey<String> UI_COMMON_LAST_PAGE = translationKey("ui.common.last-page", "&bPrevious Page");
+
+    public static final ConfigKey<String> UI_REGISTRY_TITLE = translationKey("ui.registry.title", "&1&bBoss Registry");
+    public static final ConfigKey<String> UI_REGISTRY_BOSS_TITLE = translationKey("ui.registry.boss.title", "&b&lBoss {boss_species}");
 
     private static TranslationKey translationKey(String path, String def) {
         KeyFactory<String> factory = ConfigurationAdapter::getString;

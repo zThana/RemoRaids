@@ -7,6 +7,7 @@ import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.rules.BattleRules;
 import net.minecraft.entity.player.EntityPlayerMP;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -96,7 +97,7 @@ public class BossBattleSettings implements IBossBattleSettings {
 
     /** {@inheritDoc} */
     @Override
-    public boolean validate(EntityPlayerMP player) {
+    public boolean validate(@NonNull EntityPlayerMP player) {
         boolean validationPassed = true;
         for(IBattleRestraint restraint : battleRestraints){
             if(!restraint.validatePlayer(player)){
@@ -112,7 +113,7 @@ public class BossBattleSettings implements IBossBattleSettings {
 
     /** {@inheritDoc} */
     @Override
-    public List<String> getRejectionMessages(EntityPlayerMP player) {
+    public List<String> getRejectionMessages(@NonNull EntityPlayerMP player) {
         List<String> rejectionMessages = new ArrayList<>();
         for(IBattleRestraint restraint : battleRestraints){
             if(!restraint.validatePlayer(player)){

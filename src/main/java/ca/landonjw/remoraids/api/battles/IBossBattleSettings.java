@@ -4,9 +4,9 @@ import ca.landonjw.remoraids.api.boss.IBoss;
 import ca.landonjw.remoraids.api.rewards.IReward;
 import com.pixelmonmod.pixelmon.battles.rules.BattleRules;
 import net.minecraft.entity.player.EntityPlayerMP;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -54,7 +54,7 @@ public interface IBossBattleSettings {
      * @param player the player to validate
      * @return true if the player passes the rules, false if the player doesnt
      */
-    boolean validate(@Nonnull EntityPlayerMP player);
+    boolean validate(@NonNull EntityPlayerMP player);
 
     /**
      * Get a list of rejection messages from all restraints that a player did not pass validation of.
@@ -63,6 +63,6 @@ public interface IBossBattleSettings {
      * @param player player to get rejection messages for
      * @return list of all rejection messages, or empty list if no rejection messages
      */
-    List<String> getRejectionMessages(@Nonnull EntityPlayerMP player);
+    List<String> getRejectionMessages(@NonNull EntityPlayerMP player);
 
 }

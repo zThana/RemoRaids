@@ -30,8 +30,21 @@ import java.util.UUID;
  */
 public interface IBoss extends DataSerializable {
 
+	/**
+	 * Represents the Unique ID of this boss. Namely useful for queries for information on this particular
+	 * boss and caches.
+	 *
+	 * @return The unique ID of this boss
+	 */
 	UUID getUniqueId();
 
+	/**
+	 * Attempts to locate an entity belonging to this Raid Boss. An entity will only be present
+	 * for this boss after it has been spawned in, and can be lost after it is despawned. As such,
+	 * this call returns Optionally to indicate that the entity will not always be available.
+	 *
+	 * @return The entity optionally wrapped mapping to this boss, empty otherwise
+	 */
 	Optional<IBossEntity> getEntity();
 
 	/**

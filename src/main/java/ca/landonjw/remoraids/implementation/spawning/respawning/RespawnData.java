@@ -81,10 +81,8 @@ public class RespawnData implements IBossSpawner.IRespawnData {
 	public JObject serialize() {
 		return new JObject()
 				.add("infinite", this.infinite)
-				.add("respawn-counts", new JObject()
-						.add("respawns", this.respawns)
-						.add("total", this.total)
-				)
+				.add("respawns", this.respawns)
+				.add("total", this.total)
 				.add("rate", this.rate);
 	}
 

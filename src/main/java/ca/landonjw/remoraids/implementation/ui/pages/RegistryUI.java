@@ -1,7 +1,11 @@
 package ca.landonjw.remoraids.implementation.ui.pages;
 
 import ca.landonjw.remoraids.RemoRaids;
+import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
+import ca.landonjw.remoraids.api.services.messaging.IMessageService;
+import ca.landonjw.remoraids.internal.api.config.Config;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import ca.landonjw.remoraids.internal.inventory.api.Button;
 import ca.landonjw.remoraids.internal.inventory.api.ButtonType;
 import ca.landonjw.remoraids.internal.inventory.api.Page;
@@ -12,7 +16,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -43,6 +46,9 @@ public class RegistryUI {
      * Opens the user interface for the player.
      */
     public void open(){
+        Config config = RemoRaids.getMessageConfig();
+        IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
+
         Button filler = Button.builder()
                 .item(new ItemStack(Blocks.STAINED_GLASS_PANE, 1, EnumDyeColor.LIGHT_BLUE.getMetadata()))
                 .displayName("")
@@ -50,19 +56,19 @@ public class RegistryUI {
 
         Button nextButton = Button.builder()
                 .item(new ItemStack(PixelmonItems.tradeHolderRight))
-                .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Next Page")
+                .displayName(config.get(MessageConfig.UI_COMMON_NEXT_PAGE))
                 .type(ButtonType.NextPage)
                 .build();
 
         Button infoButton = Button.builder()
                 .item(new ItemStack(PixelmonItems.tradeMonitor))
-                .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Page " + Page.CURRENT_PAGE_PLACEHOLDER + " / " + Page.TOTAL_PAGES_PLACEHOLDER)
+                .displayName(config.get(MessageConfig.UI_COMMON_CURR_PAGE))
                 .type(ButtonType.PageInfo)
                 .build();
 
         Button previousButton = Button.builder()
                 .item(new ItemStack(PixelmonItems.LtradeHolderLeft))
-                .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Previous Page")
+                .displayName(config.get(MessageConfig.UI_COMMON_LAST_PAGE))
                 .type(ButtonType.PreviousPage)
                 .build();
 
@@ -70,7 +76,7 @@ public class RegistryUI {
         for(IBossEntity bossEntity : RemoRaids.getBossAPI().getBossEntityRegistry().getAllBossEntities()){
             Button bossButton = Button.builder()
                     .item(ItemPixelmonSprite.getPhoto(bossEntity.getBoss().getPokemon()))
-                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Boss " + bossEntity.getBoss().getPokemon().getSpecies().name)
+                    .displayName(service.interpret(config.get(MessageConfig.UI_REGISTRY_BOSS_TITLE), bossEntity::getBoss))
                     .lore(UIUtils.getPokemonLore(bossEntity))
                     .onClick((action) -> {
                         BossOptionsUI options = new BossOptionsUI(null, player, bossEntity);
@@ -90,7 +96,7 @@ public class RegistryUI {
 
         Page page = Page.builder()
                 .template(template)
-                .title(TextFormatting.BLUE + "" + TextFormatting.BOLD + "Boss Registry")
+                .title(config.get(MessageConfig.UI_REGISTRY_TITLE))
                 .dynamicContentArea(1, 1, 3, 7)
                 .dynamicContents(bossButtons)
                 .build();
