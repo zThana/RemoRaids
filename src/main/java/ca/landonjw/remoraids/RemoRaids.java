@@ -4,6 +4,10 @@ import ca.landonjw.remoraids.api.BossAPIProvider;
 import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.boss.IBoss;
 import ca.landonjw.remoraids.api.boss.IBossCreator;
+import ca.landonjw.remoraids.api.services.messaging.IMessageService;
+import ca.landonjw.remoraids.api.services.placeholders.IPlaceholderContext;
+import ca.landonjw.remoraids.api.services.placeholders.IPlaceholderParser;
+import ca.landonjw.remoraids.api.services.placeholders.service.IPlaceholderService;
 import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import ca.landonjw.remoraids.api.util.gson.JObject;
 import ca.landonjw.remoraids.implementation.BossAPI;
@@ -26,6 +30,10 @@ import ca.landonjw.remoraids.internal.config.readers.ForgeConfig;
 import ca.landonjw.remoraids.internal.config.readers.ForgeConfigAdapter;
 import ca.landonjw.remoraids.internal.inventory.api.InventoryAPI;
 import ca.landonjw.remoraids.internal.network.RaidsDropPacketHandler;
+import ca.landonjw.remoraids.internal.services.MessageService;
+import ca.landonjw.remoraids.internal.services.PlaceholderService;
+import ca.landonjw.remoraids.internal.services.placeholders.PlaceholderContext;
+import ca.landonjw.remoraids.internal.services.placeholders.PlaceholderParser;
 import ca.landonjw.remoraids.internal.tasks.TaskTickListener;
 import ca.landonjw.remoraids.internal.text.Callback;
 import com.google.common.collect.Lists;
@@ -81,6 +89,17 @@ public class RemoRaids {
         generalConfig = new ForgeConfig(new ForgeConfigAdapter(directory.toPath().resolve("general.conf")), new GeneralConfig());
         restraintsConfig = new ForgeConfig(new ForgeConfigAdapter(directory.toPath().resolve("restraints.conf")), new RestraintsConfig());
         messageConfig = new ForgeConfig(new ForgeConfigAdapter(directory.toPath().resolve("messages.conf")), new MessageConfig());
+
+        getBossAPI().getRaidRegistry().registerBuilderSupplier(IBossCreator.class, BossCreator::new);
+        getBossAPI().getRaidRegistry().registerBuilderSupplier(IBoss.IBossBuilder.class, Boss.BossBuilder::new);
+        getBossAPI().getRaidRegistry().registerBuilderSupplier(IBossSpawner.IRespawnData.IRespawnDataBuilder.class, RespawnData.RespawnDataBuilder::new);
+        getBossAPI().getRaidRegistry().registerBuilderSupplier(IPlaceholderContext.Builder.class, PlaceholderContext.PlaceholderContextBuilder::new);
+        getBossAPI().getRaidRegistry().registerBuilderSupplier(IPlaceholderParser.Builder.class, PlaceholderParser.PlaceholderParserBuilder::new);
+
+        getBossAPI().getRaidRegistry().registerSpawnerBuilderSupplier("default", BossSpawner.BossSpawnerBuilder::new);
+        
+        getBossAPI().getRaidRegistry().register(IMessageService.class, new MessageService());
+        getBossAPI().getRaidRegistry().register(IPlaceholderService.class, new PlaceholderService());
     }
 
     @Mod.EventHandler
@@ -91,12 +110,6 @@ public class RemoRaids {
         Pixelmon.EVENT_BUS.register(new EngageListener());
         Pixelmon.EVENT_BUS.register(new BossDropListener());
         Pixelmon.EVENT_BUS.register(new StatueInteractListener());
-
-        getBossAPI().getRaidRegistry().registerBuilderSupplier(IBossCreator.class, BossCreator::new);
-        getBossAPI().getRaidRegistry().registerBuilderSupplier(IBoss.IBossBuilder.class, Boss.BossBuilder::new);
-        getBossAPI().getRaidRegistry().registerBuilderSupplier(IBossSpawner.IRespawnData.IRespawnDataBuilder.class, RespawnData.RespawnDataBuilder::new);
-
-        getBossAPI().getRaidRegistry().registerSpawnerBuilderSupplier("default", BossSpawner.BossSpawnerBuilder::new);
 
         RemoRaids.EVENT_BUS.register(this);
         RemoRaids.EVENT_BUS.register(new RaidBossDeathListener());

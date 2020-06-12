@@ -52,6 +52,14 @@ public interface IPlaceholderParser {
 	String getKey();
 
 	/**
+	 * Represents the functionality of this parser. This parser will execute this function when we attempt
+	 * to parse incoming placeholder context.
+	 *
+	 * @return The function that'll process incoming placeholder context
+	 */
+	Function<IPlaceholderContext, Optional<String>> getParser();
+
+	/**
 	 * Attempts to parse a placeholder given a set of context.
 	 *
 	 * <p>This method should never return exceptionally. If this parser is unable to parse
@@ -67,7 +75,7 @@ public interface IPlaceholderParser {
 
 		Builder key(String key);
 
-		Builder parser(Function<IPlaceholderContext, String> parser);
+		Builder parser(Function<IPlaceholderContext, Optional<String>> parser);
 
 	}
 

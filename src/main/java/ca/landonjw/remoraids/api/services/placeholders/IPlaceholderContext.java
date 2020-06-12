@@ -56,23 +56,6 @@ public interface IPlaceholderContext {
 	}
 
 	/**
-	 * Attempts to use the parser to parse the context of this placeholder. This will return empty only
-	 * when the parser fails expectedly.
-	 *
-	 * @return A parsed String representing the context applied to this placeholder context
-	 */
-	default Optional<String> parse() {
-		return this.getParser().parse(this);
-	}
-
-	/**
-	 * Represents the parser that this context will employ in order to attempt parsing its output.
-	 *
-	 * @return The parser that matched the input key
-	 */
-	IPlaceholderParser getParser();
-
-	/**
 	 * Attempts to return the associated object to this context. If no object was specified, this will simply
 	 * return empty.
 	 *
@@ -90,8 +73,6 @@ public interface IPlaceholderContext {
 	Optional<List<String>> getArguments();
 
 	interface Builder extends IBuilder<IPlaceholderContext, Builder> {
-
-		Builder parser(IPlaceholderParser parser);
 
 		default Builder setAssociatedObject(EntityPlayerMP player) {
 			final UUID id = player.getUniqueID();
