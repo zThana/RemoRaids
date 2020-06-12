@@ -35,7 +35,7 @@ public class MessageConfig implements ConfigKeyHolder {
     public static final ConfigKey<String> UI_COMMON_LAST_PAGE = translationKey("ui.common.last-page", "&bPrevious Page");
 
     public static final ConfigKey<String> UI_REGISTRY_TITLE = translationKey("ui.registry.title", "&1&bBoss Registry");
-    public static final ConfigKey<String> UI_REGISTRY_BOSS_TITLE = translationKey("ui.registry.boss.title", "&b&lBoss {boss_species}");
+    public static final ConfigKey<String> UI_REGISTRY_BOSS_TITLE = translationKey("ui.registry.boss.title", "&b&lBoss {boss}");
 
     private static TranslationKey translationKey(String path, String def) {
         KeyFactory<String> factory = ConfigurationAdapter::getString;

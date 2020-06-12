@@ -80,7 +80,7 @@ public interface IPlaceholderService extends IService.Catalog {
 	 * @param association The object we wish to associate with
 	 * @return A parsed representation of the incoming token, or the direct input to signify a failure to parse
 	 */
-	default Optional<String> parse(@NonNull String token, Supplier<Object> association) {
+	default Optional<String> parse(@NonNull String token, @Nullable Supplier<Object> association) {
 		return this.parse(token, association, Collections.emptyList());
 	}
 
@@ -94,8 +94,8 @@ public interface IPlaceholderService extends IService.Catalog {
 	 * @param arguments A collection of contextual arguments for the parser
 	 * @return A parsed representation of the incoming token, or the direct input to signify a failure to parse
 	 */
-	default Optional<String> parse(@NonNull String token, Supplier<Object> association, String... arguments) {
-		return this.parse(token, association, Lists.newArrayList(arguments));
+	default Optional<String> parse(@NonNull String token, @Nullable Supplier<Object> association, @Nullable String... arguments) {
+		return this.parse(token, association, arguments != null ? Lists.newArrayList(arguments) : Collections.emptyList());
 	}
 
 	/**

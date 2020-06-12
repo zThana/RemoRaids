@@ -97,9 +97,12 @@ public class RemoRaids {
         getBossAPI().getRaidRegistry().registerBuilderSupplier(IPlaceholderParser.Builder.class, PlaceholderParser.PlaceholderParserBuilder::new);
 
         getBossAPI().getRaidRegistry().registerSpawnerBuilderSupplier("default", BossSpawner.BossSpawnerBuilder::new);
-        
+
         getBossAPI().getRaidRegistry().register(IMessageService.class, new MessageService());
-        getBossAPI().getRaidRegistry().register(IPlaceholderService.class, new PlaceholderService());
+
+        IPlaceholderService placeholders = new PlaceholderService();
+        placeholders.registerDefaults();
+        getBossAPI().getRaidRegistry().register(IPlaceholderService.class, placeholders);
     }
 
     @Mod.EventHandler

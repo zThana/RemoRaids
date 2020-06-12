@@ -27,7 +27,7 @@ public class InternalRaidsRegistry implements IRaidRegistry {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> Optional<T> get(Class<T> type) {
-		Preconditions.checkArgument(!bindings.containsKey(type), "Could not locate a matching registration for type: " + type.getCanonicalName());
+		Preconditions.checkArgument(bindings.containsKey(type), "Could not locate a matching registration for type: " + type.getCanonicalName());
 		return Optional.ofNullable((T) bindings.get(type).get());
 	}
 

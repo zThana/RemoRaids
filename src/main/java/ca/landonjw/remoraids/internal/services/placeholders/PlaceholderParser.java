@@ -22,11 +22,6 @@ public class PlaceholderParser implements IPlaceholderParser {
 	}
 
 	@Override
-	public Function<IPlaceholderContext, Optional<String>> getParser() {
-		return this.parser;
-	}
-
-	@Override
 	public Optional<String> parse(IPlaceholderContext context) {
 		return this.parser.apply(context);
 	}
@@ -51,7 +46,7 @@ public class PlaceholderParser implements IPlaceholderParser {
 		@Override
 		public Builder from(IPlaceholderParser input) {
 			this.key = input.getKey();
-			this.parser = input.getParser();
+			this.parser = context -> Optional.empty();
 			return this;
 		}
 

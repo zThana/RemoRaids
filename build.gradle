@@ -91,7 +91,10 @@ processResources {
 shadowJar {
     archiveName = "RemoRaids-${project.ext.pixelmon}-${version}.jar"
 
-    relocate 'org.checkerframework', 'ca.landonjw.remoraids.internal.relocations.checkerframework'
+    relocate 'org.checkerframework', 'ca.landonjw.remoraids.internal.relocations.org.checkerframework'
+    relocate 'com.google', 'ca.landonjw.remoraids.internal.relocations.com.google'
+    relocate 'javax', 'ca.landonjw.remoraids.internal.relocations.javax'
+    relocate 'org.codehaus', 'ca.landonjw.remoraids.internal.relocations.org.codehaus'
 
     exclude 'dummyThing'
 }

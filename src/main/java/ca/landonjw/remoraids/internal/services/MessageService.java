@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 public class MessageService implements IMessageService {
 
-	private static final Pattern PLACEHOLDER_LOCATOR = Pattern.compile("(^[^{]+)?([{][{][^{} ]+[}][}])(.+)?");
+	private static final Pattern PLACEHOLDER_LOCATOR = Pattern.compile("(^[^{]+)?([{][^{} ]+[}])(.+)?");
 
 	@Override
 	public String interpret(String input, Supplier<Object> association) {
@@ -26,21 +26,24 @@ public class MessageService implements IMessageService {
 				String[] token = matcher.group(2).replace("{", "").replace("}", "").toLowerCase().split("\\|");
 
 				String placeholder = token[0];
-				String[] arguments = token[1].split(",");
-				Optional<String> result = service.parse(placeholder, association, arguments);
+				String[] arguments = null;
+				if(token.length > 1) {
+					arguments = token[1].split(",");
+				}
 
 				if(matcher.group(1) != null) {
 					output.append(matcher.group(1));
 					working = working.replaceFirst("^[^{]+", "");
 				}
 
+				Optional<String> result = service.parse(placeholder, association, arguments);
 				if(result.isPresent()) {
 					output.append(result.get());
 				} else {
 					output.append(matcher.group(2));
 				}
 
-				working = working.replaceFirst("[{][{][^{} ]+[}][}]", "");
+				working = working.replaceFirst("[{][^{} ]+[}]", "");
 			} else {
 				output.append(working);
 				break;

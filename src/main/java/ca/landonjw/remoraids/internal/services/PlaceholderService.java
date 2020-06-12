@@ -3,6 +3,7 @@ package ca.landonjw.remoraids.internal.services;
 import ca.landonjw.remoraids.api.services.placeholders.IPlaceholderContext;
 import ca.landonjw.remoraids.api.services.placeholders.IPlaceholderParser;
 import ca.landonjw.remoraids.api.services.placeholders.service.IPlaceholderService;
+import ca.landonjw.remoraids.internal.services.placeholders.provided.RaidBossPlaceholderParser;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayerMP;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -57,6 +58,7 @@ public class PlaceholderService implements IPlaceholderService {
 				})
 				.build()
 		);
+		this.register(new RaidBossPlaceholderParser());
 	}
 
 }
