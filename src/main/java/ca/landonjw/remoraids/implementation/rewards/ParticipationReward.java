@@ -1,6 +1,9 @@
 package ca.landonjw.remoraids.implementation.rewards;
 
+import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.battles.IBossBattle;
+import ca.landonjw.remoraids.internal.api.config.Config;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.PlayerList;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -32,7 +35,8 @@ public class ParticipationReward extends DropRewardBase {
     /** {@inheritDoc} */
     @Override
     public String getDescription() {
-        return "Participation Reward";
+        Config config = RemoRaids.getMessageConfig();
+        return config.get(MessageConfig.PARTICIPATION_REWARD_TITLE);
     }
 
 }

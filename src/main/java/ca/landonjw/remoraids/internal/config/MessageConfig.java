@@ -19,7 +19,7 @@ public class MessageConfig implements ConfigKeyHolder {
 
     // -------------------------------------------------------------------------------------------------
     //
-    //                                      Restraints Messaging
+    //                                      Restraints Messages
     //
     // -------------------------------------------------------------------------------------------------
     public static final ConfigKey<String> RESTRAINT_CAPACITY_REACHED = translationKey("restraints.capacity-reached", "&cThere are too many players currently battling the boss...");
@@ -27,8 +27,33 @@ public class MessageConfig implements ConfigKeyHolder {
     public static final ConfigKey<String> RESTRAINT_NO_REBATTLE = translationKey("restraints.no-rebattle", "&cYou cannot attempt to battle this raid boss again...");
     public static final ConfigKey<String> RESTRAINT_HALTED = translationKey("restraints.halted", "&cThis boss is not allowed to battle currently!");
 
+    // -------------------------------------------------------------------------------------------------
+    //
+    //                                       Rewards Messages
+    //
+    // -------------------------------------------------------------------------------------------------
+    public static final ConfigKey<String> REWARD_RECEIVED = translationKey("rewards.reward-received", "&6You have received a &a&l{reward}&r&6! Click to receive!");
+    public static final ConfigKey<String> TOP_DAMAGE_REWARD_TITLE = translationKey("rewards.top-damage-reward-title", "Top Damage Reward");
+    public static final ConfigKey<String> KILLER_REWARD_TITLE = translationKey("rewards.killer-reward-title", "Killer Reward");
+    public static final ConfigKey<String> PARTICIPATION_REWARD_TITLE = translationKey("rewards.participation-reward-title", "Participation Reward");
+
+
+    public static final ConfigKey<String> CURRENCY_RECEIVED = translationKey("rewards.reward-contents.currency-received", "&aYou have received {integer} dollars!");
+    public static final ConfigKey<String> POKEMON_RECEIVED = translationKey("rewards.reward-contents.pokemon-received", "&aYou have received a {pokemon}!");
+    public static final ConfigKey<String> POKEMON_REWARD_CONTENT_TITLE = translationKey("rewards.reward-contents.pokemon-reward-content-title", "Pokemon: {spec}");
+    public static final ConfigKey<String> ITEM_REWARD_CONTENT_TITLE = translationKey("rewards.reward-contents.item-reward-content-title", "{itemstack|name} (x {itemstack|count})");
+    public static final ConfigKey<String> COMMAND_REWARD_CONTENT_TITLE = translationKey("rewards.reward-contents.command-reward-content-title", "Command: {string}");
+    public static final ConfigKey<String> CURRENCY_REWARD_CONTENT_TITLE = translationKey("rewards.reward-contents.currency-reward-content-title", "Currency: {integer}");
+
     public static final ConfigKey<String> RAID_ENGAGE = translationKey("engage-message", "&a&lRelease a pokemon to engage the boss!");
     public static final ConfigKey<String> RAID_SPAWN_ANNOUNCE = translationKey("spawn-announcement", "&6&lA boss &a&l{boss-species} &6&lhas spawned!");
+
+    // -------------------------------------------------------------------------------------------------
+    //
+    //                                       Error Messaging
+    //
+    // -------------------------------------------------------------------------------------------------
+    public static final ConfigKey<String> ERROR_CHISEL_INTERACT = translationKey("errors.chisel-interaction", "&cYou may not perform this action on a raid boss!");
 
 	// -------------------------------------------------------------------------------------------------
     //

@@ -1,11 +1,13 @@
 package ca.landonjw.remoraids.implementation.listeners.pixelmon;
 
+import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
-import ca.landonjw.remoraids.implementation.BossAPI;
+import ca.landonjw.remoraids.api.services.messaging.IMessageService;
+import ca.landonjw.remoraids.internal.api.config.Config;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import com.pixelmonmod.pixelmon.api.events.StatueEvent;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**
@@ -28,7 +30,9 @@ public class StatueInteractListener {
         for(IBossEntity entity : IBossAPI.getInstance().getBossEntityRegistry().getAllBossEntities()){
             if(entity.getEntity().getUniqueID().equals(event.statue.getUniqueID())){
                 event.setCanceled(true);
-                event.player.sendMessage(new TextComponentString(TextFormatting.RED + "You may not perform this action on a raid boss!"));
+                Config config = RemoRaids.getMessageConfig();
+                IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
+                event.player.sendMessage(new TextComponentString(service.interpret(config.get(MessageConfig.ERROR_CHISEL_INTERACT), null)));
             }
         }
     }
@@ -44,7 +48,9 @@ public class StatueInteractListener {
         for(IBossEntity entity : IBossAPI.getInstance().getBossEntityRegistry().getAllBossEntities()){
             if(entity.getEntity().getUniqueID().equals(event.getStatue().getUniqueID())){
                 event.setCanceled(true);
-                event.player.sendMessage(new TextComponentString(TextFormatting.RED + "You may not perform this action on a raid boss!"));
+                Config config = RemoRaids.getMessageConfig();
+                IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
+                event.player.sendMessage(new TextComponentString(service.interpret(config.get(MessageConfig.ERROR_CHISEL_INTERACT), null)));
             }
         }
     }

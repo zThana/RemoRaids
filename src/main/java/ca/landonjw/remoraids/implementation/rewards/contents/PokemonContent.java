@@ -1,7 +1,13 @@
 package ca.landonjw.remoraids.implementation.rewards.contents;
 
+import ca.landonjw.remoraids.RemoRaids;
+import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.rewards.IReward;
 import ca.landonjw.remoraids.api.rewards.contents.IRewardContent;
+import ca.landonjw.remoraids.api.services.messaging.IMessageService;
+import ca.landonjw.remoraids.api.services.placeholders.IParsingContext;
+import ca.landonjw.remoraids.internal.api.config.Config;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
@@ -21,9 +27,10 @@ import java.util.Objects;
  * @author landonjw
  * @since  1.0.0
  */
-public class PokemonContent extends RewardContentBase {
+public class PokemonContent implements IRewardContent {
 
-
+    /** The description of the reward. */
+    private String description;
     /** The Pokemon to be rewarded. */
     private PokemonSpec spec;
     /** The sprite to be used for item. Created in constructor from supplied spec. */
@@ -36,9 +43,8 @@ public class PokemonContent extends RewardContentBase {
      * @throws NullPointerException if spec is null
      */
     public PokemonContent(@Nonnull PokemonSpec spec){
-        super("Pokemon: " + spec.name);
         this.spec = spec;
-        pokemonSprite = ItemPixelmonSprite.getPhoto(Pixelmon.pokemonFactory.create(spec));
+        this.pokemonSprite = ItemPixelmonSprite.getPhoto(Pixelmon.pokemonFactory.create(spec));
     }
 
     /**
@@ -49,9 +55,8 @@ public class PokemonContent extends RewardContentBase {
      * @throws NullPointerException if spec is null
      */
     public PokemonContent(@Nonnull PokemonSpec spec, @Nullable String description){
-        super(description == null ? "Pokemon: " + spec.name : description);
-        this.spec = Objects.requireNonNull(spec);
-        pokemonSprite = ItemPixelmonSprite.getPhoto(Pixelmon.pokemonFactory.create(spec));
+        this(spec);
+        this.description = description;
     }
 
     /** {@inheritDoc} **/
@@ -59,7 +64,32 @@ public class PokemonContent extends RewardContentBase {
     public void give(EntityPlayerMP player) {
         Pokemon pokemon = Pixelmon.pokemonFactory.create(spec);
         Pixelmon.storageManager.getParty(player).add(pokemon);
-        player.sendMessage(new TextComponentString(TextFormatting.GREEN + "You have received a " + pokemon.getDisplayName() + "!"));
+
+        Config config = RemoRaids.getMessageConfig();
+        IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
+        IParsingContext context = IParsingContext.builder()
+                .add(EntityPlayerMP.class, () -> player)
+                .add(Pokemon.class, () -> pokemon)
+                .build();
+        player.sendMessage(new TextComponentString(service.interpret(config.get(MessageConfig.POKEMON_RECEIVED), context)));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getDescription() {
+        if(description == null){
+            Config config = RemoRaids.getMessageConfig();
+            IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
+            IParsingContext context = IParsingContext.builder()
+                    .add(PokemonSpec.class, () -> spec)
+                    .build();
+            return service.interpret(config.get(MessageConfig.POKEMON_REWARD_CONTENT_TITLE), context);
+        }
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /** {@inheritDoc} */

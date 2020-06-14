@@ -1,10 +1,17 @@
 package ca.landonjw.remoraids.implementation.rewards;
 
+import ca.landonjw.remoraids.RemoRaids;
+import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.battles.IBossBattle;
 import ca.landonjw.remoraids.api.rewards.IReward;
 import ca.landonjw.remoraids.api.rewards.contents.IRewardContent;
+import ca.landonjw.remoraids.api.services.messaging.IMessageService;
+import ca.landonjw.remoraids.api.services.placeholders.IParsingContext;
+import ca.landonjw.remoraids.internal.api.config.Config;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import ca.landonjw.remoraids.internal.text.TextUtils;
 import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.comm.ChatHandler;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.itemDrops.ItemDropMode;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.itemDrops.ItemDropPacket;
@@ -78,9 +85,13 @@ public abstract class DropRewardBase implements IReward {
     @Override
     public void distributeReward(IBossBattle battle) {
         for(EntityPlayerMP player : getWinnersList(battle)){
-            ITextComponent rewardText = new TextComponentString(TextFormatting.GOLD + "You have received a "
-                    + TextFormatting.GREEN + "" + TextFormatting.BOLD + getDescription() + TextFormatting.GOLD + "! "
-                    + "Click to receive!");
+            Config config = RemoRaids.getMessageConfig();
+            IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
+            IParsingContext context = IParsingContext.builder()
+                    .add(EntityPlayerMP.class, () -> player)
+                    .add(IReward.class, () -> this)
+                    .build();
+            ITextComponent rewardText = new TextComponentString(service.interpret(config.get(MessageConfig.REWARD_RECEIVED), context));
 
             rewardText = TextUtils.addCallback(rewardText, (sender) -> {
                 RaidDropQuery rewardQuery = new RaidDropQuery(new Vec3d(0,0,0), player.getUniqueID(), this);

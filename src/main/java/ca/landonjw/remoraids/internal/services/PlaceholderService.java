@@ -1,13 +1,11 @@
 package ca.landonjw.remoraids.internal.services;
 
+import ca.landonjw.remoraids.api.rewards.IReward;
 import ca.landonjw.remoraids.api.services.placeholders.IParsingContext;
 import ca.landonjw.remoraids.api.services.placeholders.IPlaceholderContext;
 import ca.landonjw.remoraids.api.services.placeholders.IPlaceholderParser;
 import ca.landonjw.remoraids.api.services.placeholders.service.IPlaceholderService;
-import ca.landonjw.remoraids.internal.services.placeholders.provided.CapacityPlaceholderParser;
-import ca.landonjw.remoraids.internal.services.placeholders.provided.CooldownPlaceholderParser;
-import ca.landonjw.remoraids.internal.services.placeholders.provided.PlayerPlaceholderParser;
-import ca.landonjw.remoraids.internal.services.placeholders.provided.RaidBossPlaceholderParser;
+import ca.landonjw.remoraids.internal.services.placeholders.provided.*;
 import com.google.common.collect.Maps;
 
 import javax.annotation.Nonnull;
@@ -45,10 +43,49 @@ public class PlaceholderService implements IPlaceholderService {
 
 	@Override
 	public void registerDefaults() {
+		this.register(IPlaceholderParser.builder()
+				.key("integer")
+				.parser((context) -> {
+					Integer value = context.get(Integer.class).orElse(null);
+
+					if(value != null){
+						return Optional.of(value.toString());
+					}
+					return Optional.empty();
+				})
+				.build());
+
+		this.register(IPlaceholderParser.builder()
+				.key("string")
+				.parser((context) -> {
+					String value = context.get(String.class).orElse(null);
+
+					if(value != null){
+						return Optional.of(value);
+					}
+					return Optional.empty();
+				})
+				.build());
+
+		this.register(IPlaceholderParser.builder()
+				.key("reward")
+				.parser((context) -> {
+					IReward reward = context.get(IReward.class).orElse(null);
+
+					if(reward != null){
+						return Optional.of(reward.getDescription());
+					}
+					return Optional.empty();
+				})
+				.build());
+
 		this.register(new PlayerPlaceholderParser());
+		this.register(new RaidBossPlaceholderParser());
 		this.register(new CapacityPlaceholderParser());
 		this.register(new CooldownPlaceholderParser());
-		this.register(new RaidBossPlaceholderParser());
+		this.register(new PokemonPlaceholderParser());
+		this.register(new PokemonSpecPlaceholderParser());
+		this.register(new ItemStackPlaceholderParser());
 	}
 
 }

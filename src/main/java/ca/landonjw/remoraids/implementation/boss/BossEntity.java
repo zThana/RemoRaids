@@ -1,18 +1,23 @@
 package ca.landonjw.remoraids.implementation.boss;
 
 import ca.landonjw.remoraids.RemoRaids;
+import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.battles.IBattleRestraint;
 import ca.landonjw.remoraids.api.battles.IBossBattle;
 import ca.landonjw.remoraids.api.boss.IBoss;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.boss.engage.IBossEngager;
 import ca.landonjw.remoraids.api.events.BossDeathEvent;
+import ca.landonjw.remoraids.api.services.messaging.IMessageService;
+import ca.landonjw.remoraids.api.services.placeholders.IParsingContext;
 import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import ca.landonjw.remoraids.implementation.battles.BossBattleRegistry;
+import ca.landonjw.remoraids.implementation.battles.restraints.CapacityRestraint;
 import ca.landonjw.remoraids.implementation.boss.engage.ActionBarEngager;
 import ca.landonjw.remoraids.implementation.boss.engage.BossBarEngager;
 import ca.landonjw.remoraids.implementation.boss.engage.OverlayEngager;
 import ca.landonjw.remoraids.implementation.boss.engage.TitleEngager;
+import ca.landonjw.remoraids.internal.api.config.Config;
 import ca.landonjw.remoraids.internal.config.GeneralConfig;
 import ca.landonjw.remoraids.internal.config.MessageConfig;
 import ca.landonjw.remoraids.internal.tasks.Task;
@@ -77,19 +82,26 @@ public class BossEntity implements IBossEntity {
      * Sets the engager of the entity depending on configuration values.
      */
     private void setEngager(){
+        Config config = RemoRaids.getMessageConfig();
+        IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
+
+        IParsingContext context = IParsingContext.builder()
+                .add(IBoss.class, this::getBoss)
+                .build();
+
         switch(RemoRaids.getGeneralConfig().get(GeneralConfig.ENGAGE_MESSAGE_TYPE)){
             case 1:
                 bossEngager = new ActionBarEngager(
                         this,
                         RemoRaids.getGeneralConfig().get(GeneralConfig.ENGAGE_RANGE),
-                        RemoRaids.getMessageConfig().get(MessageConfig.RAID_ENGAGE)
+                        service.interpret(config.get(MessageConfig.RAID_ENGAGE), context)
                 );
                 break;
             case 2:
                 bossEngager = new BossBarEngager(
                         this,
                         RemoRaids.getGeneralConfig().get(GeneralConfig.ENGAGE_RANGE),
-                        RemoRaids.getMessageConfig().get(MessageConfig.RAID_ENGAGE),
+                        service.interpret(config.get(MessageConfig.RAID_ENGAGE), context),
                         BossInfo.Color.WHITE,
                         BossInfo.Overlay.PROGRESS
                 );
@@ -98,14 +110,14 @@ public class BossEntity implements IBossEntity {
                 bossEngager = new OverlayEngager(
                         this,
                         RemoRaids.getGeneralConfig().get(GeneralConfig.ENGAGE_RANGE),
-                        RemoRaids.getMessageConfig().get(MessageConfig.RAID_ENGAGE)
+                        service.interpret(config.get(MessageConfig.RAID_ENGAGE), context)
                 );
                 break;
             case 4:
                 bossEngager = new TitleEngager(
                         this,
                         RemoRaids.getGeneralConfig().get(GeneralConfig.ENGAGE_RANGE),
-                        RemoRaids.getMessageConfig().get(MessageConfig.RAID_ENGAGE),
+                        service.interpret(config.get(MessageConfig.RAID_ENGAGE), context),
                         SPacketTitle.Type.TITLE
                 );
                 break;

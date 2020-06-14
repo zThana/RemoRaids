@@ -45,7 +45,6 @@ public class RaidsCommand extends CommandBase {
 
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-		//if(sender instanceof EntityPlayerMP) {
 		if (args.length >= 1) {
 			String sub = args[0].toLowerCase();
 			RaidsCommandExecutor executor = executors.get(sub);
@@ -53,15 +52,16 @@ public class RaidsCommand extends CommandBase {
 				String[] arguments = new String[args.length - 1];
 				System.arraycopy(args, 1, arguments, 0, args.length - 1);
 				executor.execute(server, sender, arguments);
-			} else {
+			}
+			else {
 				sender.sendMessage(new TextComponentString(TextFormatting.RED + "Sub-command not recognized!"));
 				sender.sendMessage(new TextComponentString(""));
 				sender.sendMessage(new TextComponentString(this.getUsage(sender)));
 			}
-		} else {
+		}
+		else {
 			sender.sendMessage(new TextComponentString(this.getUsage(sender)));
 		}
-		//}
 	}
 
 	@Override

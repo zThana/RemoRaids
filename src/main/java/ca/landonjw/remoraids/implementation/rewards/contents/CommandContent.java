@@ -1,11 +1,18 @@
 package ca.landonjw.remoraids.implementation.rewards.contents;
 
+import ca.landonjw.remoraids.RemoRaids;
+import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.rewards.IReward;
 import ca.landonjw.remoraids.api.rewards.contents.IRewardContent;
+import ca.landonjw.remoraids.api.services.messaging.IMessageService;
+import ca.landonjw.remoraids.api.services.placeholders.IParsingContext;
+import ca.landonjw.remoraids.internal.api.config.Config;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import javax.annotation.Nonnull;
@@ -18,8 +25,10 @@ import java.util.Objects;
  * @author landonjw
  * @since  1.0.0
  */
-public class CommandContent extends RewardContentBase {
+public class CommandContent implements IRewardContent {
 
+    /** The description for the command content. */
+    private String description;
     /** Command to be executed. */
     private String command;
 
@@ -30,7 +39,6 @@ public class CommandContent extends RewardContentBase {
      * @throws NullPointerException if command is null
      */
     public CommandContent(@Nonnull String command){
-        super("Command: " + command);
         this.command = Objects.requireNonNull(command);
     }
 
@@ -42,16 +50,37 @@ public class CommandContent extends RewardContentBase {
      * @throws NullPointerException if command is null
      */
     public CommandContent(@Nonnull String command, @Nullable String description){
-        super(description == null ? "Command: " + command : description);
-        this.command = command;
+        this(command);
+        this.description = description;
     }
 
     /** {@inheritDoc} */
     @Override
     public void give(EntityPlayerMP player) {
-        String parsedCommand = command.replace("{player}", player.getName());
+        IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
+        IParsingContext context = IParsingContext.builder()
+                .add(EntityPlayerMP.class, () -> player)
+                .build();
+        String parsedCommand = service.interpret(command, context);
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
         server.getCommandManager().executeCommand(server, parsedCommand);
+    }
+
+    @Override
+    public String getDescription() {
+        if(description == null){
+            Config config = RemoRaids.getMessageConfig();
+            IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
+            IParsingContext context = IParsingContext.builder()
+                    .add(String.class, () -> command)
+                    .build();
+            return service.interpret(config.get(MessageConfig.COMMAND_REWARD_CONTENT_TITLE), context);
+        }
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /** {@inheritDoc} */

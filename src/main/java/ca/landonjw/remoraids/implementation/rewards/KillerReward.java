@@ -1,8 +1,11 @@
 package ca.landonjw.remoraids.implementation.rewards;
 
+import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.battles.IBossBattle;
 import ca.landonjw.remoraids.api.rewards.contents.IRewardContent;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
+import ca.landonjw.remoraids.internal.api.config.Config;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.PlayerList;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -40,7 +43,8 @@ public class KillerReward extends DropRewardBase {
     /** {@inheritDoc} **/
     @Override
     public String getDescription() {
-        return "Killer Reward";
+        Config config = RemoRaids.getMessageConfig();
+        return config.get(MessageConfig.KILLER_REWARD_TITLE);
     }
 
 }
