@@ -1,9 +1,8 @@
 package ca.landonjw.remoraids.api.services.placeholders;
 
 import ca.landonjw.remoraids.api.IBossAPI;
-import ca.landonjw.remoraids.api.util.IBuilder;
 import ca.landonjw.remoraids.api.services.messaging.IMessageService;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import ca.landonjw.remoraids.api.util.IBuilder;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -59,7 +58,7 @@ public interface IParsingContext {
 
         <T> Builder add(@Nonnull Class<T> clazz, @Nonnull Supplier<T> supplier);
 
-        <T> Builder addAll(@NonNull Class<T> clazz, @Nonnull List<Supplier<T>> supplierList);
+        <T> Builder addAll(@Nonnull Class<T> clazz, @Nonnull List<Supplier<T>> supplierList);
 
     }
 

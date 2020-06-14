@@ -22,7 +22,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package ca.landonjw.remoraids.api.services.placeholders;
 
 import ca.landonjw.remoraids.api.IBossAPI;

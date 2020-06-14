@@ -1,11 +1,12 @@
 package ca.landonjw.remoraids.api.services.messaging;
 
+import ca.landonjw.remoraids.api.services.IService;
 import ca.landonjw.remoraids.api.services.placeholders.IParsingContext;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public interface IMessageService {
+public interface IMessageService extends IService {
 
     /**
      * Allows for message interpretation by parsing the incoming input and applying color codes
