@@ -1,13 +1,18 @@
 package ca.landonjw.remoraids.implementation.battles.restraints;
 
 import ca.landonjw.remoraids.RemoRaids;
+import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.battles.IBattleRestraint;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.events.BossBattleEndedEvent;
 import ca.landonjw.remoraids.api.events.BossDeathEvent;
+import ca.landonjw.remoraids.api.services.messaging.IMessageService;
+import ca.landonjw.remoraids.api.services.placeholders.IParsingContext;
+import ca.landonjw.remoraids.internal.api.config.Config;
 import ca.landonjw.remoraids.internal.config.MessageConfig;
 import ca.landonjw.remoraids.internal.inventory.internal.UIContainer;
 import ca.landonjw.remoraids.internal.inventory.internal.UIInventory;
+import javafx.util.Pair;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -67,40 +72,21 @@ public class CooldownRestraint extends BaseBattleRestraint {
 
     /** {@inheritDoc} */
     @Override
-    public String getRejectionMessage(EntityPlayerMP player) {
+    public Optional<String> getRejectionMessage(@Nonnull EntityPlayerMP player) {
         if(lastBattleTimeMap.containsKey(player)){
             Duration timeElapsed = Duration.between(lastBattleTimeMap.get(player), Instant.now());
             if(cooldownSeconds > timeElapsed.getSeconds()){
-                return parseCooldownMessage(timeElapsed);
+                Config config = RemoRaids.getMessageConfig();
+                IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
+
+                IParsingContext context = IParsingContext.builder()
+                        .add(CooldownRestraint.class, () -> this)
+                        .add(EntityPlayerMP.class, () -> player)
+                        .build();
+                return Optional.of(service.interpret(config.get(MessageConfig.RAID_COOLDOWN), context));
             }
         }
-        return "";
-    }
-
-    /**
-     * Takes the cooldown message and replaces any placeholders.
-     *
-     * @param timeElapsed time that has elapsed between now and last time player was in battle
-     * @return cooldown message with placeholders replaced
-     */
-    private String parseCooldownMessage(Duration timeElapsed){
-        String message = RemoRaids.getMessageConfig().get(MessageConfig.RAID_COOLDOWN);
-
-        long secondsRemaining = cooldownSeconds - timeElapsed.getSeconds();
-        long minutesRemaining = TimeUnit.MINUTES.convert(secondsRemaining, TimeUnit.SECONDS);
-        long hoursRemaining = TimeUnit.HOURS.convert(secondsRemaining, TimeUnit.SECONDS);
-
-        long trimmedSecondsRemaining = secondsRemaining - (minutesRemaining * 60);
-        long trimmedMinutesRemaining = minutesRemaining - (hoursRemaining * 60);
-
-        message = message
-                .replaceAll("\\{seconds}", "" + secondsRemaining)
-                .replaceAll("\\{minutes}", "" + minutesRemaining)
-                .replaceAll("\\{hours}", "" + hoursRemaining)
-                .replaceAll("\\{trimmed-seconds}", "" + trimmedSecondsRemaining)
-                .replaceAll("\\{trimmed-minutes}", "" + trimmedMinutesRemaining);
-
-        return message;
+        return Optional.empty();
     }
 
     /**

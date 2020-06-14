@@ -3,6 +3,7 @@ package ca.landonjw.remoraids.api.battles;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import javax.annotation.Nonnull;
+import java.util.Optional;
 
 /**
  * A restraint that may prevent a player from entering battle.
@@ -33,10 +34,11 @@ public interface IBattleRestraint {
     /**
      * Gets the message to be sent to the player when they do not validate the restraint.
      * This allows the player to know why he was rejected.
+     * If there is no string supplied, no message will be sent to the player to inform him of why he does not validate.
      *
      * @param player the player to get rejection message for
      * @return message stating why player was rejected
      */
-    String getRejectionMessage(@Nonnull EntityPlayerMP player);
+    Optional<String> getRejectionMessage(@Nonnull EntityPlayerMP player);
 
 }

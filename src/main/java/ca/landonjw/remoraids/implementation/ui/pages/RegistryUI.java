@@ -2,8 +2,10 @@ package ca.landonjw.remoraids.implementation.ui.pages;
 
 import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.IBossAPI;
+import ca.landonjw.remoraids.api.boss.IBoss;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.services.messaging.IMessageService;
+import ca.landonjw.remoraids.api.services.placeholders.IParsingContext;
 import ca.landonjw.remoraids.internal.api.config.Config;
 import ca.landonjw.remoraids.internal.config.MessageConfig;
 import ca.landonjw.remoraids.internal.inventory.api.Button;
@@ -74,9 +76,13 @@ public class RegistryUI {
 
         List<Button> bossButtons = new ArrayList<>();
         for(IBossEntity bossEntity : RemoRaids.getBossAPI().getBossEntityRegistry().getAllBossEntities()){
+            IParsingContext context = IParsingContext.builder()
+                    .add(IBoss.class, bossEntity::getBoss)
+                    .build();
+
             Button bossButton = Button.builder()
                     .item(ItemPixelmonSprite.getPhoto(bossEntity.getBoss().getPokemon()))
-                    .displayName(service.interpret(config.get(MessageConfig.UI_REGISTRY_BOSS_TITLE), bossEntity::getBoss))
+                    .displayName(service.interpret(config.get(MessageConfig.UI_REGISTRY_BOSS_TITLE), context))
                     .lore(UIUtils.getPokemonLore(bossEntity))
                     .onClick((action) -> {
                         BossOptionsUI options = new BossOptionsUI(null, player, bossEntity);

@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public class PreventRebattleRestraint extends BaseBattleRestraint {
@@ -36,8 +37,8 @@ public class PreventRebattleRestraint extends BaseBattleRestraint {
     }
 
     @Override
-    public String getRejectionMessage(@Nonnull EntityPlayerMP player) {
-        return RemoRaids.getMessageConfig().get(MessageConfig.RAID_NO_REBATLLE);
+    public Optional<String> getRejectionMessage(@Nonnull EntityPlayerMP player) {
+        return Optional.of(RemoRaids.getMessageConfig().get(MessageConfig.RAID_NO_REBATLLE));
     }
 
     @SubscribeEvent

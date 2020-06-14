@@ -22,19 +22,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package ca.landonjw.remoraids.api.services.placeholders.service;
 
 import ca.landonjw.remoraids.api.services.IService;
+import ca.landonjw.remoraids.api.services.placeholders.IParsingContext;
 import ca.landonjw.remoraids.api.services.placeholders.IPlaceholderContext;
 import ca.landonjw.remoraids.api.services.placeholders.IPlaceholderParser;
 import com.google.common.collect.Lists;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
-import java.util.function.Supplier;
+
 
 /**
  * A service with the soul purpose of providing a means of evaluation of an input token that will be
@@ -47,88 +49,83 @@ import java.util.function.Supplier;
  *
  * @author dualspiral
  * @author NickImpact
+ * @author landonjw
  * @since 1.0.0
  */
+
 public interface IPlaceholderService extends IService.Catalog {
 
-	/**
-	 * Attempts to register a placeholder parser to the service.
-	 *
-	 * @param parser The parser we wish to register
-	 * @throws IllegalArgumentException If the parser key is invalid or already registered to another parser
-	 */
-	void register(@NonNull IPlaceholderParser parser) throws IllegalArgumentException;
+    /**
+     * Attempts to register a placeholder parser to the service.
+     *
+     * @param parser The parser we wish to register
+     * @throws IllegalArgumentException If the parser key is invalid or already registered to another parser
+     */
+    void register(@Nonnull IPlaceholderParser parser) throws IllegalArgumentException;
 
-	/**
-	 * Attempts to parse a token based on the given input.
-	 *
-	 * @see #parse(String, Supplier, Collection)
-	 *
-	 * @param token The token we are attempting to parse
-	 * @return A parsed representation of the incoming token, or the direct input to signify a failure to parse
-	 */
-	default Optional<String> parse(@NonNull String token) {
-		return this.parse(token, null);
-	}
+    /**
+     * Attempts to parse a token based on the given input.
+     *
+     * @see #parse(String, IParsingContext, Collection)
+     *
+     * @param token The token we are attempting to parse
+     * @return A parsed representation of the incoming token, or the direct input to signify a failure to parse
+     */
+    default Optional<String> parse(@Nonnull String token) {
+        return this.parse(token, null);
+    }
 
-	/**
-	 * Attempts to parse a token based on the given input.
-	 *
-	 * @see #parse(String, Supplier, Collection)
-	 *
-	 * @param token The token we are attempting to parse
-	 * @param association The object we wish to associate with
-	 * @return A parsed representation of the incoming token, or the direct input to signify a failure to parse
-	 */
-	default Optional<String> parse(@NonNull String token, @Nullable Supplier<Object> association) {
-		return this.parse(token, association, Collections.emptyList());
-	}
+    /**
+     * Attempts to parse a token based on the given input.
+     *
+     * @see #parse(String, IParsingContext, Collection)
+     *
+     * @param token   The token we are attempting to parse
+     * @param context The context of the parsing, which may include objects necessary for parsing information
+     * @return A parsed representation of the incoming token, or the direct input to signify a failure to parse
+     */
+    default Optional<String> parse(@Nonnull String token, @Nullable IParsingContext context) {
+        return this.parse(token, context, Collections.emptyList());
+    }
 
-	/**
-	 * Attempts to parse a token based on the given input.
-	 *
-	 * @see #parse(String, Supplier, Collection)
-	 *
-	 * @param token The token we are attempting to parse
-	 * @param association The object we wish to associate with
-	 * @param arguments A collection of contextual arguments for the parser
-	 * @return A parsed representation of the incoming token, or the direct input to signify a failure to parse
-	 */
-	default Optional<String> parse(@NonNull String token, @Nullable Supplier<Object> association, @Nullable String... arguments) {
-		return this.parse(token, association, arguments != null ? Lists.newArrayList(arguments) : Collections.emptyList());
-	}
+    /**
+     * Attempts to parse a token based on the given input.
+     *
+     * @see #parse(String, IParsingContext, Collection)
+     *
+     * @param token     The token we are attempting to parse
+     * @param context   The context of the parsing, which may include objects necessary for parsing information
+     * @param arguments A collection of contextual arguments for the parser
+     * @return A parsed representation of the incoming token, or the direct input to signify a failure to parse
+     */
+    default Optional<String> parse(@Nonnull String token, @Nullable IParsingContext context, @Nullable String... arguments) {
+        return this.parse(token, context, arguments != null ? Lists.newArrayList(arguments) : Collections.emptyList());
+    }
 
-	/**
-	 * Attempts to parse a token based on the given input. The context of this call will have, if non-null,
-	 * an associated object as well as a collection of contextual arguments that a given parser will be able
-	 * to interact with.
-	 *
-	 * <p>Should a parser be unavailable for the input token, or the parser failed to parse given the context,
-	 * this call should return the direct input of the token.</p>
-	 *
-	 * @param token The token we are attempting to parse
-	 * @param association The associated object for the parser
-	 * @param arguments A collection of contextual arguments for the parser
-	 * @return A parsed representation of the placeholder token, or the exact input (e.g. {{player:s}}, where
-	 * the ":s" represents placing a space after the token if it is populated.
-	 */
-	Optional<String> parse(@NonNull String token, @Nullable Supplier<Object> association, @Nullable Collection<String> arguments);
+    /**
+     * Attempts to parse a token based on the given input. The context of this call will have, if non-null,
+     * one or more objects as well as a collection of contextual arguments that a given parser
+     * will be able to interact with.
+     *
+     * <p>Should a parser be unavailable for the input token, or the parser failed to parse given the context,
+     * this call should return the direct input of the token.</p>
+     *
+     * @param token     The token we are attempting to parse
+     * @param context   The context of the parsing, which may include objects necessary for parsing information
+     * @param arguments A collection of contextual arguments for the parser
+     * @return A parsed representation of the placeholder token, or the exact input (e.g. {{player:s}}, where
+     * the ":s" represents placing a space after the token if it is populated.
+     */
+    Optional<String> parse(@Nonnull String token, @Nullable IParsingContext context, @Nullable Collection<String> arguments);
 
-	/**
-	 * Prepares a {@link IPlaceholderContext} based on the given input values.
-	 *
-	 * @param association The object we want to associate this context with
-	 * @param arguments The arguments we want to populate this context with
-	 * @return A new placeholder context with the supplied values
-	 */
-	IPlaceholderContext contextualize(@Nullable Supplier<Object> association, @Nullable Collection<String> arguments);
+    IPlaceholderContext contextualize(@Nullable IParsingContext context, @Nullable Collection<String> arguments);
 
-	/**
-	 * Attempts to locate a parser for the given token.
-	 *
-	 * @param token The lookup key
-	 * @return An optionally wrapped placeholder parser if one is mapped to the input, empty otherwise
-	 */
-	Optional<IPlaceholderParser> getParser(@NonNull String token);
+    /**
+     * Attempts to locate a parser for the given token.
+     *
+     * @param token The lookup key
+     * @return An optionally wrapped placeholder parser if one is mapped to the input, empty otherwise
+     */
+    Optional<IPlaceholderParser> getParser(@Nonnull String token);
 
 }

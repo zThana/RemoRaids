@@ -1,18 +1,21 @@
 package ca.landonjw.remoraids.implementation.battles.restraints;
 
 import ca.landonjw.remoraids.RemoRaids;
+import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.battles.IBattleRestraint;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.events.BossBattleEndedEvent;
 import ca.landonjw.remoraids.api.events.BossBattleStartedEvent;
 import ca.landonjw.remoraids.api.events.BossDeathEvent;
+import ca.landonjw.remoraids.api.services.messaging.IMessageService;
+import ca.landonjw.remoraids.api.services.placeholders.IParsingContext;
+import ca.landonjw.remoraids.internal.api.config.Config;
 import ca.landonjw.remoraids.internal.config.MessageConfig;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import javax.annotation.Nonnull;
+import java.util.Optional;
 
 /**
  * An implementation of {@link IBattleRestraint} that prevents players from battling the boss
@@ -56,8 +59,18 @@ public class CapacityRestraint extends BaseBattleRestraint {
 
     /** {@inheritDoc} */
     @Override
-    public String getRejectionMessage(EntityPlayerMP player) {
-        return RemoRaids.getMessageConfig().get(MessageConfig.RAID_CAPACITY_REACHED);
+    public Optional<String> getRejectionMessage(@Nonnull EntityPlayerMP player) {
+        Config config = RemoRaids.getMessageConfig();
+        IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
+
+        IParsingContext context = IParsingContext.builder()
+                .add(CapacityRestraint.class, () -> this)
+                .build();
+        return Optional.of(service.interpret(config.get(MessageConfig.RAID_CAPACITY_REACHED), context));
+    }
+
+    public int getPlayerNum() {
+        return playerNum;
     }
 
     public int getCapacity() {

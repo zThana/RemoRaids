@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
+import java.util.Optional;
 
 /**
  * An implementation of {@link IBattleRestraint} that prevents any battles with the boss.
@@ -36,8 +37,8 @@ public class HaltedBattleRestraint extends BaseBattleRestraint {
 
     /** {@inheritDoc} */
     @Override
-    public String getRejectionMessage(@Nonnull EntityPlayerMP player) {
-        return TextFormatting.RED + "This boss is not allowed to battle currently!";
+    public Optional<String> getRejectionMessage(@Nonnull EntityPlayerMP player) {
+        return Optional.of(TextFormatting.RED + "This boss is not allowed to battle currently!");
     }
 
 }

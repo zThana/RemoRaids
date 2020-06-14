@@ -117,7 +117,7 @@ public class BossBattleSettings implements IBossBattleSettings {
         List<String> rejectionMessages = new ArrayList<>();
         for(IBattleRestraint restraint : battleRestraints){
             if(!restraint.validatePlayer(player)){
-                rejectionMessages.add(restraint.getRejectionMessage(player));
+                restraint.getRejectionMessage(player).ifPresent(rejectionMessages::add);
             }
         }
         return rejectionMessages;
