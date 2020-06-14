@@ -17,7 +17,7 @@ public class PreventRebattleRestraintCreator implements ICreatorUI<IBattleRestra
 
     @Override
     public void open(@Nonnull IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull Collection<IBattleRestraint> toAddTo) {
-        PreventRebattleRestraint restraint = new PreventRebattleRestraint(source.getBossEntity());
+        PreventRebattleRestraint restraint = new PreventRebattleRestraint(source.getBossEntity().getBoss());
         toAddTo.add(restraint);
         source.getSource().get().open();
     }

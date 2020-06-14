@@ -17,13 +17,18 @@ import java.util.stream.Collectors;
 
 public class MessageConfig implements ConfigKeyHolder {
 
-    public static final ConfigKey<String> RAID_CAPACITY_REACHED = translationKey("restraints.capacity-reached", "&cThere are too many players currently battling the boss...");
-    public static final ConfigKey<String> RAID_COOLDOWN = translationKey("restraints.cooldown", "&cYou cannot battle the boss for another {hours} hour(s), {trimmed-minutes} minute(s) and {trimmed-seconds} second(s)...");
-    public static final ConfigKey<String> RAID_NO_REBATLLE = translationKey("restraints.no-rebattle", "&cYou cannot attempt to battle this raid boss again...");
+    // -------------------------------------------------------------------------------------------------
+    //
+    //                                      Restraints Messaging
+    //
+    // -------------------------------------------------------------------------------------------------
+    public static final ConfigKey<String> RESTRAINT_CAPACITY_REACHED = translationKey("restraints.capacity-reached", "&cThere are too many players currently battling the boss...");
+    public static final ConfigKey<String> RESTRAINT_COOLDOWN = translationKey("restraints.cooldown", "&cYou cannot battle the boss for another {hours} hour(s), {trimmed-minutes} minute(s) and {trimmed-seconds} second(s)...");
+    public static final ConfigKey<String> RESTRAINT_NO_REBATTLE = translationKey("restraints.no-rebattle", "&cYou cannot attempt to battle this raid boss again...");
+    public static final ConfigKey<String> RESTRAINT_HALTED = translationKey("restraints.halted", "&cThis boss is not allowed to battle currently!");
 
     public static final ConfigKey<String> RAID_ENGAGE = translationKey("engage-message", "&a&lRelease a pokemon to engage the boss!");
     public static final ConfigKey<String> RAID_SPAWN_ANNOUNCE = translationKey("spawn-announcement", "&6&lA boss &a&l{boss-species} &6&lhas spawned!");
-
 
 	// -------------------------------------------------------------------------------------------------
     //
@@ -34,7 +39,7 @@ public class MessageConfig implements ConfigKeyHolder {
     public static final ConfigKey<String> UI_COMMON_CURR_PAGE = translationKey("ui.common.current-page", "&bPage {current} / {total}");
     public static final ConfigKey<String> UI_COMMON_LAST_PAGE = translationKey("ui.common.last-page", "&bPrevious Page");
 
-    public static final ConfigKey<String> UI_REGISTRY_TITLE = translationKey("ui.registry.title", "&1&bBoss Registry");
+    public static final ConfigKey<String> UI_REGISTRY_TITLE = translationKey("ui.registry.title", "&1&lBoss Registry");
     public static final ConfigKey<String> UI_REGISTRY_BOSS_TITLE = translationKey("ui.registry.boss.title", "&b&lBoss {boss}");
 
     private static TranslationKey translationKey(String path, String def) {

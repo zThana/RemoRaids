@@ -165,6 +165,7 @@ public class BossBattle implements IBossBattle {
                         RemoRaids.getRestraintsConfig().get(RestraintsConfig.DISABLED_STATUSES)
                 );
 
+                getBattleSettings().getBattleRestraints().forEach((restraint) -> restraint.onBattleStart(player));
                 playerBattleMap.put(player, battleController);
 
                 BossBattleStartedEvent battleStarted = new BossBattleStartedEvent(bossEntity, player, battleController);
@@ -177,7 +178,10 @@ public class BossBattle implements IBossBattle {
     @Override
     public void endBattle(@Nonnull EntityPlayerMP player) {
         if(playerBattleMap.containsKey(player)){
+            BattleControllerBase bc = playerBattleMap.get(player);
             playerBattleMap.remove(player);
+            bc.endBattle();
+            getBattleSettings().getBattleRestraints().forEach((restraint) -> restraint.onBattleEnd(player));
             BossBattleEndedEvent battleEndedEvent = new BossBattleEndedEvent(bossEntity, player, this);
             RemoRaids.EVENT_BUS.post(battleEndedEvent);
         }

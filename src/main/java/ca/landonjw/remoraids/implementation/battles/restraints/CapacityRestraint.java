@@ -3,6 +3,7 @@ package ca.landonjw.remoraids.implementation.battles.restraints;
 import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.battles.IBattleRestraint;
+import ca.landonjw.remoraids.api.boss.IBoss;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.events.BossBattleEndedEvent;
 import ca.landonjw.remoraids.api.events.BossBattleStartedEvent;
@@ -29,8 +30,12 @@ public class CapacityRestraint extends BaseBattleRestraint {
     /** The retraint's identifier. */
     public static final String ID = "Capacity Restraint";
 
-    /** The boss entity to apply restraint to. */
-    protected IBossEntity bossEntity;
+    /**
+     * The unmodified capacity of the boss.
+     * This will remain constant regardless of if the restraint is diminishing.
+     * This is included in order to reset the restraint to it's base state on despawn.
+     */
+    private int cleanCapacity;
     /** The capacity of the boss. */
     private int capacity;
     /** The number of players currently in battle with the boss. */
@@ -41,19 +46,18 @@ public class CapacityRestraint extends BaseBattleRestraint {
     /**
      * Constructor for the capacity restraint.
      *
-     * @param bossEntity the boss entity to apply identifier to
+     * @param boss       the boss to apply identifier to
      * @param capacity   the capacity of the boss
      */
-    public CapacityRestraint(@Nonnull IBossEntity bossEntity, int capacity){
-        super(ID);
-        this.bossEntity = bossEntity;
+    public CapacityRestraint(@Nonnull IBoss boss, int capacity){
+        super(ID, boss);
+        cleanCapacity = capacity;
         this.capacity = capacity;
-        RemoRaids.EVENT_BUS.register(this);
     }
 
     /** {@inheritDoc} */
     @Override
-    public boolean validatePlayer(EntityPlayerMP player) {
+    public boolean validatePlayer(@Nonnull EntityPlayerMP player) {
         return playerNum < capacity;
     }
 
@@ -65,8 +69,49 @@ public class CapacityRestraint extends BaseBattleRestraint {
 
         IParsingContext context = IParsingContext.builder()
                 .add(CapacityRestraint.class, () -> this)
+                .add(EntityPlayerMP.class, () -> player)
+                .add(IBoss.class, this::getBoss)
                 .build();
-        return Optional.of(service.interpret(config.get(MessageConfig.RAID_CAPACITY_REACHED), context));
+        return Optional.of(service.interpret(config.get(MessageConfig.RESTRAINT_CAPACITY_REACHED), context));
+    }
+
+
+    /**
+     * {@inheritDoc}
+     *
+     * When a battle starts, this will increment the player number.
+     *
+     * @param player player entering battle
+     */
+    @Override
+    public void onBattleStart(@Nonnull EntityPlayerMP player) {
+        playerNum++;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * When a battle ends, this will decrement the player number.
+     *
+     * @param player player leaving battle
+     */
+    @Override
+    public void onBattleEnd(@Nonnull EntityPlayerMP player) {
+        playerNum--;
+        if(diminishing){
+            capacity--;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * This will reset the capacity of the restraint back to normal.
+     */
+    @Override
+    public void onBossDespawn() {
+        playerNum = 0;
+        capacity = cleanCapacity;
     }
 
     public int getPlayerNum() {
@@ -78,6 +123,7 @@ public class CapacityRestraint extends BaseBattleRestraint {
     }
 
     public void setCapacity(int capacity) {
+        this.cleanCapacity = capacity;
         this.capacity = capacity;
     }
 
@@ -87,45 +133,6 @@ public class CapacityRestraint extends BaseBattleRestraint {
 
     public boolean isDiminishing() {
         return diminishing;
-    }
-
-    /**
-     * When a battle starts with the stored boss entity, this will increment the player number.
-     *
-     * @param event called when a boss battle starts
-     */
-    @SubscribeEvent
-    public void onBattleStart(BossBattleStartedEvent event){
-        if(event.getBossEntity().equals(bossEntity)){
-            playerNum++;
-        }
-    }
-
-    /**
-     * When a battle ends with the stored boss entity, this will decrement the player number.
-     *
-     * @param event called when a boss battle ends
-     */
-    @SubscribeEvent
-    public void onBattleEnd(BossBattleEndedEvent event){
-        if(event.getBossEntity().equals(bossEntity)){
-            playerNum--;
-            if(diminishing){
-                capacity--;
-            }
-        }
-    }
-
-    /**
-     * Terminates the restraint's listeners once the stored boss entity has died.
-     *
-     * @param event called when a boss dies
-     */
-    @SubscribeEvent
-    public void onBossDeath(BossDeathEvent event){
-        if(event.getBossEntity().equals(bossEntity)){
-            RemoRaids.EVENT_BUS.unregister(this);
-        }
     }
 
 }

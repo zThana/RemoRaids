@@ -101,7 +101,7 @@ public class BossOptionsUI extends BaseBossUI {
                 preventBattlesBuilder = preventBattlesBuilder
                         .lore(Arrays.asList(TextFormatting.WHITE + "Toggled off"))
                         .onClick(() -> {
-                            bossEntity.getBoss().getBattleSettings().getBattleRestraints().add(new HaltedBattleRestraint());
+                            bossEntity.getBoss().getBattleSettings().getBattleRestraints().add(new HaltedBattleRestraint(bossEntity.getBoss()));
                             for(EntityPlayerMP player : battle.getPlayersInBattle()){
                                 player.sendMessage(new TextComponentString(TextFormatting.RED + "You have been kicked from battle due to ongoing boss editing."));
                             }

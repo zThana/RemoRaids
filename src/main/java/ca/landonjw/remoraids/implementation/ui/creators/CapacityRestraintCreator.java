@@ -82,7 +82,7 @@ public class CapacityRestraintCreator implements ICreatorUI<IBattleRestraint> {
                     try{
                         int capacity = Integer.parseInt(message);
 
-                        CapacityRestraint restraint = new CapacityRestraint(source.getBossEntity(), capacity);
+                        CapacityRestraint restraint = new CapacityRestraint(source.getBossEntity().getBoss(), capacity);
                         toAddTo.add(restraint);
                         MinecraftForge.EVENT_BUS.unregister(this);
                         source.getSource().get().open();

@@ -1,6 +1,7 @@
 package ca.landonjw.remoraids.implementation.boss;
 
 import ca.landonjw.remoraids.RemoRaids;
+import ca.landonjw.remoraids.api.battles.IBattleRestraint;
 import ca.landonjw.remoraids.api.battles.IBossBattle;
 import ca.landonjw.remoraids.api.boss.IBoss;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
@@ -168,6 +169,7 @@ public class BossEntity implements IBossEntity {
         BossBattleRegistry battleRegistry = BossBattleRegistry.getInstance();
         IBossBattle battle = battleRegistry.getBossBattle(this).get();
         battleRegistry.removeBossBattle(this);
+        boss.getBattleSettings().getBattleRestraints().forEach(IBattleRestraint::onBossDespawn);
         BossDeathEvent deathEvent = new BossDeathEvent(this, battle);
         RemoRaids.EVENT_BUS.post(deathEvent);
 

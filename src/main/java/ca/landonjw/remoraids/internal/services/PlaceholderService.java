@@ -6,9 +6,9 @@ import ca.landonjw.remoraids.api.services.placeholders.IPlaceholderParser;
 import ca.landonjw.remoraids.api.services.placeholders.service.IPlaceholderService;
 import ca.landonjw.remoraids.internal.services.placeholders.provided.CapacityPlaceholderParser;
 import ca.landonjw.remoraids.internal.services.placeholders.provided.CooldownPlaceholderParser;
+import ca.landonjw.remoraids.internal.services.placeholders.provided.PlayerPlaceholderParser;
 import ca.landonjw.remoraids.internal.services.placeholders.provided.RaidBossPlaceholderParser;
 import com.google.common.collect.Maps;
-import net.minecraft.entity.player.EntityPlayerMP;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -45,20 +45,7 @@ public class PlaceholderService implements IPlaceholderService {
 
 	@Override
 	public void registerDefaults() {
-		this.register(IPlaceholderParser.builder()
-				.key("player")
-				.parser(context -> {
-					EntityPlayerMP player = context.get(EntityPlayerMP.class)
-							.orElse(null);
-
-					if(player == null) {
-						return Optional.empty();
-					}
-
-					return Optional.of(player.getName());
-				})
-				.build()
-		);
+		this.register(new PlayerPlaceholderParser());
 		this.register(new CapacityPlaceholderParser());
 		this.register(new CooldownPlaceholderParser());
 		this.register(new RaidBossPlaceholderParser());

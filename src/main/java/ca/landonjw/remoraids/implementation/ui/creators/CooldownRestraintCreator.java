@@ -83,7 +83,7 @@ public class CooldownRestraintCreator implements ICreatorUI<IBattleRestraint> {
                     try{
                         int cooldown = Integer.parseInt(message);
 
-                        CooldownRestraint restraint = new CooldownRestraint(source.getBossEntity(), cooldown, TimeUnit.SECONDS);
+                        CooldownRestraint restraint = new CooldownRestraint(source.getBossEntity().getBoss(), cooldown, TimeUnit.SECONDS);
                         toAddTo.add(restraint);
                         MinecraftForge.EVENT_BUS.unregister(this);
                         source.getSource().get().open();

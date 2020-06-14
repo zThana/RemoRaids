@@ -41,4 +41,25 @@ public interface IBattleRestraint {
      */
     Optional<String> getRejectionMessage(@Nonnull EntityPlayerMP player);
 
+    /**
+     * Allows the restraint to detail what should occur when a player validates and enters battle with the boss.
+     *
+     * @param player player entering battle
+     */
+    void onBattleStart(@Nonnull EntityPlayerMP player);
+
+    /**
+     * Allows the restraint to detail what should occur when a player leaves battle with the boss.
+     *
+     * @param player player leaving battle
+     */
+    void onBattleEnd(@Nonnull EntityPlayerMP player);
+
+    /**
+     * Allows the restraint to detail what should occur when the boss despawns. Typically this is to
+     * reset the restraint to it's base state for the next respawn, in the case that the
+     * {@link ca.landonjw.remoraids.api.boss.IBoss} this restraint is attached to respawns numerous times.
+     */
+    void onBossDespawn();
+
 }

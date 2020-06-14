@@ -1,15 +1,13 @@
 package ca.landonjw.remoraids.implementation.battles.restraints;
 
 import ca.landonjw.remoraids.RemoRaids;
-import ca.landonjw.remoraids.api.battles.IBattleRestraint;
-import ca.landonjw.remoraids.api.boss.IBossEntity;
-import ca.landonjw.remoraids.api.events.BossBattleEndedEvent;
-import ca.landonjw.remoraids.api.events.BossDeathEvent;
+import ca.landonjw.remoraids.api.IBossAPI;
+import ca.landonjw.remoraids.api.boss.IBoss;
+import ca.landonjw.remoraids.api.services.messaging.IMessageService;
+import ca.landonjw.remoraids.api.services.placeholders.IParsingContext;
+import ca.landonjw.remoraids.internal.api.config.Config;
 import ca.landonjw.remoraids.internal.config.MessageConfig;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
@@ -21,43 +19,51 @@ public class PreventRebattleRestraint extends BaseBattleRestraint {
     /** The retraint's identifier. */
     public static final String ID = "Prevent Rebattle Restraint";
 
-    /** The boss entity to apply restraint to. */
-    private IBossEntity bossEntity;
     private Set<EntityPlayerMP> restrainedPlayers = new HashSet<>();
 
-    public PreventRebattleRestraint(@Nonnull IBossEntity bossEntity){
-        super(ID);
-        this.bossEntity = bossEntity;
-        RemoRaids.EVENT_BUS.register(this);
+    public PreventRebattleRestraint(@Nonnull IBoss boss){
+        super(ID, boss);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean validatePlayer(EntityPlayerMP player) {
         return !restrainedPlayers.contains(player);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<String> getRejectionMessage(@Nonnull EntityPlayerMP player) {
-        return Optional.of(RemoRaids.getMessageConfig().get(MessageConfig.RAID_NO_REBATLLE));
-    }
+        Config config = RemoRaids.getMessageConfig();
+        IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
 
-    @SubscribeEvent
-    public void onBattleEnd(BossBattleEndedEvent event){
-        if(event.getBossEntity().equals(bossEntity)){
-            restrainedPlayers.add(event.getPlayer());
-        }
+        IParsingContext context = IParsingContext.builder()
+                .add(EntityPlayerMP.class, () -> player)
+                .add(IBoss.class, this::getBoss)
+                .build();
+        return Optional.of(service.interpret(config.get(MessageConfig.RESTRAINT_NO_REBATTLE), context));
     }
 
     /**
-     * Terminates the restraint's listeners once the stored boss entity has died.
+     * {@inheritDoc}
      *
-     * @param event called when a boss dies
+     * Adds player to list that prevents them from reentering battle again.
+     *
+     * @param player player leaving battle
      */
-    @SubscribeEvent
-    public void onBossDeath(BossDeathEvent event){
-        if(event.getBossEntity().equals(bossEntity)){
-            RemoRaids.EVENT_BUS.unregister(this);
-        }
+    @Override
+    public void onBattleEnd(@Nonnull EntityPlayerMP player) {
+        restrainedPlayers.add(player);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * Clears the prevented players list.
+     */
+    @Override
+    public void onBossDespawn() {
+        restrainedPlayers.clear();
     }
 
 }
