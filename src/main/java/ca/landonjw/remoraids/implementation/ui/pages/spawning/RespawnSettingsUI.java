@@ -1,10 +1,13 @@
 package ca.landonjw.remoraids.implementation.ui.pages.spawning;
 
+import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
-import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.api.spawning.IBossSpawner;
+import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.implementation.spawning.BossSpawnLocation;
 import ca.landonjw.remoraids.implementation.ui.pages.BaseBossUI;
+import ca.landonjw.remoraids.internal.api.config.Config;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import ca.landonjw.remoraids.internal.inventory.api.Button;
 import ca.landonjw.remoraids.internal.inventory.api.LineType;
 import ca.landonjw.remoraids.internal.inventory.api.Page;
@@ -45,6 +48,8 @@ public class RespawnSettingsUI extends BaseBossUI {
     @Override
     public void open() {
         if(bossNotInBattle()){
+            Config config = RemoRaids.getMessageConfig();
+
             Button setSpawnAmount = Button.builder()
                     .item(new ItemStack(Items.PAPER))
                     .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Respawn Limit")
@@ -91,7 +96,7 @@ public class RespawnSettingsUI extends BaseBossUI {
 
             Button back = Button.builder()
                     .item(new ItemStack(Blocks.BARRIER))
-                    .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Go Back")
+                    .displayName(config.get(MessageConfig.UI_COMMON_BACK))
                     .onClick(() -> {
                         source.open();
                     })

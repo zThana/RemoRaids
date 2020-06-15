@@ -1,17 +1,23 @@
 package ca.landonjw.remoraids.implementation.battles;
 
 import ca.landonjw.remoraids.RemoRaids;
+import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.battles.IBossBattle;
 import ca.landonjw.remoraids.api.battles.IBossBattleSettings;
+import ca.landonjw.remoraids.api.boss.IBoss;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.events.BossBattleEndedEvent;
 import ca.landonjw.remoraids.api.events.BossBattleStartedEvent;
 import ca.landonjw.remoraids.api.events.BossBattleStartingEvent;
 import ca.landonjw.remoraids.api.events.BossHealthChangeEvent;
 import ca.landonjw.remoraids.api.rewards.IReward;
+import ca.landonjw.remoraids.api.services.messaging.IMessageService;
+import ca.landonjw.remoraids.api.services.placeholders.IParsingContext;
 import ca.landonjw.remoraids.implementation.battles.controller.BossStatusController;
 import ca.landonjw.remoraids.implementation.battles.controller.participants.BossParticipant;
 import ca.landonjw.remoraids.implementation.battles.controller.participants.BossPlayerParticipant;
+import ca.landonjw.remoraids.internal.api.config.Config;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import ca.landonjw.remoraids.internal.config.RestraintsConfig;
 import com.google.common.collect.Lists;
 import com.pixelmonmod.pixelmon.Pixelmon;
@@ -245,25 +251,47 @@ public class BossBattle implements IBossBattle {
                 .collect(Collectors.toList());
         contributors.sort(Comparator.comparingInt(player -> getDamageDealt(player.getUniqueID()).get()));
 
+        Config config = RemoRaids.getMessageConfig();
+        IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
+
+        IParsingContext bossContext = IParsingContext.builder()
+                .add(IBoss.class, () -> bossEntity.getBoss())
+                .build();
+
         //Create output to send to players
         List<String> output = Lists.newArrayList();
-        Function<String, String> format = str -> str.replaceAll("&", "\u00a7");
-        output.add(format.apply("&8&m==============&r &c[Raid Results] &8&m=============="));
-        output.add(format.apply("&7Through valiant effort, the raid pokemon,"));
-        output.add(format.apply("&e" + bossEntity.getBoss().getPokemon().getSpecies().getLocalizedName() + "&7, was defeated!"));
-        output.add(format.apply(""));
+        output.add(service.interpret(config.get(MessageConfig.RESULTS_HEADER), bossContext));
+        output.add(service.interpret(config.get(MessageConfig.RESULTS_BODY_DESC), bossContext));
+        output.add("");
 
         getKiller().ifPresent(killer -> {
-            String playerName = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(killer).getName();
-            output.add(format.apply("&cKiller: &e" + playerName));
+            EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(killer);
+
+            IParsingContext killerContext = IParsingContext.builder()
+                    .add(IBoss.class, () -> bossEntity.getBoss())
+                    .add(EntityPlayerMP.class, () -> player)
+                    .build();
+            output.add(service.interpret(config.get(MessageConfig.RESULTS_BODY_KILLER), killerContext));
             output.add("");
         });
 
-        output.add(format.apply("&aTop " + Math.min(3, contributors.size()) + " Damage Dealers:"));
+        IParsingContext dealersLabelContext = IParsingContext.builder()
+                .add(IBoss.class, () -> bossEntity.getBoss())
+                .add(Integer.class, () -> Math.min(3, contributors.size()))
+                .build();
+
+        output.add(service.interpret(config.get(MessageConfig.RESULTS_BODY_TOP_DAMAGE_LABEL), dealersLabelContext));
         for(int i = 0; i < Math.min(3, contributors.size()); i++) {
-            output.add(format.apply("&e" + contributors.get(i).getName() + "&7: &b" + getDamageDealt(contributors.get(i).getUniqueID()).get()));
+            int damage = getDamageDealt(contributors.get(i).getUniqueID()).get();
+            EntityPlayerMP player = contributors.get(i);
+            IParsingContext damageDealerContext = IParsingContext.builder()
+                    .add(IBoss.class, () -> bossEntity.getBoss())
+                    .add(EntityPlayerMP.class, () -> player)
+                    .add(Integer.class, () -> damage)
+                    .build();
+            output.add(service.interpret(config.get(MessageConfig.RESULTS_BODY_TOP_DAMAGE_CONTENT), damageDealerContext));
         }
-        output.add(format.apply("&8&m=================================="));
+        output.add(service.interpret(config.get(MessageConfig.RESULTS_FOOTER), bossContext));
 
         //Send summary to all players
         for(EntityPlayerMP player : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers()) {

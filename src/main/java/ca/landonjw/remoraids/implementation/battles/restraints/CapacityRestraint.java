@@ -27,9 +27,6 @@ import java.util.Optional;
  */
 public class CapacityRestraint extends BaseBattleRestraint {
 
-    /** The retraint's identifier. */
-    public static final String ID = "Capacity Restraint";
-
     /**
      * The unmodified capacity of the boss.
      * This will remain constant regardless of if the restraint is diminishing.
@@ -50,7 +47,7 @@ public class CapacityRestraint extends BaseBattleRestraint {
      * @param capacity   the capacity of the boss
      */
     public CapacityRestraint(@Nonnull IBoss boss, int capacity){
-        super(ID, boss);
+        super(boss);
         cleanCapacity = capacity;
         this.capacity = capacity;
     }
@@ -59,6 +56,12 @@ public class CapacityRestraint extends BaseBattleRestraint {
     @Override
     public boolean validatePlayer(@Nonnull EntityPlayerMP player) {
         return playerNum < capacity;
+    }
+
+    @Override
+    public String getId() {
+        Config config = RemoRaids.getMessageConfig();
+        return config.get(MessageConfig.CAPACITY_RESTRAINT_TITLE);
     }
 
     /** {@inheritDoc} */
@@ -72,7 +75,7 @@ public class CapacityRestraint extends BaseBattleRestraint {
                 .add(EntityPlayerMP.class, () -> player)
                 .add(IBoss.class, this::getBoss)
                 .build();
-        return Optional.of(service.interpret(config.get(MessageConfig.RESTRAINT_CAPACITY_REACHED), context));
+        return Optional.of(service.interpret(config.get(MessageConfig.CAPACITY_RESTRAINT_WARNING), context));
     }
 
 

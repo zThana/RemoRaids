@@ -22,10 +22,14 @@ public class MessageConfig implements ConfigKeyHolder {
     //                                      Restraints Messages
     //
     // -------------------------------------------------------------------------------------------------
-    public static final ConfigKey<String> RESTRAINT_CAPACITY_REACHED = translationKey("restraints.capacity-reached", "&cThere are too many players currently battling the boss...");
-    public static final ConfigKey<String> RESTRAINT_COOLDOWN = translationKey("restraints.cooldown", "&cYou cannot battle the boss for another {hours} hour(s), {trimmed-minutes} minute(s) and {trimmed-seconds} second(s)...");
-    public static final ConfigKey<String> RESTRAINT_NO_REBATTLE = translationKey("restraints.no-rebattle", "&cYou cannot attempt to battle this raid boss again...");
-    public static final ConfigKey<String> RESTRAINT_HALTED = translationKey("restraints.halted", "&cThis boss is not allowed to battle currently!");
+    public static final ConfigKey<String> CAPACITY_RESTRAINT_TITLE = translationKey("restraints.capacity-restraint-title", "Capacity Restraint");
+    public static final ConfigKey<String> CAPACITY_RESTRAINT_WARNING = translationKey("restraints.capacity-restraint-warning", "&cThere are too many players currently battling the boss...");
+    public static final ConfigKey<String> COOLDOWN_RESTRAINT_TITLE = translationKey("restraints.cooldown-restraint-title", "&cYou cannot battle the boss for another {hours} hour(s), {trimmed-minutes} minute(s) and {trimmed-seconds} second(s)...");
+    public static final ConfigKey<String> COOLDOWN_RESTRAINT_WARNING = translationKey("restraints.cooldown-restraint-warning", "&cYou cannot battle the boss for another {hours} hour(s), {trimmed-minutes} minute(s) and {trimmed-seconds} second(s)...");
+    public static final ConfigKey<String> NO_REBATTLE_RESTRAINT_TITLE = translationKey("restraints.no-rebattle-restraint-title", "No Rebattle Restraint");
+    public static final ConfigKey<String> NO_REBATTLE_RESTRAINT_WARNING = translationKey("restraints.no-rebattle-restraint-warning", "&cYou cannot attempt to battle this raid boss again...");
+    public static final ConfigKey<String> HALTED_BOSS_RESTRAINT_TITLE = translationKey("restraints.halted-boss-restraint-title", "Halted Boss Restraint");
+    public static final ConfigKey<String> HALTED_BOSS_RESTRAINT_WARNING = translationKey("restraints.halted-boss-restraint-warning", "&cThis boss is not allowed to battle currently!");
 
     // -------------------------------------------------------------------------------------------------
     //
@@ -45,8 +49,25 @@ public class MessageConfig implements ConfigKeyHolder {
     public static final ConfigKey<String> COMMAND_REWARD_CONTENT_TITLE = translationKey("rewards.reward-contents.command-reward-content-title", "Command: {string}");
     public static final ConfigKey<String> CURRENCY_REWARD_CONTENT_TITLE = translationKey("rewards.reward-contents.currency-reward-content-title", "Currency: {integer}");
 
+    // -------------------------------------------------------------------------------------------------
+    //
+    //                                   Battle Display Messaging
+    //
+    // -------------------------------------------------------------------------------------------------
+    public static final ConfigKey<String> RESULTS_HEADER = translationKey("battle-results.header", "&8&m==============&r &c[Raid Results] &8&m==============");
+    public static final ConfigKey<String> RESULTS_BODY_DESC = translationKey("battle-results.body.description", "&7Through valiant effort, the raid pokemon,\\n&e{boss}&7, was defeated!");
+    public static final ConfigKey<String> RESULTS_BODY_KILLER = translationKey("battle-results.body.killer", "&cKiller: &e{player}");
+    public static final ConfigKey<String> RESULTS_BODY_TOP_DAMAGE_LABEL = translationKey("battle-results.body.top-damage-label", "&aTop {integer} Damage Dealers:");
+    public static final ConfigKey<String> RESULTS_BODY_TOP_DAMAGE_CONTENT = translationKey("battle-results.body.top-damage-content", "&e{player}&7: &b{integer}");
+    public static final ConfigKey<String> RESULTS_FOOTER = translationKey("battle-results.footer", "&8&m==================================");
+
+    // -------------------------------------------------------------------------------------------------
+    //
+    //                                   Entity Related Messaging
+    //
+    // -------------------------------------------------------------------------------------------------
     public static final ConfigKey<String> RAID_ENGAGE = translationKey("engage-message", "&a&lRelease a pokemon to engage the boss!");
-    public static final ConfigKey<String> RAID_SPAWN_ANNOUNCE = translationKey("spawn-announcement", "&6&lA boss &a&l{boss-species} &6&lhas spawned!");
+    public static final ConfigKey<String> RAID_SPAWN_ANNOUNCE = translationKey("spawn-announcement", "&6&lA boss &a&l{boss} &6&lhas spawned!");
 
     // -------------------------------------------------------------------------------------------------
     //
@@ -62,7 +83,10 @@ public class MessageConfig implements ConfigKeyHolder {
     // -------------------------------------------------------------------------------------------------
     public static final ConfigKey<String> UI_COMMON_NEXT_PAGE = translationKey("ui.common.next-page", "&bNext Page");
     public static final ConfigKey<String> UI_COMMON_CURR_PAGE = translationKey("ui.common.current-page", "&bPage {current} / {total}");
-    public static final ConfigKey<String> UI_COMMON_LAST_PAGE = translationKey("ui.common.last-page", "&bPrevious Page");
+    public static final ConfigKey<String> UI_COMMON_PREVIOUS_PAGE = translationKey("ui.common.previous-page", "&bPrevious Page");
+    public static final ConfigKey<String> UI_COMMON_EDIT_ELEMENT = translationKey("ui.common.edit-element", "&6Left click to edit {string}");
+    public static final ConfigKey<String> UI_COMMON_DELETE_ELEMENT = translationKey("ui.common.delete-element", "&cMiddle click to remove {string}");
+    public static final ConfigKey<String> UI_COMMON_BACK = translationKey("ui.common.back", "&cGo Back");
 
     public static final ConfigKey<String> UI_REGISTRY_TITLE = translationKey("ui.registry.title", "&1&lBoss Registry");
     public static final ConfigKey<String> UI_REGISTRY_BOSS_TITLE = translationKey("ui.registry.boss.title", "&b&lBoss {boss}");

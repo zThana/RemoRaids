@@ -1,10 +1,12 @@
 package ca.landonjw.remoraids.implementation.ui.creators;
 
+import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.rewards.contents.IRewardContent;
 import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.api.ui.ICreatorUI;
-import ca.landonjw.remoraids.implementation.rewards.contents.ItemContent;
 import ca.landonjw.remoraids.implementation.rewards.contents.PokemonContent;
+import ca.landonjw.remoraids.internal.api.config.Config;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import ca.landonjw.remoraids.internal.inventory.api.InventoryAPI;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.config.PixelmonItemsPokeballs;
@@ -18,7 +20,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * The {@link ICreatorUI} used for creating a new {@link PokemonContent}.
@@ -43,7 +44,8 @@ public class PokemonContentCreator implements ICreatorUI<IRewardContent> {
     /** {@inheritDoc} */
     @Override
     public String getCreatorTitle() {
-        return TextFormatting.AQUA + "" + TextFormatting.BOLD + "Pokemon Content";
+        Config config = RemoRaids.getMessageConfig();
+        return config.get(MessageConfig.POKEMON_REWARD_CONTENT_TITLE);
     }
 
     class Creator {

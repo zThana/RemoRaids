@@ -1,13 +1,15 @@
 package ca.landonjw.remoraids.implementation.ui.creators;
 
+import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.rewards.IReward;
 import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.api.ui.ICreatorUI;
 import ca.landonjw.remoraids.implementation.rewards.KillerReward;
+import ca.landonjw.remoraids.internal.api.config.Config;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -36,7 +38,8 @@ public class KillerRewardCreator implements ICreatorUI<IReward> {
     /** {@inheritDoc} */
     @Override
     public String getCreatorTitle() {
-        return TextFormatting.AQUA + "" + TextFormatting.BOLD + "Killer Reward";
+        Config config = RemoRaids.getMessageConfig();
+        return config.get(MessageConfig.KILLER_REWARD_TITLE);
     }
 
 }

@@ -4,10 +4,9 @@ import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.battles.IBossBattle;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.ui.IBossUI;
-import ca.landonjw.remoraids.implementation.battles.restraints.HaltedBattleRestraint;
-import ca.landonjw.remoraids.implementation.ui.pages.BaseBossUI;
-import ca.landonjw.remoraids.implementation.ui.pages.EditorUI;
-import ca.landonjw.remoraids.implementation.ui.pages.RegistryUI;
+import ca.landonjw.remoraids.implementation.battles.restraints.HaltedBossRestraint;
+import ca.landonjw.remoraids.internal.api.config.Config;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import ca.landonjw.remoraids.internal.inventory.api.*;
 import com.pixelmonmod.pixelmon.config.PixelmonBlocks;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
@@ -51,6 +50,8 @@ public class BossOptionsUI extends BaseBossUI {
 
     /** {@inheritDoc} */
     public void open() {
+        Config config = RemoRaids.getMessageConfig();
+
         Button teleport = Button.builder()
                 .item(new ItemStack(Items.ENDER_PEARL))
                 .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Teleport")
@@ -83,9 +84,11 @@ public class BossOptionsUI extends BaseBossUI {
                 .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Halt Battles")
                 .lore(Arrays.asList(TextFormatting.WHITE + "This feature is currently unavailable."));
 
+
+        String haltedRestraintId = config.get(MessageConfig.HALTED_BOSS_RESTRAINT_TITLE);
         if(RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(bossEntity).isPresent()){
             IBossBattle battle = RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(bossEntity).get();
-            if(bossEntity.getBoss().getBattleSettings().containsBattleRestraint(HaltedBattleRestraint.ID)){
+            if(bossEntity.getBoss().getBattleSettings().containsBattleRestraint(haltedRestraintId)){
                 ItemStack fullOrb = new ItemStack(PixelmonItems.tresOrb);
                 fullOrb.setItemDamage(ItemShrineOrb.full);
 
@@ -93,7 +96,7 @@ public class BossOptionsUI extends BaseBossUI {
                         .item(new ItemStack(Blocks.REDSTONE_TORCH))
                         .lore(Arrays.asList(TextFormatting.WHITE + "Toggled on"))
                         .onClick(() -> {
-                            bossEntity.getBoss().getBattleSettings().removeBattleRestraint(HaltedBattleRestraint.ID);
+                            bossEntity.getBoss().getBattleSettings().removeBattleRestraint(haltedRestraintId);
                             open();
                         });
             }
@@ -101,7 +104,7 @@ public class BossOptionsUI extends BaseBossUI {
                 preventBattlesBuilder = preventBattlesBuilder
                         .lore(Arrays.asList(TextFormatting.WHITE + "Toggled off"))
                         .onClick(() -> {
-                            bossEntity.getBoss().getBattleSettings().getBattleRestraints().add(new HaltedBattleRestraint(bossEntity.getBoss()));
+                            bossEntity.getBoss().getBattleSettings().getBattleRestraints().add(new HaltedBossRestraint(bossEntity.getBoss()));
                             for(EntityPlayerMP player : battle.getPlayersInBattle()){
                                 player.sendMessage(new TextComponentString(TextFormatting.RED + "You have been kicked from battle due to ongoing boss editing."));
                             }
@@ -124,7 +127,7 @@ public class BossOptionsUI extends BaseBossUI {
 
         Button back = Button.builder()
                 .item(new ItemStack(Blocks.BARRIER))
-                .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Go Back")
+                .displayName(config.get(MessageConfig.UI_COMMON_BACK))
                 .onClick(() -> {
                     RegistryUI registry = new RegistryUI(player);
                     registry.open();

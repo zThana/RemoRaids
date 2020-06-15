@@ -1,9 +1,14 @@
 package ca.landonjw.remoraids.implementation.ui.creators;
 
+import ca.landonjw.remoraids.RemoRaids;
+import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.battles.IBattleRestraint;
+import ca.landonjw.remoraids.api.services.messaging.IMessageService;
 import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.api.ui.ICreatorUI;
 import ca.landonjw.remoraids.implementation.battles.restraints.CooldownRestraint;
+import ca.landonjw.remoraids.internal.api.config.Config;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import ca.landonjw.remoraids.internal.inventory.api.InventoryAPI;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
@@ -35,7 +40,8 @@ public class CooldownRestraintCreator implements ICreatorUI<IBattleRestraint> {
     /** {@inheritDoc} */
     @Override
     public String getCreatorTitle() {
-        return TextFormatting.AQUA + "" + TextFormatting.BOLD + "Cooldown Restraint";
+        Config config = RemoRaids.getMessageConfig();
+        return config.get(MessageConfig.COOLDOWN_RESTRAINT_TITLE);
     }
 
     class Creator {

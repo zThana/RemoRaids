@@ -1,17 +1,18 @@
 package ca.landonjw.remoraids.implementation.ui.creators;
 
+import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.rewards.IReward;
 import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.api.ui.ICreatorUI;
 import ca.landonjw.remoraids.implementation.rewards.TopDamageReward;
+import ca.landonjw.remoraids.internal.api.config.Config;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * The {@link ICreatorUI} used for creating a new {@link TopDamageReward}.
@@ -37,7 +38,8 @@ public class TopDamageRewardCreator implements ICreatorUI<IReward> {
     /** {@inheritDoc} */
     @Override
     public String getCreatorTitle() {
-        return TextFormatting.AQUA + "" + TextFormatting.BOLD + "Top Damage Reward";
+        Config config = RemoRaids.getMessageConfig();
+        return config.get(MessageConfig.TOP_DAMAGE_REWARD_TITLE);
     }
 
 }

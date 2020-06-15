@@ -3,13 +3,12 @@ package ca.landonjw.remoraids.implementation.ui;
 import ca.landonjw.remoraids.api.battles.IBattleRestraint;
 import ca.landonjw.remoraids.api.rewards.IReward;
 import ca.landonjw.remoraids.api.rewards.contents.IRewardContent;
-import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.api.ui.IBossUIRegistry;
 import ca.landonjw.remoraids.api.ui.ICreatorUI;
 import ca.landonjw.remoraids.api.ui.IEditorUI;
 import ca.landonjw.remoraids.implementation.battles.restraints.CapacityRestraint;
 import ca.landonjw.remoraids.implementation.battles.restraints.CooldownRestraint;
-import ca.landonjw.remoraids.implementation.battles.restraints.PreventRebattleRestraint;
+import ca.landonjw.remoraids.implementation.battles.restraints.NoRebattleRestraint;
 import ca.landonjw.remoraids.implementation.rewards.KillerReward;
 import ca.landonjw.remoraids.implementation.rewards.ParticipationReward;
 import ca.landonjw.remoraids.implementation.rewards.TopDamageReward;
@@ -55,7 +54,7 @@ public class BossUIRegistry implements IBossUIRegistry {
         registerRestraintEditor(CapacityRestraint.class, new CapacityRestraintEditor());
         registerRestraintCreator(CooldownRestraint.class, new CooldownRestraintCreator());
         registerRestraintEditor(CooldownRestraint.class, new CooldownRestraintEditor());
-        registerRestraintCreator(PreventRebattleRestraint.class, new PreventRebattleRestraintCreator());
+        registerRestraintCreator(NoRebattleRestraint.class, new NoRebattleRestraintCreator());
     }
 
     /** {@inheritDoc} */

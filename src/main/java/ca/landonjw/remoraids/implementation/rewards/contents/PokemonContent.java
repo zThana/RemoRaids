@@ -68,7 +68,6 @@ public class PokemonContent implements IRewardContent {
         Config config = RemoRaids.getMessageConfig();
         IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
         IParsingContext context = IParsingContext.builder()
-                .add(EntityPlayerMP.class, () -> player)
                 .add(Pokemon.class, () -> pokemon)
                 .build();
         player.sendMessage(new TextComponentString(service.interpret(config.get(MessageConfig.POKEMON_RECEIVED), context)));

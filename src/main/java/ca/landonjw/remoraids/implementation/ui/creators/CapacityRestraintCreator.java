@@ -1,9 +1,12 @@
 package ca.landonjw.remoraids.implementation.ui.creators;
 
+import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.battles.IBattleRestraint;
 import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.api.ui.ICreatorUI;
 import ca.landonjw.remoraids.implementation.battles.restraints.CapacityRestraint;
+import ca.landonjw.remoraids.internal.api.config.Config;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import ca.landonjw.remoraids.internal.inventory.api.InventoryAPI;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
@@ -34,7 +37,8 @@ public class CapacityRestraintCreator implements ICreatorUI<IBattleRestraint> {
     /** {@inheritDoc} */
     @Override
     public String getCreatorTitle() {
-        return TextFormatting.AQUA + "" + TextFormatting.BOLD + "Capacity Restraint";
+        Config config = RemoRaids.getMessageConfig();
+        return config.get(MessageConfig.CAPACITY_RESTRAINT_TITLE);
     }
 
     class Creator {

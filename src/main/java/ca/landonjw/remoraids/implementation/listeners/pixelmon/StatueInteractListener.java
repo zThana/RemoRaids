@@ -31,8 +31,7 @@ public class StatueInteractListener {
             if(entity.getEntity().getUniqueID().equals(event.statue.getUniqueID())){
                 event.setCanceled(true);
                 Config config = RemoRaids.getMessageConfig();
-                IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
-                event.player.sendMessage(new TextComponentString(service.interpret(config.get(MessageConfig.ERROR_CHISEL_INTERACT), null)));
+                event.player.sendMessage(new TextComponentString(config.get(MessageConfig.ERROR_CHISEL_INTERACT)));
             }
         }
     }
@@ -49,8 +48,7 @@ public class StatueInteractListener {
             if(entity.getEntity().getUniqueID().equals(event.getStatue().getUniqueID())){
                 event.setCanceled(true);
                 Config config = RemoRaids.getMessageConfig();
-                IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
-                event.player.sendMessage(new TextComponentString(service.interpret(config.get(MessageConfig.ERROR_CHISEL_INTERACT), null)));
+                event.player.sendMessage(new TextComponentString(config.get(MessageConfig.ERROR_CHISEL_INTERACT)));
             }
         }
     }

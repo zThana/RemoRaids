@@ -88,38 +88,21 @@ public class BossEntity implements IBossEntity {
         IParsingContext context = IParsingContext.builder()
                 .add(IBoss.class, this::getBoss)
                 .build();
+        String parsedMessage = service.interpret(config.get(MessageConfig.RAID_ENGAGE), context);
+        float engageRange = RemoRaids.getGeneralConfig().get(GeneralConfig.ENGAGE_RANGE);
 
         switch(RemoRaids.getGeneralConfig().get(GeneralConfig.ENGAGE_MESSAGE_TYPE)){
             case 1:
-                bossEngager = new ActionBarEngager(
-                        this,
-                        RemoRaids.getGeneralConfig().get(GeneralConfig.ENGAGE_RANGE),
-                        service.interpret(config.get(MessageConfig.RAID_ENGAGE), context)
-                );
+                bossEngager = new ActionBarEngager(this, engageRange, parsedMessage);
                 break;
             case 2:
-                bossEngager = new BossBarEngager(
-                        this,
-                        RemoRaids.getGeneralConfig().get(GeneralConfig.ENGAGE_RANGE),
-                        service.interpret(config.get(MessageConfig.RAID_ENGAGE), context),
-                        BossInfo.Color.WHITE,
-                        BossInfo.Overlay.PROGRESS
-                );
+                bossEngager = new BossBarEngager(this, engageRange, parsedMessage, BossInfo.Color.WHITE, BossInfo.Overlay.PROGRESS);
                 break;
             case 3:
-                bossEngager = new OverlayEngager(
-                        this,
-                        RemoRaids.getGeneralConfig().get(GeneralConfig.ENGAGE_RANGE),
-                        service.interpret(config.get(MessageConfig.RAID_ENGAGE), context)
-                );
+                bossEngager = new OverlayEngager(this, engageRange, parsedMessage);
                 break;
             case 4:
-                bossEngager = new TitleEngager(
-                        this,
-                        RemoRaids.getGeneralConfig().get(GeneralConfig.ENGAGE_RANGE),
-                        service.interpret(config.get(MessageConfig.RAID_ENGAGE), context),
-                        SPacketTitle.Type.TITLE
-                );
+                bossEngager = new TitleEngager(this, engageRange, parsedMessage, SPacketTitle.Type.TITLE);
                 break;
         }
     }

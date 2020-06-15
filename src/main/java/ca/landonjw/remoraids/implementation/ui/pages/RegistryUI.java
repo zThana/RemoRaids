@@ -70,7 +70,7 @@ public class RegistryUI {
 
         Button previousButton = Button.builder()
                 .item(new ItemStack(PixelmonItems.LtradeHolderLeft))
-                .displayName(config.get(MessageConfig.UI_COMMON_LAST_PAGE))
+                .displayName(config.get(MessageConfig.UI_COMMON_PREVIOUS_PAGE))
                 .type(ButtonType.PreviousPage)
                 .build();
 

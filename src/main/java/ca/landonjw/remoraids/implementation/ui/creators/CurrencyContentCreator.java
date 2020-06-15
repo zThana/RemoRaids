@@ -1,9 +1,12 @@
 package ca.landonjw.remoraids.implementation.ui.creators;
 
+import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.rewards.contents.IRewardContent;
 import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.api.ui.ICreatorUI;
 import ca.landonjw.remoraids.implementation.rewards.contents.CurrencyContent;
+import ca.landonjw.remoraids.internal.api.config.Config;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import ca.landonjw.remoraids.internal.inventory.api.InventoryAPI;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
@@ -40,7 +43,8 @@ public class CurrencyContentCreator implements ICreatorUI<IRewardContent> {
     /** {@inheritDoc} */
     @Override
     public String getCreatorTitle() {
-        return TextFormatting.AQUA + "" + TextFormatting.BOLD + "Currency Content";
+        Config config = RemoRaids.getMessageConfig();
+        return config.get(MessageConfig.CURRENCY_REWARD_CONTENT_TITLE);
     }
 
     class Creator {

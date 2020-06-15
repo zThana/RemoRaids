@@ -15,38 +15,14 @@ import java.util.Objects;
  */
 public abstract class BaseBattleRestraint implements IBattleRestraint {
 
-    /** The identifier for the restraint. */
-    private String id;
     /** The boss this battle restraint is for. */
     private IBoss boss;
 
     /**
      * Constructor for the base battle restraint.
-     *
-     * @param id identifier for the restraint
      */
-    public BaseBattleRestraint(@Nonnull String id, @Nonnull IBoss boss){
-        this.id = Objects.requireNonNull(id);
+    public BaseBattleRestraint(@Nonnull IBoss boss){
         this.boss = Objects.requireNonNull(boss);
-    }
-
-    /**
-     * Gets the identifier for the restraint.
-     *
-     * @return the identifier for the restraint
-     */
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * Sets the restraint's identifier.
-     *
-     * @param id new identifier
-     */
-    protected void setId(@Nonnull String id){
-        this.id = Objects.requireNonNull(id);
     }
 
     /**

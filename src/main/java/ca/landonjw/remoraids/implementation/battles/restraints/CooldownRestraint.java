@@ -27,9 +27,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class CooldownRestraint extends BaseBattleRestraint {
 
-    /** The retraint's identifier. */
-    public static final String ID = "Cooldown Restraint";
-
     /** Map of players and the last time they left battle with the boss. */
     private Map<EntityPlayerMP, Instant> lastBattleTimeMap = new HashMap<>();
     /** The cooldown in seconds before plays may reenter battle with the boss, after they have left. */
@@ -43,7 +40,7 @@ public class CooldownRestraint extends BaseBattleRestraint {
      * @param unit       time unit of the cooldown
      */
     public CooldownRestraint(@Nonnull IBoss boss, long cooldown, @Nonnull TimeUnit unit){
-        super(ID, boss);
+        super(boss);
         cooldownSeconds = unit.toSeconds(cooldown);
     }
 
@@ -57,6 +54,12 @@ public class CooldownRestraint extends BaseBattleRestraint {
             }
         }
         return true;
+    }
+
+    @Override
+    public String getId() {
+        Config config = RemoRaids.getMessageConfig();
+        return config.get(MessageConfig.COOLDOWN_RESTRAINT_TITLE);
     }
 
     /** {@inheritDoc} */
@@ -73,7 +76,7 @@ public class CooldownRestraint extends BaseBattleRestraint {
                         .add(EntityPlayerMP.class, () -> player)
                         .add(IBoss.class, this::getBoss)
                         .build();
-                return Optional.of(service.interpret(config.get(MessageConfig.RESTRAINT_COOLDOWN), context));
+                return Optional.of(service.interpret(config.get(MessageConfig.COOLDOWN_RESTRAINT_WARNING), context));
             }
         }
         return Optional.empty();

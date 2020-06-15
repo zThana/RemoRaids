@@ -1,10 +1,11 @@
 package ca.landonjw.remoraids.implementation.ui.pages.general;
 
+import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.implementation.ui.pages.BaseBossUI;
-import ca.landonjw.remoraids.implementation.ui.pages.general.BattleStatsSelectionUI;
-import ca.landonjw.remoraids.implementation.ui.pages.general.BossSizeEditorUI;
+import ca.landonjw.remoraids.internal.api.config.Config;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import ca.landonjw.remoraids.internal.inventory.api.Button;
 import ca.landonjw.remoraids.internal.inventory.api.LineType;
 import ca.landonjw.remoraids.internal.inventory.api.Page;
@@ -42,6 +43,8 @@ public class GeneralSettingsUI extends BaseBossUI {
     /** {@inheritDoc} */
     public void open() {
         if(bossNotInBattle()){
+            Config config = RemoRaids.getMessageConfig();
+
             Button setStats = Button.builder()
                     .item(new ItemStack(Items.PAPER))
                     .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Stats")
@@ -62,7 +65,7 @@ public class GeneralSettingsUI extends BaseBossUI {
 
             Button back = Button.builder()
                     .item(new ItemStack(Blocks.BARRIER))
-                    .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Go Back")
+                    .displayName(config.get(MessageConfig.UI_COMMON_BACK))
                     .onClick(() -> {
                         source.open();
                     })

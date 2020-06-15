@@ -1,5 +1,10 @@
 package ca.landonjw.remoraids.implementation.spawning.announcements;
 
+import ca.landonjw.remoraids.api.IBossAPI;
+import ca.landonjw.remoraids.api.boss.IBoss;
+import ca.landonjw.remoraids.api.services.messaging.IMessageService;
+import ca.landonjw.remoraids.api.services.placeholders.IParsingContext;
+import ca.landonjw.remoraids.api.spawning.IBossSpawnLocation;
 import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import ca.landonjw.remoraids.api.spawning.ISpawnAnnouncement;
 import ca.landonjw.remoraids.api.util.gson.JObject;
@@ -19,15 +24,6 @@ import java.util.Optional;
  * @since  1.0.0
  */
 public class SpawnAnnouncement implements ISpawnAnnouncement {
-
-    /** The placeholder for a boss's species. */
-    public static final String BOSS_SPECIES_PLACEHOLDER = "{boss-species}";
-    /** The placeholder for the x coordinate of the location of a boss spawn. */
-    public static final String BOSS_LOCATION_X_PLACEHOLDER = "{boss-x}";
-    /** The placeholder for the y coordinate of the location of a boss spawn. */
-    public static final String BOSS_LOCATION_Y_PLACEHOLDER = "{boss-y}";
-    /** The placeholder for the z coordinate of the location of a boss spawn. */
-    public static final String BOSS_LOCATION_Z_PLACEHOLDER = "{boss-z}";
 
     /** The announcement to be sent to players when a spawn occurs. */
     private String announcement;
@@ -83,11 +79,12 @@ public class SpawnAnnouncement implements ISpawnAnnouncement {
      * @return the announcement with placeholders replaced
      */
     private String getParsedAnnouncement(@Nonnull String announcement, @Nonnull IBossSpawner spawner){
-        return announcement
-                .replace(BOSS_SPECIES_PLACEHOLDER, spawner.getBoss().getPokemon().getSpecies().name)
-                .replace(BOSS_LOCATION_X_PLACEHOLDER, "" + spawner.getSpawnLocation().getX())
-                .replace(BOSS_LOCATION_Y_PLACEHOLDER, "" + spawner.getSpawnLocation().getY())
-                .replace(BOSS_LOCATION_Z_PLACEHOLDER, "" + spawner.getSpawnLocation().getZ());
+        IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
+        IParsingContext context = IParsingContext.builder()
+                .add(IBossSpawnLocation.class, spawner::getSpawnLocation)
+                .add(IBoss.class, spawner::getBoss)
+                .build();
+        return service.interpret(announcement, context);
     }
 
     /** {@inheritDoc} */

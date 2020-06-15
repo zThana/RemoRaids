@@ -2,17 +2,20 @@ package ca.landonjw.remoraids.implementation.ui.pages.battle;
 
 import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.battles.IBattleRestraint;
-import ca.landonjw.remoraids.api.battles.IBossBattle;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.api.ui.IBossUIRegistry;
 import ca.landonjw.remoraids.api.ui.IEditorUI;
 import ca.landonjw.remoraids.implementation.ui.pages.BaseBossUI;
+import ca.landonjw.remoraids.internal.api.config.Config;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import ca.landonjw.remoraids.internal.inventory.api.*;
+import com.google.common.collect.Lists;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 
@@ -40,28 +43,38 @@ public class RestraintsUI extends BaseBossUI {
     @Override
     public void open() {
         if(bossNotInBattle()){
+            Config config = RemoRaids.getMessageConfig();
+
             Button back = Button.builder()
                     .item(new ItemStack(Blocks.BARRIER))
-                    .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Go Back")
+                    .displayName(config.get(MessageConfig.UI_COMMON_BACK))
                     .onClick(() -> {
                         source.open();
                     })
                     .build();
 
-            IBossBattle battle = RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(bossEntity).get();
-
             Set<IBattleRestraint> restraints = bossEntity.getBoss().getBattleSettings().getBattleRestraints();
             List<Button> restraintButtons = new ArrayList<>();
 
             for(IBattleRestraint restraint : restraints){
+                List<String> lore = Lists.newArrayList();
+                lore.add(config.get(MessageConfig.UI_COMMON_EDIT_ELEMENT));
+                lore.add(config.get(MessageConfig.UI_COMMON_DELETE_ELEMENT));
+
                 Button restraintButton = Button.builder()
                         .item(new ItemStack(Items.FILLED_MAP))
                         .displayName(TextFormatting.AQUA + restraint.getId())
-                        .onClick(() -> {
-                            IBossUIRegistry registry = IBossUIRegistry.getInstance();
-                            if(registry.getRestraintEditor(restraint.getClass()).isPresent()){
-                                IEditorUI editor = registry.getRestraintEditor(restraint.getClass()).get();
-                                editor.open(this, player, restraint);
+                        .onClick((action) -> {
+                            if(action.getClickType() == ClickType.CLONE){
+                                restraints.remove(restraint);
+                                open();
+                            }
+                            else{
+                                IBossUIRegistry registry = IBossUIRegistry.getInstance();
+                                if(registry.getRestraintEditor(restraint.getClass()).isPresent()){
+                                    IEditorUI editor = registry.getRestraintEditor(restraint.getClass()).get();
+                                    editor.open(this, player, restraint);
+                                }
                             }
                         })
                         .build();
@@ -80,13 +93,13 @@ public class RestraintsUI extends BaseBossUI {
 
             Button prevPage = Button.builder()
                     .item(new ItemStack(PixelmonItems.LtradeHolderLeft))
-                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Previous Page")
+                    .displayName(config.get(MessageConfig.UI_COMMON_PREVIOUS_PAGE))
                     .type(ButtonType.PreviousPage)
                     .build();
 
             Button nextPage = Button.builder()
                     .item(new ItemStack(PixelmonItems.tradeHolderRight))
-                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Next Page")
+                    .displayName(config.get(MessageConfig.UI_COMMON_NEXT_PAGE))
                     .type(ButtonType.NextPage)
                     .build();
 

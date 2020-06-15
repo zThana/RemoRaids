@@ -1,12 +1,15 @@
 package ca.landonjw.remoraids.implementation.ui.pages.battle;
 
+import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
+import ca.landonjw.remoraids.api.rewards.IReward;
+import ca.landonjw.remoraids.api.rewards.contents.IRewardContent;
 import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.api.ui.IBossUIRegistry;
 import ca.landonjw.remoraids.api.ui.ICreatorUI;
-import ca.landonjw.remoraids.api.rewards.IReward;
-import ca.landonjw.remoraids.api.rewards.contents.IRewardContent;
 import ca.landonjw.remoraids.implementation.ui.pages.BaseBossUI;
+import ca.landonjw.remoraids.internal.api.config.Config;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import ca.landonjw.remoraids.internal.inventory.api.*;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -51,9 +54,11 @@ public class AddRewardContentUI extends BaseBossUI {
     /** {@inheritDoc} */
     @Override
     public void open() {
+        Config config = RemoRaids.getMessageConfig();
+
         Button back = Button.builder()
                 .item(new ItemStack(Blocks.BARRIER))
-                .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Go Back")
+                .displayName(config.get(MessageConfig.UI_COMMON_BACK))
                 .onClick(() -> {
                     source.open();
                 })
@@ -73,13 +78,13 @@ public class AddRewardContentUI extends BaseBossUI {
 
         Button prevPage = Button.builder()
                 .item(new ItemStack(PixelmonItems.LtradeHolderLeft))
-                .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Previous Page")
+                .displayName(config.get(MessageConfig.UI_COMMON_PREVIOUS_PAGE))
                 .type(ButtonType.PreviousPage)
                 .build();
 
         Button nextPage = Button.builder()
                 .item(new ItemStack(PixelmonItems.tradeHolderRight))
-                .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Next Page")
+                .displayName(config.get(MessageConfig.UI_COMMON_NEXT_PAGE))
                 .type(ButtonType.NextPage)
                 .build();
 

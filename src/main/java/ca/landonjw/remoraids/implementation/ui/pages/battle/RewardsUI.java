@@ -1,23 +1,21 @@
 package ca.landonjw.remoraids.implementation.ui.pages.battle;
 
 import ca.landonjw.remoraids.RemoRaids;
-import ca.landonjw.remoraids.api.battles.IBossBattle;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
+import ca.landonjw.remoraids.api.rewards.IReward;
+import ca.landonjw.remoraids.api.rewards.contents.IRewardContent;
 import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.api.ui.IBossUIRegistry;
 import ca.landonjw.remoraids.api.ui.IEditorUI;
-import ca.landonjw.remoraids.api.rewards.IReward;
-import ca.landonjw.remoraids.api.rewards.contents.IRewardContent;
 import ca.landonjw.remoraids.implementation.ui.pages.BaseBossUI;
-import ca.landonjw.remoraids.implementation.ui.pages.battle.AddRewardUI;
+import ca.landonjw.remoraids.internal.api.config.Config;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import ca.landonjw.remoraids.internal.inventory.api.*;
-import ca.landonjw.remoraids.internal.text.TextUtils;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
@@ -51,9 +49,11 @@ public class RewardsUI extends BaseBossUI {
     @Override
     public void open() {
         if(bossNotInBattle()){
+            Config config = RemoRaids.getMessageConfig();
+
             Button back = Button.builder()
                     .item(new ItemStack(Blocks.BARRIER))
-                    .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Go Back")
+                    .displayName(config.get(MessageConfig.UI_COMMON_BACK))
                     .onClick(() -> {
                         source.open();
                     })
@@ -68,16 +68,24 @@ public class RewardsUI extends BaseBossUI {
                 for(IRewardContent content : reward.getContents()){
                     contentLore.add("- " + content.getDescription());
                 }
+                contentLore.add(config.get(MessageConfig.UI_COMMON_EDIT_ELEMENT));
+                contentLore.add(config.get(MessageConfig.UI_COMMON_DELETE_ELEMENT));
 
                 Button rewardButton = Button.builder()
                         .item(new ItemStack(Blocks.CHEST))
                         .displayName(TextFormatting.AQUA + reward.getDescription())
                         .lore(contentLore)
-                        .onClick(() -> {
-                            IBossUIRegistry registry = IBossUIRegistry.getInstance();
-                            if(registry.getRewardEditor(reward.getClass()).isPresent()){
-                                IEditorUI editor = registry.getRewardEditor(reward.getClass()).get();
-                                editor.open(this, player, reward);
+                        .onClick((action) -> {
+                            if(action.getClickType() == ClickType.CLONE){
+                                rewards.remove(reward);
+                                open();
+                            }
+                            else{
+                                IBossUIRegistry registry = IBossUIRegistry.getInstance();
+                                if(registry.getRewardEditor(reward.getClass()).isPresent()){
+                                    IEditorUI editor = registry.getRewardEditor(reward.getClass()).get();
+                                    editor.open(this, player, reward);
+                                }
                             }
                         })
                         .build();
@@ -96,13 +104,13 @@ public class RewardsUI extends BaseBossUI {
 
             Button prevPage = Button.builder()
                     .item(new ItemStack(PixelmonItems.LtradeHolderLeft))
-                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Previous Page")
+                    .displayName(config.get(MessageConfig.UI_COMMON_PREVIOUS_PAGE))
                     .type(ButtonType.PreviousPage)
                     .build();
 
             Button nextPage = Button.builder()
                     .item(new ItemStack(PixelmonItems.tradeHolderRight))
-                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Next Page")
+                    .displayName(config.get(MessageConfig.UI_COMMON_NEXT_PAGE))
                     .type(ButtonType.NextPage)
                     .build();
 
