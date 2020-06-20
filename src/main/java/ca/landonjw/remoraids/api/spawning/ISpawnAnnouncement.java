@@ -1,9 +1,9 @@
 package ca.landonjw.remoraids.api.spawning;
 
 import ca.landonjw.remoraids.api.IBossAPI;
+import ca.landonjw.remoraids.api.messages.channels.IMessageChannel;
 import ca.landonjw.remoraids.api.util.DataSerializable;
 import ca.landonjw.remoraids.api.util.IBuilder;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -52,6 +52,8 @@ public interface ISpawnAnnouncement extends DataSerializable {
     interface ISpawnAnnouncementBuilder extends IBuilder.Deserializable<ISpawnAnnouncement, ISpawnAnnouncementBuilder> {
 
         ISpawnAnnouncementBuilder message(String message);
+
+        ISpawnAnnouncementBuilder messageChannel(IMessageChannel channel);
 
         ISpawnAnnouncementBuilder warp(World world, Vec3d pos, float rotation);
 

@@ -5,6 +5,7 @@ import ca.landonjw.remoraids.api.spawning.IBossSpawnLocation;
 import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import ca.landonjw.remoraids.api.spawning.ISpawnAnnouncement;
 import ca.landonjw.remoraids.api.util.IBuilder;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.concurrent.TimeUnit;
@@ -49,14 +50,12 @@ public interface IBossCreator extends IBuilder.Deserializable<IBossSpawner, IBos
 	 * entity looks. For reference, 0 = South, 90 = West, -180 = North, -90 = East.
 	 * And yes, the negative values are intended. T'is how the game represents them!
 	 *
-	 * @param world The world to use for the spawn
-	 * @param x The x position to spawn the boss
-	 * @param y The y position to spawn the boss
-	 * @param z The z position to spawn the boss
-	 * @param yaw The rotation to apply to the boss once spawned
+	 * @param world    The world to use for the spawn
+	 * @param location The x, y, and z coordinates to spawn the boss at
+	 * @param rotation The rotation to apply to the boss once spawned
 	 * @return The current instance of the builder
 	 */
-	IBossCreator location(World world, double x, double y, double z, float yaw);
+	IBossCreator location(World world, Vec3d location, float rotation);
 
 	/**
 	 * Specifies the spawning location of the entity. This call, unlike its counterpart, allows
@@ -94,8 +93,8 @@ public interface IBossCreator extends IBuilder.Deserializable<IBossSpawner, IBos
 	 * is -1, the system will treat this as an unlimited respawn template.
 	 *
 	 * @param amount The number of times to respawn the raid boss. -1 for unlimited
-	 * @param time The amount of time to wait before respawning the raid boss
-	 * @param unit The time unit to use for specifying the actual intended wait for the respawn cooldown
+	 * @param time   The amount of time to wait before respawning the raid boss
+	 * @param unit   The time unit to use for specifying the actual intended wait for the respawn cooldown
 	 * @return The current instance of the builder
 	 */
 	IBossCreator respawns(int amount, long time, TimeUnit unit);

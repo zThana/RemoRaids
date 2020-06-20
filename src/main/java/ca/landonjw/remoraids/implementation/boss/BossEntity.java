@@ -8,19 +8,23 @@ import ca.landonjw.remoraids.api.boss.IBoss;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.boss.engage.IBossEngager;
 import ca.landonjw.remoraids.api.events.BossDeathEvent;
-import ca.landonjw.remoraids.api.services.messaging.IMessageService;
-import ca.landonjw.remoraids.api.services.placeholders.IParsingContext;
+import ca.landonjw.remoraids.api.messages.channels.IMessageChannel;
+import ca.landonjw.remoraids.api.messages.placeholders.IParsingContext;
+import ca.landonjw.remoraids.api.messages.services.IMessageService;
 import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import ca.landonjw.remoraids.implementation.battles.BossBattleRegistry;
-import ca.landonjw.remoraids.implementation.battles.restraints.CapacityRestraint;
-import ca.landonjw.remoraids.implementation.boss.engage.ActionBarEngager;
-import ca.landonjw.remoraids.implementation.boss.engage.BossBarEngager;
-import ca.landonjw.remoraids.implementation.boss.engage.OverlayEngager;
-import ca.landonjw.remoraids.implementation.boss.engage.TitleEngager;
+import ca.landonjw.remoraids.implementation.boss.engage.BossEngager;
 import ca.landonjw.remoraids.internal.api.config.Config;
 import ca.landonjw.remoraids.internal.config.GeneralConfig;
 import ca.landonjw.remoraids.internal.config.MessageConfig;
+import ca.landonjw.remoraids.internal.messages.channels.ActionBarChannel;
+import ca.landonjw.remoraids.internal.messages.channels.BossBarChannel;
+import ca.landonjw.remoraids.internal.messages.channels.OverlayChannel;
+import ca.landonjw.remoraids.internal.messages.channels.TitleChannel;
 import ca.landonjw.remoraids.internal.tasks.Task;
+import com.pixelmonmod.pixelmon.api.overlay.notice.EnumOverlayLayout;
+import com.pixelmonmod.pixelmon.api.overlay.notice.NoticeOverlay;
+import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityStatue;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,7 +35,6 @@ import net.minecraft.world.BossInfo;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * Implementation of {@link IBossEntity}.
@@ -93,16 +96,27 @@ public class BossEntity implements IBossEntity {
 
         switch(RemoRaids.getGeneralConfig().get(GeneralConfig.ENGAGE_MESSAGE_TYPE)){
             case 1:
-                bossEngager = new ActionBarEngager(this, engageRange, parsedMessage);
+                IMessageChannel actionBar = new ActionBarChannel();
+                bossEngager = new BossEngager(this, actionBar, engageRange, parsedMessage);
                 break;
             case 2:
-                bossEngager = new BossBarEngager(this, engageRange, parsedMessage, BossInfo.Color.WHITE, BossInfo.Overlay.PROGRESS);
+                IMessageChannel bossBar = new BossBarChannel(BossInfo.Color.RED, BossInfo.Overlay.PROGRESS);
+                bossEngager = new BossEngager(this, bossBar, engageRange, parsedMessage);
                 break;
             case 3:
-                bossEngager = new OverlayEngager(this, engageRange, parsedMessage);
+                PokemonSpec spec = new PokemonSpec();
+                spec.name = boss.getPokemon().getSpecies().name;
+                spec.form = boss.getPokemon().getFormEnum().getForm();
+                spec.shiny = boss.getPokemon().isShiny();
+                NoticeOverlay.Builder overlayBuilder = NoticeOverlay.builder()
+                        .setLayout(EnumOverlayLayout.LEFT_AND_RIGHT)
+                        .setPokemonSprite(spec);
+                IMessageChannel overlay = new OverlayChannel(overlayBuilder);
+                bossEngager = new BossEngager(this, overlay, engageRange, parsedMessage);
                 break;
             case 4:
-                bossEngager = new TitleEngager(this, engageRange, parsedMessage, SPacketTitle.Type.TITLE);
+                IMessageChannel title = new TitleChannel(SPacketTitle.Type.TITLE);
+                bossEngager = new BossEngager(this, title, engageRange, parsedMessage);
                 break;
         }
     }

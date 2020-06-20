@@ -12,6 +12,7 @@ import ca.landonjw.remoraids.implementation.spawning.announcements.SpawnAnnounce
 import ca.landonjw.remoraids.internal.config.MessageConfig;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.concurrent.TimeUnit;
@@ -40,14 +41,8 @@ public class BossCreator implements IBossCreator {
 	}
 
 	@Override
-	public IBossCreator location(World world, double x, double y, double z, float yaw) {
-		this.location = new BossSpawnLocation(
-				world,
-				x,
-				y,
-				z,
-				yaw
-		);
+	public IBossCreator location(World world, Vec3d location, float rotation) {
+		this.location = new BossSpawnLocation(world, location, rotation);
 		return this;
 	}
 
@@ -59,7 +54,17 @@ public class BossCreator implements IBossCreator {
 
 	@Override
 	public IBossCreator announcement(boolean allowTP, String message) {
-		this.announcement = allowTP ? new TeleportableSpawnAnnouncement(message) : new SpawnAnnouncement(message);
+		if(allowTP){
+			this.announcement = ISpawnAnnouncement.builder()
+					.message(message)
+					.warp(location.getWorld(), location.getLocation(), location.getRotation())
+					.build();
+		}
+		else{
+			this.announcement = ISpawnAnnouncement.builder()
+					.message(message)
+					.build();
+		}
 		return this;
 	}
 

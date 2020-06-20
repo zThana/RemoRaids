@@ -11,8 +11,8 @@ import ca.landonjw.remoraids.api.events.BossBattleStartedEvent;
 import ca.landonjw.remoraids.api.events.BossBattleStartingEvent;
 import ca.landonjw.remoraids.api.events.BossHealthChangeEvent;
 import ca.landonjw.remoraids.api.rewards.IReward;
-import ca.landonjw.remoraids.api.services.messaging.IMessageService;
-import ca.landonjw.remoraids.api.services.placeholders.IParsingContext;
+import ca.landonjw.remoraids.api.messages.services.IMessageService;
+import ca.landonjw.remoraids.api.messages.placeholders.IParsingContext;
 import ca.landonjw.remoraids.implementation.battles.controller.BossStatusController;
 import ca.landonjw.remoraids.implementation.battles.controller.participants.BossParticipant;
 import ca.landonjw.remoraids.implementation.battles.controller.participants.BossPlayerParticipant;
@@ -36,7 +36,6 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**

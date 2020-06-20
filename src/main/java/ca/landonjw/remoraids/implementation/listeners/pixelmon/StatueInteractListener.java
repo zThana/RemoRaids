@@ -3,7 +3,6 @@ package ca.landonjw.remoraids.implementation.listeners.pixelmon;
 import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
-import ca.landonjw.remoraids.api.services.messaging.IMessageService;
 import ca.landonjw.remoraids.internal.api.config.Config;
 import ca.landonjw.remoraids.internal.config.MessageConfig;
 import com.pixelmonmod.pixelmon.api.events.StatueEvent;

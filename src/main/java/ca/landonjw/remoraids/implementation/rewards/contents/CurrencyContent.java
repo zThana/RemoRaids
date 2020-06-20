@@ -4,9 +4,8 @@ import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.rewards.IReward;
 import ca.landonjw.remoraids.api.rewards.contents.IRewardContent;
-import ca.landonjw.remoraids.api.services.messaging.IMessageService;
-import ca.landonjw.remoraids.api.services.placeholders.IParsingContext;
-import ca.landonjw.remoraids.api.services.placeholders.IPlaceholderContext;
+import ca.landonjw.remoraids.api.messages.services.IMessageService;
+import ca.landonjw.remoraids.api.messages.placeholders.IParsingContext;
 import ca.landonjw.remoraids.internal.api.config.Config;
 import ca.landonjw.remoraids.internal.config.MessageConfig;
 import com.pixelmonmod.pixelmon.Pixelmon;
@@ -14,7 +13,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
 

@@ -17,12 +17,12 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityStatue;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 /**
  * An implementation of {@link IBossSpawner} that simply spawns a {@link IBoss}.
@@ -118,7 +118,8 @@ public class BossSpawner implements IBossSpawner {
             statue.readFromNBT(nbt);
         }
 
-        statue.setPosition(spawnLocation.getX(), spawnLocation.getY(), spawnLocation.getZ());
+        Vec3d location = spawnLocation.getLocation();
+        statue.setPosition(location.x, location.y, location.z);
         statue.setRotation(spawnLocation.getRotation());
         spawnLocation.getWorld().spawnEntity(statue);
 
@@ -134,7 +135,8 @@ public class BossSpawner implements IBossSpawner {
      * @param pixelmon the pixelmon to search for flying capabilities
      */
     private void setStatueAnimation(EntityStatue statue, EntityPixelmon pixelmon){
-        BlockPos spawnPos = new BlockPos(spawnLocation.getX(), spawnLocation.getY(), spawnLocation.getZ());
+        Vec3d location = spawnLocation.getLocation();
+        BlockPos spawnPos = new BlockPos(location.x, location.y, location.z);
 
         if(!spawnLocation.getWorld().getBlockState(spawnPos.down()).getMaterial().isSolid() && pixelmon.canFly()){
             statue.setIsFlying(true);
@@ -161,7 +163,8 @@ public class BossSpawner implements IBossSpawner {
 
         battleEntity.setNoAI(true);
 
-        battleEntity.setPosition(spawnLocation.getX(), spawnLocation.getY(), spawnLocation.getZ());
+        Vec3d location = spawnLocation.getLocation();
+        battleEntity.setPosition(location.x, location.y, location.z);
         spawnLocation.getWorld().spawnEntity(battleEntity);
 
         return battleEntity;

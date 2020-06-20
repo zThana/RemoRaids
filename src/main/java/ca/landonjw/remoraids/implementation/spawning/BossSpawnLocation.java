@@ -14,19 +14,17 @@ import java.util.Arrays;
 public class BossSpawnLocation implements IBossSpawnLocation {
 
     private World world;
-    private double x, y, z;
+    private Vec3d location;
     private float rotation;
 
-    public BossSpawnLocation(@Nonnull World world, double x, double y, double z, float rotation){
+    public BossSpawnLocation(@Nonnull World world, Vec3d location, float rotation){
         this.world = world;
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.location = location;
         this.rotation = rotation;
     }
 
     public BossSpawnLocation(@Nonnull Entity parent){
-        this(parent.world, parent.posX, parent.posY, parent.posZ, parent.rotationYaw);
+        this(parent.world, new Vec3d(parent.posX, parent.posY, parent.posZ), parent.rotationYaw);
     }
 
     @Override
@@ -35,18 +33,8 @@ public class BossSpawnLocation implements IBossSpawnLocation {
     }
 
     @Override
-    public double getX() {
-        return x;
-    }
-
-    @Override
-    public double getY() {
-        return y;
-    }
-
-    @Override
-    public double getZ() {
-        return z;
+    public Vec3d getLocation() {
+        return location;
     }
 
     @Override
@@ -58,16 +46,16 @@ public class BossSpawnLocation implements IBossSpawnLocation {
     public JObject serialize() {
         return new JObject()
                 .add("world", this.world.getWorldInfo().getWorldName())
-                .add("x", this.x)
-                .add("y", this.y)
-                .add("z", this.z)
+                .add("x", this.location.x)
+                .add("y", this.location.y)
+                .add("z", this.location.z)
                 .add("rotation",this.rotation);
     }
 
     public static class BossSpawnLocationBuilder implements IBossSpawnLocationBuilder {
 
         private World world;
-        private double x, y, z;
+        private Vec3d location;
         private float rotation;
 
         @Override
@@ -77,20 +65,8 @@ public class BossSpawnLocation implements IBossSpawnLocation {
         }
 
         @Override
-        public IBossSpawnLocationBuilder x(double x) {
-            this.x = x;
-            return this;
-        }
-
-        @Override
-        public IBossSpawnLocationBuilder y(double y) {
-            this.y = y;
-            return this;
-        }
-
-        @Override
-        public IBossSpawnLocationBuilder z(double z) {
-            this.z = z;
+        public IBossSpawnLocationBuilder location(Vec3d location) {
+            this.location = location;
             return this;
         }
 
@@ -107,7 +83,7 @@ public class BossSpawnLocation implements IBossSpawnLocation {
 
         @Override
         public IBossSpawnLocation build() {
-            return new BossSpawnLocation(world, x, y, z, rotation);
+            return new BossSpawnLocation(world, location, rotation);
         }
 
         @Override
@@ -115,9 +91,10 @@ public class BossSpawnLocation implements IBossSpawnLocation {
             this.world = Arrays.stream(FMLCommonHandler.instance().getMinecraftServerInstance().worlds)
                     .filter(x -> x.getWorldInfo().getWorldName().equals(json.get("world").getAsString()))
                     .findAny().orElseThrow(() -> new RuntimeException("World does not exist..."));
-            this.x = json.get("x").getAsDouble();
-            this.y = json.get("y").getAsDouble();
-            this.z = json.get("z").getAsDouble();
+            double x = json.get("x").getAsDouble();
+            double y = json.get("y").getAsDouble();
+            double z = json.get("z").getAsDouble();
+            this.location = new Vec3d(x, y, z);
             this.rotation = json.get("rotation").getAsFloat();
 
             return this;

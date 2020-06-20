@@ -3,17 +3,14 @@ package ca.landonjw.remoraids.api.spawning;
 import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.util.DataSerializable;
 import ca.landonjw.remoraids.api.util.IBuilder;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public interface IBossSpawnLocation extends DataSerializable {
 
     World getWorld();
 
-    double getX();
-
-    double getY();
-
-    double getZ();
+    Vec3d getLocation();
 
     float getRotation();
 
@@ -25,11 +22,7 @@ public interface IBossSpawnLocation extends DataSerializable {
 
         IBossSpawnLocationBuilder world(World world);
 
-        IBossSpawnLocationBuilder x(double x);
-
-        IBossSpawnLocationBuilder y(double y);
-
-        IBossSpawnLocationBuilder z(double z);
+        IBossSpawnLocationBuilder location(Vec3d location);
 
         IBossSpawnLocationBuilder rotation(float rotation);
 

@@ -56,7 +56,7 @@ public class CreateRaidBossExecutor implements RaidsCommandExecutor {
 				if(RemoRaids.getGeneralConfig().get(GeneralConfig.ANNOUNCEMENTS_ALLOW_TP)) {
 					announceBuilder.warp(
 							spawnLoc.getWorld(),
-							new Vec3d(spawnLoc.getX(), spawnLoc.getY(), spawnLoc.getZ()),
+							new Vec3d(spawnLoc.getLocation().x, spawnLoc.getLocation().y, spawnLoc.getLocation().z),
 							spawnLoc.getRotation()
 					);
 				}

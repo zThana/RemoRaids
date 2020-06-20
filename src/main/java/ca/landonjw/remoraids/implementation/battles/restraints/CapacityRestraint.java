@@ -4,16 +4,11 @@ import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.battles.IBattleRestraint;
 import ca.landonjw.remoraids.api.boss.IBoss;
-import ca.landonjw.remoraids.api.boss.IBossEntity;
-import ca.landonjw.remoraids.api.events.BossBattleEndedEvent;
-import ca.landonjw.remoraids.api.events.BossBattleStartedEvent;
-import ca.landonjw.remoraids.api.events.BossDeathEvent;
-import ca.landonjw.remoraids.api.services.messaging.IMessageService;
-import ca.landonjw.remoraids.api.services.placeholders.IParsingContext;
+import ca.landonjw.remoraids.api.messages.services.IMessageService;
+import ca.landonjw.remoraids.api.messages.placeholders.IParsingContext;
 import ca.landonjw.remoraids.internal.api.config.Config;
 import ca.landonjw.remoraids.internal.config.MessageConfig;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;

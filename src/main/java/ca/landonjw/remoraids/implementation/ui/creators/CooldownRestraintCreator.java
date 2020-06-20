@@ -1,9 +1,7 @@
 package ca.landonjw.remoraids.implementation.ui.creators;
 
 import ca.landonjw.remoraids.RemoRaids;
-import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.battles.IBattleRestraint;
-import ca.landonjw.remoraids.api.services.messaging.IMessageService;
 import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.api.ui.ICreatorUI;
 import ca.landonjw.remoraids.implementation.battles.restraints.CooldownRestraint;
