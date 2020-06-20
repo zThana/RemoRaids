@@ -17,7 +17,7 @@ public class CapacityPlaceholderParser implements IPlaceholderParser {
 
     @Override
     public Optional<String> parse(IPlaceholderContext context) {
-        CapacityRestraint restraint = context.get(CapacityRestraint.class).orElse(null);
+        CapacityRestraint restraint = context.getAssociation(CapacityRestraint.class).orElse(null);
 
         if(restraint != null){
             List<String> arguments = context.getArguments().orElse(Collections.emptyList());

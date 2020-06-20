@@ -5,6 +5,7 @@ import ca.landonjw.remoraids.api.services.messaging.IMessageService;
 import ca.landonjw.remoraids.api.services.placeholders.IParsingContext;
 import ca.landonjw.remoraids.api.services.placeholders.service.IPlaceholderService;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,7 +15,7 @@ public class MessageService implements IMessageService {
 	private static final Pattern PLACEHOLDER_LOCATOR = Pattern.compile("(^[^{]+)?([{][^{} ]+[}])(.+)?");
 
 	@Override
-	public String interpret(String input, IParsingContext context) {
+	public String interpret(@Nonnull String input, IParsingContext context) {
 		IPlaceholderService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IPlaceholderService.class);
 
 		StringBuilder output = new StringBuilder();

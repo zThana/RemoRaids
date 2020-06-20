@@ -8,6 +8,7 @@ import ca.landonjw.remoraids.api.util.gson.JObject;
 import ca.landonjw.remoraids.implementation.battles.BossBattleSettings;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.pixelmonmod.pixelmon.Pixelmon;
@@ -27,6 +28,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -70,7 +72,7 @@ public class Boss implements IBoss {
      * @param builder the builder to use to construct boss
      */
     private Boss(@NonNull BossBuilder builder) {
-        this.uniqueId = UUID.randomUUID();
+        this.uniqueId = builder.id;
         this.pokemon = Pixelmon.pokemonFactory.create(builder.species);
         applyIfNotNull(builder.form, this.pokemon::setForm);
         applyIfNotNull(builder.level, this.pokemon::setLevel);
@@ -193,6 +195,7 @@ public class Boss implements IBoss {
 	@Override
 	public JObject serialize() {
     	JObject data = new JObject()
+			    .add("uuid", this.uniqueId.toString())
 			    .add("species", this.pokemon.getSpecies().name())
 			    .add("level", this.pokemon.getLevel())
 			    .when(this.pokemon, pokemon -> this.getPokemon().getFormEnum() != EnumNoForm.NoForm, d -> d.add("form", this.pokemon.getForm()))
@@ -220,6 +223,8 @@ public class Boss implements IBoss {
      * @since  1.0.0
      */
 	public static class BossBuilder implements IBossBuilder {
+
+		private UUID id = UUID.randomUUID();
 
 	    /** The Pokemon species of the boss. May be null. */
         private EnumSpecies species;
@@ -349,8 +354,8 @@ public class Boss implements IBoss {
 
         /** {@inheritDoc} */
 		@Override
-		public IBossBuilder fromJson(JObject json) {
-			JsonObject data = json.toJson();
+		public IBossBuilder deserialize(JsonObject data) {
+			this.id = UUID.fromString(data.get("uuid").getAsString());
 			this.species = EnumSpecies.getFromNameAnyCase(data.get("species").getAsString());
 			this.level = data.get("level").getAsInt();
 			this.form = this.species.getFormEnum(data.get("form").getAsInt());
@@ -358,16 +363,18 @@ public class Boss implements IBoss {
 			this.nature = EnumNature.natureFromString(data.get("nature").getAsString());
 			this.gender = Gender.getGender(data.get("gender").getAsString());
 
+			this.size = data.get("size").getAsFloat();
+
 			JsonObject stats = data.getAsJsonObject("stats");
 			for(Map.Entry<String, JsonElement> entry : stats.entrySet()) {
 				this.stat(StatsType.valueOf(entry.getKey()), entry.getValue().getAsInt(), false);
 			}
 
-			JsonObject moves = data.getAsJsonObject("moves");
+			JsonArray moves = data.getAsJsonArray("moves");
 			Moveset moveset = new Moveset();
-			for(Map.Entry<String, JsonElement> entry : moves.entrySet()) {
-				moveset.add(new Attack(AttackBase.getAttackBase(entry.getValue().getAsString()).get()));
-			}
+			moves.iterator().forEachRemaining(entry -> {
+				moveset.add(new Attack(AttackBase.getAttackBase(entry.getAsString()).get()));
+			});
 			this.moveset(moveset);
 
 			return this;

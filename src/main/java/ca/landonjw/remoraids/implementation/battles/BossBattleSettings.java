@@ -3,6 +3,7 @@ package ca.landonjw.remoraids.implementation.battles;
 import ca.landonjw.remoraids.api.battles.IBattleRestraint;
 import ca.landonjw.remoraids.api.battles.IBossBattleSettings;
 import ca.landonjw.remoraids.api.rewards.IReward;
+import ca.landonjw.remoraids.api.util.gson.JObject;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.rules.BattleRules;
@@ -123,4 +124,8 @@ public class BossBattleSettings implements IBossBattleSettings {
         return rejectionMessages;
     }
 
+    @Override
+    public JObject serialize() {
+        return null;
+    }
 }

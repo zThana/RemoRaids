@@ -40,6 +40,8 @@ public class BossSpawner implements IBossSpawner {
     private ISpawnAnnouncement announcement;
     /** Associated Respawn Data */
     private IRespawnData respawns;
+    /** Specifies if the spawner will persist across restarts */
+    private transient boolean persists;
 
     /**
      * Constructor for the boss spawner.
@@ -51,11 +53,13 @@ public class BossSpawner implements IBossSpawner {
     public BossSpawner(@Nonnull IBoss boss,
                        @Nonnull IBossSpawnLocation spawnLocation,
                        @Nullable ISpawnAnnouncement announcement,
-                       @Nullable IRespawnData respawns){
+                       @Nullable IRespawnData respawns,
+                       boolean persists){
         this.boss = boss;
         this.spawnLocation = spawnLocation;
         this.announcement = announcement;
         this.respawns = respawns;
+        this.persists = persists;
     }
 
     @Override
@@ -65,7 +69,7 @@ public class BossSpawner implements IBossSpawner {
 
     /** {@inheritDoc} */
     @Override
-    public Optional<IBossEntity> spawn(){
+    public Optional<IBossEntity> spawn(boolean announce){
         if(boss.getEntity().isPresent()){
             return Optional.empty();
         }
@@ -78,7 +82,7 @@ public class BossSpawner implements IBossSpawner {
             EntityPixelmon battleEntity = createAndSpawnBattleEntity();
             setStatueAnimation(statue, battleEntity);
 
-            if(announcement != null){
+            if(announce && announcement != null){
                 announcement.sendAnnouncement(this);
             }
 
@@ -100,7 +104,7 @@ public class BossSpawner implements IBossSpawner {
      *
      * @return the statue entity that was created and spawned
      */
-    private EntityStatue createAndSpawnStatue(){
+    private EntityStatue createAndSpawnStatue() {
         EntityStatue statue = new EntityStatue(spawnLocation.getWorld());
 
         Pokemon bossPokemon = this.getBoss().getPokemon();
@@ -197,6 +201,11 @@ public class BossSpawner implements IBossSpawner {
         return this.respawns = IRespawnData.builder().build();
     }
 
+    @Override
+    public boolean doesPersist() {
+        return this.persists;
+    }
+
     /** {@inheritDoc} */
     @Override
     public JObject serialize() {
@@ -214,6 +223,7 @@ public class BossSpawner implements IBossSpawner {
         private IBossSpawnLocation location;
         private ISpawnAnnouncement announcement;
         private IRespawnData data;
+        private boolean persists;
 
         @Override
         public IBossSpawnerBuilder boss(IBoss boss) {
@@ -240,6 +250,12 @@ public class BossSpawner implements IBossSpawner {
         }
 
         @Override
+        public IBossSpawnerBuilder persists(boolean persists) {
+            this.persists = persists;
+            return this;
+        }
+
+        @Override
         public IBossSpawnerBuilder from(IBossSpawner input) {
             return this;
         }
@@ -250,7 +266,8 @@ public class BossSpawner implements IBossSpawner {
                     this.boss,
                     this.location,
                     this.announcement,
-                    this.data
+                    this.data,
+                    this.persists
             );
         }
     }

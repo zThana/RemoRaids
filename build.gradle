@@ -66,7 +66,8 @@ gradle.projectsEvaluated {
 
 dependencies {
     compile 'com.google.guava:guava:27.1-jre'
-    shadow 'reforged:server:7.3.1@Pixelmon-1.12.2-7.3.1-server.jar'
+    compile 'com.google.code.gson:gson:2.8.6'
+    shadow 'reforged:server:8.0.0@Pixelmon-1.12.2-8.0.0-server.jar'
 }
 
 processResources {
@@ -97,6 +98,7 @@ shadowJar {
     relocate 'org.codehaus', 'ca.landonjw.remoraids.internal.relocations.org.codehaus'
 
     exclude 'dummyThing'
+    exclude 'module-info.class'
 }
 
 reobf {

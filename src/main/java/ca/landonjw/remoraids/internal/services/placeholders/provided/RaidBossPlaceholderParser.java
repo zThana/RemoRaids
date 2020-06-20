@@ -21,7 +21,7 @@ public class RaidBossPlaceholderParser implements IPlaceholderParser {
 
 	@Override
 	public Optional<String> parse(IPlaceholderContext context) {
-		IBoss boss = context.get(IBoss.class).orElse(null);
+		IBoss boss = context.getAssociation(IBoss.class).orElse(null);
 		if(boss != null) {
 			List<String> arguments = context.getArguments().orElse(Collections.emptyList());
 			if(arguments.size() == 1){

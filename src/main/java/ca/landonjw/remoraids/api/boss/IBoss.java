@@ -132,7 +132,7 @@ public interface IBoss extends DataSerializable {
 	 * only required field should be the species of the raid boss. Failure to specify this value will result in
 	 * a generated exception, terminating the build.
 	 */
-	interface IBossBuilder extends IBuilder<IBoss, IBossBuilder> {
+	interface IBossBuilder extends IBuilder.Deserializable<IBoss, IBossBuilder> {
 
 		/**
 		 * Builds the raid boss from a {@link PokemonSpec}. Essentially, for all build options
@@ -254,14 +254,6 @@ public interface IBoss extends DataSerializable {
 		IBossBuilder moveset(Moveset moveset);
 
 		IBossBuilder battleSettings(IBossBattleSettings battleSettings);
-
-		/**
-		 * Deserializes a set of JSON data to populate any set fields within the json data.
-		 *
-		 * @param json The JSON data to deserialize
-		 * @return The builder after being modified by this call
-		 */
-		IBossBuilder fromJson(JObject json);
 
 	}
 

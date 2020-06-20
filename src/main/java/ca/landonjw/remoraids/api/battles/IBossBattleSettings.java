@@ -2,6 +2,7 @@ package ca.landonjw.remoraids.api.battles;
 
 import ca.landonjw.remoraids.api.boss.IBoss;
 import ca.landonjw.remoraids.api.rewards.IReward;
+import ca.landonjw.remoraids.api.util.DataSerializable;
 import com.pixelmonmod.pixelmon.battles.rules.BattleRules;
 import net.minecraft.entity.player.EntityPlayerMP;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -17,7 +18,7 @@ import java.util.Set;
  * @author landonjw
  * @since  1.0.0
  */
-public interface IBossBattleSettings {
+public interface IBossBattleSettings extends DataSerializable {
 
     /**
      * Gets the native battle rules to be enforced, if available.

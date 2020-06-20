@@ -3,8 +3,8 @@ package ca.landonjw.remoraids.api.services.placeholders;
 import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.services.messaging.IMessageService;
 import ca.landonjw.remoraids.api.util.IBuilder;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,7 +30,7 @@ public interface IParsingContext {
      * @param <T>   the type of object to get
      * @return first available object of specified class, or {@link Optional#empty()} if none are found.
      */
-    <T> Optional<T> get(@Nonnull Class<T> clazz);
+    <T> Optional<T> getAssociation(@NonNull Class<T> clazz);
 
     /**
      * Gets a list of all objects of the specified class, if available.
@@ -40,7 +40,7 @@ public interface IParsingContext {
      * @param <T>   the type of object to get
      * @return list of objects of specified class, or {@link Optional#empty()} if none are found.
      */
-    <T> Optional<List<T>> getAll(@Nonnull Class<T> clazz);
+    <T> Optional<List<T>> getAllAssociations(@NonNull Class<T> clazz);
 
     /**
      * Gets a map of all stored classes and their collection of objects.
@@ -48,7 +48,7 @@ public interface IParsingContext {
      *
      * @return map of all stored classes and their collection of objects
      */
-    Map<Class, List<Supplier>> getAll();
+    Map<Class<?>, List<Supplier<?>>> getAllAssociations();
 
     static Builder builder() {
         return IBossAPI.getInstance().getRaidRegistry().createBuilder(Builder.class);
@@ -56,9 +56,9 @@ public interface IParsingContext {
 
     interface Builder extends IBuilder<IParsingContext, Builder> {
 
-        <T> Builder add(@Nonnull Class<T> clazz, @Nonnull Supplier<T> supplier);
+        <T> Builder add(@NonNull Class<T> clazz, @NonNull Supplier<T> supplier);
 
-        <T> Builder addAll(@Nonnull Class<T> clazz, @Nonnull List<Supplier<T>> supplierList);
+        <T> Builder addAll(@NonNull Class<T> clazz, @NonNull List<Supplier<T>> supplierList);
 
     }
 

@@ -19,8 +19,8 @@ public class CooldownPlaceholderParser implements IPlaceholderParser {
 
     @Override
     public Optional<String> parse(IPlaceholderContext context) {
-        CooldownRestraint restraint = context.get(CooldownRestraint.class).orElse(null);
-        EntityPlayerMP player = context.get(EntityPlayerMP.class).orElse(null);
+        CooldownRestraint restraint = context.getAssociation(CooldownRestraint.class).orElse(null);
+        EntityPlayerMP player = context.getAssociation(EntityPlayerMP.class).orElse(null);
 
         if(restraint != null && player != null){
             long secondsRemaining = restraint.getCooldownRemaining(player, TimeUnit.SECONDS).orElse(0L);

@@ -6,7 +6,9 @@ import ca.landonjw.remoraids.api.services.placeholders.IPlaceholderContext;
 import ca.landonjw.remoraids.api.services.placeholders.IPlaceholderParser;
 import ca.landonjw.remoraids.api.services.placeholders.service.IPlaceholderService;
 import ca.landonjw.remoraids.internal.services.placeholders.provided.*;
+import ca.landonjw.remoraids.implementation.spawning.announcements.SpawnAnnouncement;
 import com.google.common.collect.Maps;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -44,9 +46,21 @@ public class PlaceholderService implements IPlaceholderService {
 	@Override
 	public void registerDefaults() {
 		this.register(IPlaceholderParser.builder()
+				.key("player")
+				.parser(context -> {
+					EntityPlayerMP player = context.getAssociation(EntityPlayerMP.class).orElse(null);
+
+					if(player != null) {
+						return Optional.of(player.getName());
+					}
+
+					return Optional.empty();
+				})
+				.build());
+		this.register(IPlaceholderParser.builder()
 				.key("integer")
 				.parser((context) -> {
-					Integer value = context.get(Integer.class).orElse(null);
+					Integer value = context.getAssociation(Integer.class).orElse(null);
 
 					if(value != null){
 						return Optional.of(value.toString());
@@ -58,7 +72,7 @@ public class PlaceholderService implements IPlaceholderService {
 		this.register(IPlaceholderParser.builder()
 				.key("string")
 				.parser((context) -> {
-					String value = context.get(String.class).orElse(null);
+					String value = context.getAssociation(String.class).orElse(null);
 
 					if(value != null){
 						return Optional.of(value);
@@ -70,7 +84,7 @@ public class PlaceholderService implements IPlaceholderService {
 		this.register(IPlaceholderParser.builder()
 				.key("reward")
 				.parser((context) -> {
-					IReward reward = context.get(IReward.class).orElse(null);
+					IReward reward = context.getAssociation(IReward.class).orElse(null);
 
 					if(reward != null){
 						return Optional.of(reward.getDescription());
@@ -87,6 +101,7 @@ public class PlaceholderService implements IPlaceholderService {
 		this.register(new PokemonSpecPlaceholderParser());
 		this.register(new ItemStackPlaceholderParser());
 		this.register(new SpawnLocationParser());
+		this.register(new SpawnAnnouncement.PositionPlaceholderParser());
 	}
 
 }

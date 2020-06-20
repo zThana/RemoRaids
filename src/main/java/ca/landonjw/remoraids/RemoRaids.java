@@ -4,13 +4,15 @@ import ca.landonjw.remoraids.api.BossAPIProvider;
 import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.boss.IBoss;
 import ca.landonjw.remoraids.api.boss.IBossCreator;
+import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.services.placeholders.IParsingContext;
 import ca.landonjw.remoraids.api.services.placeholders.IPlaceholderContext;
 import ca.landonjw.remoraids.api.services.placeholders.IPlaceholderParser;
 import ca.landonjw.remoraids.api.services.messaging.IMessageService;
 import ca.landonjw.remoraids.api.services.placeholders.service.IPlaceholderService;
+import ca.landonjw.remoraids.api.spawning.IBossSpawnLocation;
 import ca.landonjw.remoraids.api.spawning.IBossSpawner;
-import ca.landonjw.remoraids.api.util.gson.JObject;
+import ca.landonjw.remoraids.api.spawning.ISpawnAnnouncement;
 import ca.landonjw.remoraids.implementation.BossAPI;
 import ca.landonjw.remoraids.implementation.boss.Boss;
 import ca.landonjw.remoraids.implementation.boss.BossCreator;
@@ -20,7 +22,9 @@ import ca.landonjw.remoraids.implementation.listeners.pixelmon.BossDropListener;
 import ca.landonjw.remoraids.implementation.listeners.pixelmon.EngageListener;
 import ca.landonjw.remoraids.implementation.listeners.pixelmon.StatueInteractListener;
 import ca.landonjw.remoraids.implementation.listeners.raids.RaidBossDeathListener;
+import ca.landonjw.remoraids.implementation.spawning.BossSpawnLocation;
 import ca.landonjw.remoraids.implementation.spawning.BossSpawner;
+import ca.landonjw.remoraids.implementation.spawning.announcements.SpawnAnnouncement;
 import ca.landonjw.remoraids.implementation.spawning.respawning.RespawnData;
 import ca.landonjw.remoraids.internal.api.APIRegistrationUtil;
 import ca.landonjw.remoraids.internal.api.config.Config;
@@ -36,28 +40,23 @@ import ca.landonjw.remoraids.internal.services.PlaceholderService;
 import ca.landonjw.remoraids.internal.services.placeholders.ParsingContext;
 import ca.landonjw.remoraids.internal.services.placeholders.PlaceholderContext;
 import ca.landonjw.remoraids.internal.services.placeholders.PlaceholderParser;
+import ca.landonjw.remoraids.internal.storage.RaidBossDataStorage;
 import ca.landonjw.remoraids.internal.tasks.TaskTickListener;
 import ca.landonjw.remoraids.internal.text.Callback;
-import com.google.common.collect.Lists;
-import com.google.gson.JsonObject;
 import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.battles.attacks.Attack;
-import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
-import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
-import com.pixelmonmod.pixelmon.enums.EnumSpecies;
-import com.pixelmonmod.pixelmon.enums.forms.EnumBidoof;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.EventBus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.stream.Collectors;
 
 @Mod(
         modid = RemoRaids.MOD_ID,
@@ -80,6 +79,8 @@ public class RemoRaids {
     private static Config restraintsConfig;
     private static Config messageConfig;
 
+    public static RaidBossDataStorage storage;
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event){
         instance = this;
@@ -95,6 +96,8 @@ public class RemoRaids {
         getBossAPI().getRaidRegistry().registerBuilderSupplier(IBossCreator.class, BossCreator::new);
         getBossAPI().getRaidRegistry().registerBuilderSupplier(IBoss.IBossBuilder.class, Boss.BossBuilder::new);
         getBossAPI().getRaidRegistry().registerBuilderSupplier(IBossSpawner.IRespawnData.IRespawnDataBuilder.class, RespawnData.RespawnDataBuilder::new);
+        getBossAPI().getRaidRegistry().registerBuilderSupplier(IBossSpawnLocation.IBossSpawnLocationBuilder.class, BossSpawnLocation.BossSpawnLocationBuilder::new);
+        getBossAPI().getRaidRegistry().registerBuilderSupplier(ISpawnAnnouncement.ISpawnAnnouncementBuilder.class, SpawnAnnouncement.SpawnAnnouncementBuilder::new);
         getBossAPI().getRaidRegistry().registerBuilderSupplier(IParsingContext.Builder.class, ParsingContext.ParsingContextBuilder::new);
         getBossAPI().getRaidRegistry().registerBuilderSupplier(IPlaceholderContext.Builder.class, PlaceholderContext.PlaceholderContextBuilder::new);
         getBossAPI().getRaidRegistry().registerBuilderSupplier(IPlaceholderParser.Builder.class, PlaceholderParser.PlaceholderParserBuilder::new);
@@ -127,25 +130,17 @@ public class RemoRaids {
         event.registerServerCommand(new Callback());
         event.registerServerCommand(new RaidsCommand());
 
-        IBossSpawner test = IBossCreator.initialize()
-                .boss(IBoss.builder()
-                        .species(EnumSpecies.Bidoof)
-                        .form(EnumBidoof.SIRDOOFUSIII)
-                        .level(50)
-                        .stat(StatsType.HP, 10000, false)
-                        .shiny(true)
-                        .ability("Wonderguard")
-                        .moveset(new Moveset(Lists.newArrayList(new Attack("Tackle"), new Attack("Pound"), null, null).toArray(new Attack[]{})))
-                        .build()
-                )
-                .announcement(false, "This is a test announcement message")
-                .location(FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld(), 69, 69, 420, 90f)
-                .respawns()
-                .build();
-        System.out.println(test.serialize());
-        JsonObject json = JObject.PRETTY.fromJson(test.serialize().toString(), JsonObject.class);
-        JObject jo = JObject.from(json);
-        System.out.println(jo);
+        storage = new RaidBossDataStorage();
+    }
+
+    @Mod.EventHandler
+    public void onShutdown(FMLServerStoppingEvent event) {
+        for(IBossSpawner spawner : IBossAPI.getInstance().getBossEntityRegistry().getAllBossEntities().stream().map(IBossEntity::getSpawner).collect(Collectors.toList())) {
+            if(spawner.doesPersist()) {
+                storage.save(spawner);
+            }
+            spawner.getBoss().getEntity().ifPresent(entity -> entity.getEntity().setDead());
+        }
     }
 
     public static RemoRaids getInstance() {

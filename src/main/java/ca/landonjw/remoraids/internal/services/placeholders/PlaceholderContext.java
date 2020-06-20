@@ -11,7 +11,7 @@ public class PlaceholderContext extends ParsingContext implements IPlaceholderCo
 
 	private final List<String> arguments;
 
-	private PlaceholderContext(Map<Class, List<Supplier>> contextObjects, List<String> arguments){
+	private PlaceholderContext(Map<Class<?>, List<Supplier<?>>> contextObjects, List<String> arguments){
 		super(contextObjects);
 		this.arguments = arguments;
 	}
@@ -24,7 +24,7 @@ public class PlaceholderContext extends ParsingContext implements IPlaceholderCo
 	public static class PlaceholderContextBuilder implements IPlaceholderContext.Builder {
 
 		private List<String> arguments = Collections.emptyList();
-		private Map<Class, List<Supplier>> contextObjects = Collections.emptyMap();
+		private Map<Class<?>, List<Supplier<?>>> contextObjects = Collections.emptyMap();
 
 		@Override
 		public PlaceholderContextBuilder arguments(String... arguments) {
@@ -40,14 +40,14 @@ public class PlaceholderContext extends ParsingContext implements IPlaceholderCo
 
 		@Override
 		public PlaceholderContextBuilder fromParsingContext(IParsingContext context) {
-			this.contextObjects = context.getAll();
+			this.contextObjects = context.getAllAssociations();
 			return this;
 		}
 
 		@Override
 		public IPlaceholderContext.Builder from(IPlaceholderContext input) {
 			this.arguments = input.getArguments().orElse(Collections.emptyList());
-			this.contextObjects = input.getAll();
+			this.contextObjects = input.getAllAssociations();
 			return this;
 		}
 

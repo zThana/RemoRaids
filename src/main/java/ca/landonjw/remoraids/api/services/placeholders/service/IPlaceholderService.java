@@ -29,9 +29,9 @@ import ca.landonjw.remoraids.api.services.placeholders.IParsingContext;
 import ca.landonjw.remoraids.api.services.placeholders.IPlaceholderContext;
 import ca.landonjw.remoraids.api.services.placeholders.IPlaceholderParser;
 import com.google.common.collect.Lists;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
@@ -60,7 +60,7 @@ public interface IPlaceholderService extends IService.Catalog {
      * @param parser The parser we wish to register
      * @throws IllegalArgumentException If the parser key is invalid or already registered to another parser
      */
-    void register(@Nonnull IPlaceholderParser parser) throws IllegalArgumentException;
+    void register(@NonNull IPlaceholderParser parser) throws IllegalArgumentException;
 
     /**
      * Attempts to parse a token based on the given input.
@@ -70,7 +70,7 @@ public interface IPlaceholderService extends IService.Catalog {
      * @param token The token we are attempting to parse
      * @return A parsed representation of the incoming token, or the direct input to signify a failure to parse
      */
-    default Optional<String> parse(@Nonnull String token) {
+    default Optional<String> parse(@NonNull String token) {
         return this.parse(token, null);
     }
 
@@ -83,7 +83,7 @@ public interface IPlaceholderService extends IService.Catalog {
      * @param context The context of the parsing, which may include objects necessary for parsing information
      * @return A parsed representation of the incoming token, or the direct input to signify a failure to parse
      */
-    default Optional<String> parse(@Nonnull String token, @Nullable IParsingContext context) {
+    default Optional<String> parse(@NonNull String token, @Nullable IParsingContext context) {
         return this.parse(token, context, Collections.emptyList());
     }
 
@@ -97,7 +97,7 @@ public interface IPlaceholderService extends IService.Catalog {
      * @param arguments A collection of contextual arguments for the parser
      * @return A parsed representation of the incoming token, or the direct input to signify a failure to parse
      */
-    default Optional<String> parse(@Nonnull String token, @Nullable IParsingContext context, @Nullable String... arguments) {
+    default Optional<String> parse(@NonNull String token, @Nullable IParsingContext context, @Nullable String... arguments) {
         return this.parse(token, context, arguments != null ? Lists.newArrayList(arguments) : Collections.emptyList());
     }
 
@@ -115,8 +115,15 @@ public interface IPlaceholderService extends IService.Catalog {
      * @return A parsed representation of the placeholder token, or the exact input (e.g. {{player:s}}, where
      * the ":s" represents placing a space after the token if it is populated.
      */
-    Optional<String> parse(@Nonnull String token, @Nullable IParsingContext context, @Nullable Collection<String> arguments);
+    Optional<String> parse(@NonNull String token, @Nullable IParsingContext context, @Nullable Collection<String> arguments);
 
+    /**
+     * Generates a set of context that'll be used for placeholder parsing.
+     *
+     * @param context
+     * @param arguments
+     * @return
+     */
     IPlaceholderContext contextualize(@Nullable IParsingContext context, @Nullable Collection<String> arguments);
 
     /**
@@ -125,6 +132,6 @@ public interface IPlaceholderService extends IService.Catalog {
      * @param token The lookup key
      * @return An optionally wrapped placeholder parser if one is mapped to the input, empty otherwise
      */
-    Optional<IPlaceholderParser> getParser(@Nonnull String token);
+    Optional<IPlaceholderParser> getParser(@NonNull String token);
 
 }

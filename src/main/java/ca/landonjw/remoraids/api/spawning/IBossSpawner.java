@@ -37,10 +37,11 @@ public interface IBossSpawner extends DataSerializable {
      * should select a pokemon from the spawn set to actually spawn. How the spawner selects the new raid pokemon is
      * entirely up to its implementation.
      *
+     * @param announce Whether or not this spawn request will announce the raid boss spawning in
      * @return An Optional value containing the {@link IBossEntity} created, or {@link Optional#empty()} if the spawn
      * failed
      */
-    Optional<IBossEntity> spawn();
+    Optional<IBossEntity> spawn(boolean announce);
 
     /**
      * Specifies the raid boss that'll be spawned in from this raid boss spawner.
@@ -90,6 +91,13 @@ public interface IBossSpawner extends DataSerializable {
      */
     IRespawnData createRespawnData();
 
+    /**
+     * Specifies whether or not this spawner will persist across restarts.
+     *
+     * @return True if it should persist, false otherwise
+     */
+    boolean doesPersist();
+
     interface IBossSpawnerBuilder extends IBuilder<IBossSpawner, IBossSpawnerBuilder> {
 
         IBossSpawnerBuilder boss(IBoss boss);
@@ -99,6 +107,8 @@ public interface IBossSpawner extends DataSerializable {
         IBossSpawnerBuilder announcement(ISpawnAnnouncement announcement);
 
         IBossSpawnerBuilder respawns(IRespawnData data);
+
+        IBossSpawnerBuilder persists(boolean persists);
 
     }
 
@@ -235,7 +245,7 @@ public interface IBossSpawner extends DataSerializable {
             return IBossAPI.getInstance().getRaidRegistry().createBuilder(IRespawnDataBuilder.class);
         }
 
-        interface IRespawnDataBuilder extends IBuilder<IRespawnData, IRespawnDataBuilder> {
+        interface IRespawnDataBuilder extends IBuilder.Deserializable<IRespawnData, IRespawnDataBuilder> {
 
             /**
              * Marks a set of respawn data as infinite or not. In other words, this controls whether or not
@@ -250,6 +260,8 @@ public interface IBossSpawner extends DataSerializable {
             IRespawnDataBuilder count(int count);
 
             IRespawnDataBuilder period(long time, TimeUnit unit);
+
+            IRespawnDataBuilder used(int used);
 
         }
 

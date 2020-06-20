@@ -3,6 +3,7 @@ package ca.landonjw.remoraids.implementation.spawning.respawning;
 import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import ca.landonjw.remoraids.api.util.gson.JObject;
 import ca.landonjw.remoraids.internal.tasks.Task;
+import com.google.gson.JsonObject;
 
 import java.util.concurrent.TimeUnit;
 
@@ -21,6 +22,7 @@ public class RespawnData implements IBossSpawner.IRespawnData {
 		this.infinite = builder.infinite;
 		this.total = builder.count;
 		this.rate = builder.period;
+		this.respawns = builder.used;
 	}
 
 	@Override
@@ -95,7 +97,7 @@ public class RespawnData implements IBossSpawner.IRespawnData {
 				.iterations(1)
 				.execute(() -> {
 					this.incrementRespawnCounter();
-					spawner.spawn();
+					spawner.spawn(true);
 					this.task = null;
 				})
 				.build();
@@ -107,6 +109,8 @@ public class RespawnData implements IBossSpawner.IRespawnData {
 
 		private int count;
 		private long period;
+
+		private int used;
 
 		@Override
 		public IRespawnDataBuilder infinite(boolean state) {
@@ -127,6 +131,12 @@ public class RespawnData implements IBossSpawner.IRespawnData {
 		}
 
 		@Override
+		public IRespawnDataBuilder used(int used) {
+			this.used = used;
+			return this;
+		}
+
+		@Override
 		public IRespawnDataBuilder from(IBossSpawner.IRespawnData input) {
 			return this;
 		}
@@ -134,6 +144,15 @@ public class RespawnData implements IBossSpawner.IRespawnData {
 		@Override
 		public IBossSpawner.IRespawnData build() {
 			return new RespawnData(this);
+		}
+
+		@Override
+		public IRespawnDataBuilder deserialize(JsonObject json) {
+			this.infinite = json.get("infinite").getAsBoolean();
+			this.period = json.get("rate").getAsLong();
+			this.count = json.get("total").getAsInt();
+			this.used = json.get("respawns").getAsInt();
+			return this;
 		}
 	}
 }

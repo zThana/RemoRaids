@@ -7,7 +7,7 @@ import com.pixelmonmod.pixelmon.api.overlay.notice.EnumOverlayLayout;
 import com.pixelmonmod.pixelmon.api.overlay.notice.NoticeOverlay;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
-import com.pixelmonmod.pixelmon.comm.packetHandlers.customOverlays.CustomNoticePacket;
+import com.pixelmonmod.pixelmon.comm.packetHandlers.custom.overlays.CustomNoticePacket;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityStatue;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -24,8 +24,9 @@ public class OverlayEngager extends AbstractBossEngager {
     public void sendEngageMessage() {
         EntityStatue bossStatue = getBossEntity().getEntity();
 
-        CustomNoticePacket packet = new CustomNoticePacket();
-        packet.setLines(new String[]{getMessage()});
+        CustomNoticePacket packet = NoticeOverlay.builder()
+                .addLines(this.getMessage())
+                .build();
         NoticeOverlay.Builder noticeBuilder = NoticeOverlay.builder()
                 .setLines(getMessage())
                 .setLayout(EnumOverlayLayout.LEFT_AND_RIGHT)

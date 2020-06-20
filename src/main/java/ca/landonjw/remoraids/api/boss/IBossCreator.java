@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  * @since 1.0.0
  */
 @SuppressWarnings("UnusedReturnValue")
-public interface IBossCreator extends IBuilder<IBossSpawner, IBossCreator> {
+public interface IBossCreator extends IBuilder.Deserializable<IBossSpawner, IBossCreator> {
 
 	static IBossCreator initialize() {
 		return IBossAPI.getInstance().getRaidRegistry().createBuilder(IBossCreator.class);
@@ -109,4 +109,11 @@ public interface IBossCreator extends IBuilder<IBossSpawner, IBossCreator> {
 	 */
 	IBossCreator respawns();
 
+	/**
+	 * Specifies whether or not this spawner will persist across restarts. Some instances may be dynamic, and
+	 * as such, their spawners should not be saved.
+	 *
+	 * @return The current instance of the builder
+	 */
+	IBossCreator persists(boolean persists);
 }

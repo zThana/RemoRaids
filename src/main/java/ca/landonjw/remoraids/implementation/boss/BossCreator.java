@@ -9,9 +9,9 @@ import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import ca.landonjw.remoraids.api.spawning.ISpawnAnnouncement;
 import ca.landonjw.remoraids.implementation.spawning.BossSpawnLocation;
 import ca.landonjw.remoraids.implementation.spawning.announcements.SpawnAnnouncement;
-import ca.landonjw.remoraids.implementation.spawning.announcements.TeleportableSpawnAnnouncement;
 import ca.landonjw.remoraids.internal.config.MessageConfig;
 import com.google.common.base.Preconditions;
+import com.google.gson.JsonObject;
 import net.minecraft.world.World;
 
 import java.util.concurrent.TimeUnit;
@@ -24,6 +24,8 @@ public class BossCreator implements IBossCreator {
 	private IBossSpawnLocation location;
 	private ISpawnAnnouncement announcement;
 	private IBossSpawner.IRespawnData respawnData;
+
+	private boolean persisting;
 
 	@Override
 	public IBossCreator controller(String key) {
@@ -83,6 +85,12 @@ public class BossCreator implements IBossCreator {
 	}
 
 	@Override
+	public IBossCreator persists(boolean persists) {
+		this.persisting = persists;
+		return this;
+	}
+
+	@Override
 	public IBossCreator from(IBossSpawner input) {
 		this.boss = input.getBoss();
 		this.location = input.getSpawnLocation();
@@ -102,6 +110,19 @@ public class BossCreator implements IBossCreator {
 				.location(this.location)
 				.announcement(this.announcement)
 				.respawns(this.respawnData)
+				.persists(this.persisting)
 				.build();
+	}
+
+	@Override
+	public IBossCreator deserialize(JsonObject json) {
+		this.boss = IBoss.builder().deserialize(json.get("boss").getAsJsonObject()).build();
+		if(json.has("respawning")) {
+			this.respawnData = IBossSpawner.IRespawnData.builder().deserialize(json.get("respawning").getAsJsonObject()).build();
+		}
+		this.location = IBossSpawnLocation.builder().deserialize(json.get("location").getAsJsonObject()).build();
+		this.announcement = ISpawnAnnouncement.builder().deserialize(json.get("announcement").getAsJsonObject()).build();
+
+		return this;
 	}
 }
