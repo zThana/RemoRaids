@@ -39,7 +39,6 @@ import ca.landonjw.remoraids.internal.messages.placeholders.PlaceholderContext;
 import ca.landonjw.remoraids.internal.messages.placeholders.PlaceholderParser;
 import ca.landonjw.remoraids.internal.messages.services.MessageService;
 import ca.landonjw.remoraids.internal.messages.services.PlaceholderService;
-import ca.landonjw.remoraids.internal.network.RaidsDropPacketHandler;
 import ca.landonjw.remoraids.internal.storage.RaidBossDataStorage;
 import ca.landonjw.remoraids.internal.tasks.TaskTickListener;
 import ca.landonjw.remoraids.internal.text.Callback;
@@ -122,7 +121,6 @@ public class RemoRaids {
 
         RemoRaids.EVENT_BUS.register(this);
         RemoRaids.EVENT_BUS.register(new RaidBossDeathListener());
-        RaidsDropPacketHandler.initialize();
     }
 
     @Mod.EventHandler

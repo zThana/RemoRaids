@@ -115,7 +115,7 @@ public class BossEntity implements IBossEntity {
                 bossEngager = new BossEngager(this, overlay, engageRange, parsedMessage);
                 break;
             case 4:
-                IMessageChannel title = new TitleChannel(SPacketTitle.Type.TITLE);
+                IMessageChannel title = new TitleChannel(SPacketTitle.Type.SUBTITLE);
                 bossEngager = new BossEngager(this, title, engageRange, parsedMessage);
                 break;
         }

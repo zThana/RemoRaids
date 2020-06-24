@@ -3,29 +3,29 @@ package ca.landonjw.remoraids.implementation.rewards;
 import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.battles.IBossBattle;
+import ca.landonjw.remoraids.api.messages.placeholders.IParsingContext;
+import ca.landonjw.remoraids.api.messages.services.IMessageService;
 import ca.landonjw.remoraids.api.rewards.IReward;
 import ca.landonjw.remoraids.api.rewards.contents.IRewardContent;
-import ca.landonjw.remoraids.api.messages.services.IMessageService;
-import ca.landonjw.remoraids.api.messages.placeholders.IParsingContext;
 import ca.landonjw.remoraids.internal.api.config.Config;
 import ca.landonjw.remoraids.internal.config.MessageConfig;
 import ca.landonjw.remoraids.internal.text.TextUtils;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.comm.ChatHandler;
-import com.pixelmonmod.pixelmon.comm.packetHandlers.itemDrops.ItemDropMode;
-import com.pixelmonmod.pixelmon.comm.packetHandlers.itemDrops.ItemDropPacket;
-import com.pixelmonmod.pixelmon.entities.pixelmon.drops.DropItemQueryList;
-import com.pixelmonmod.pixelmon.entities.pixelmon.drops.DroppedItem;
+import com.pixelmonmod.pixelmon.api.drops.CustomDropScreen;
+import com.pixelmonmod.pixelmon.api.enums.EnumPositionTriState;
+import com.pixelmonmod.pixelmon.api.events.drops.CustomDropsEvent;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * A base for a {@link IReward} to be given in boss battles within the drop UI.
@@ -36,7 +36,10 @@ import java.util.List;
 public abstract class DropRewardBase implements IReward {
 
     /** A list of all of the {@link IRewardContent} to be given from the reward. */
-    protected List<IRewardContent> contents = new ArrayList<>();
+    protected List<IRewardContent> contents = Lists.newArrayList();
+
+    /** All reward drops that are ongoing for rewards. */ //TODO: Maybe separate this out of class
+    private static Map<UUID, RewardDropQuery> ongoingRewardQueries = Maps.newHashMap();
 
     /**
      * Constructor for the reward base.
@@ -49,6 +52,7 @@ public abstract class DropRewardBase implements IReward {
                 this.contents.add(rewardContent);
             }
         }
+        Pixelmon.EVENT_BUS.register(this);
     }
 
     /** {@inheritDoc} **/
@@ -92,18 +96,15 @@ public abstract class DropRewardBase implements IReward {
             ITextComponent rewardText = new TextComponentString(service.interpret(config.get(MessageConfig.REWARD_RECEIVED), context));
 
             rewardText = TextUtils.addCallback(rewardText, (sender) -> {
-                RaidDropQuery rewardQuery = new RaidDropQuery(new Vec3d(0,0,0), player.getUniqueID(), this);
-                DropItemQueryList.queryList.add(rewardQuery);
+                RewardDropQuery query = new RewardDropQuery(player.getUniqueID(), this);
+                ongoingRewardQueries.put(player.getUniqueID(), query);
 
-
-                TextComponentTranslation title = ChatHandler.getMessage(
-                        "gui.guiItemDrops.beatPokemon",
-                        "the raid boss " + TextFormatting.DARK_RED + "" + TextFormatting.BOLD
-                                + battle.getBossEntity().getBoss().getPokemon().getDisplayName() + TextFormatting.RESET
-                );
-
-                ItemDropPacket packet = new ItemDropPacket(ItemDropMode.NormalPokemon, title, getDropItemList());
-                Pixelmon.network.sendTo(packet, player);
+                CustomDropScreen.builder()
+                        .setItems(contents.stream().map(IRewardContent::toItemStack).collect(Collectors.toList()))
+                        .setTitle(new TextComponentString(getDescription()))
+                        .setButtonText(EnumPositionTriState.RIGHT, "Take All") //TODO: Make these configurable?
+                        .setButtonText(EnumPositionTriState.LEFT, "Drop All")
+                        .sendTo(player);
             }, true);
 
             player.sendMessage(rewardText);
@@ -111,20 +112,40 @@ public abstract class DropRewardBase implements IReward {
     }
 
     /**
-     * Gets a list of drop items to be used in the drop UI.
+     * Checks if playing is within the {@link #ongoingRewardQueries} and figures out what drop to give them when they click an item.
      *
-     * @return a list of drop items corresponding to each {@link IRewardContent}.
+     * @param event event called when an item is clicked in a custom drop screen
      */
-    public ArrayList<DroppedItem> getDropItemList(){
-        ArrayList<DroppedItem> droppedItems = new ArrayList<>();
-        int idCount = 0;
-
-        for(IRewardContent content : contents){
-            idCount++;
-            droppedItems.add(new DroppedItem(content.toItemStack(), idCount));
+    @SubscribeEvent
+    public void onDropItemClick(CustomDropsEvent.ClickDrop event){
+        UUID playerUUID = event.getPlayer().getUniqueID();
+        if(ongoingRewardQueries.containsKey(playerUUID)){
+            RewardDropQuery query = ongoingRewardQueries.get(playerUUID);
+            query.take(event.getPlayer(), event.getIndex());
+            if(query.isEmpty()){
+                ongoingRewardQueries.remove(playerUUID);
+            }
         }
+    }
 
-        return droppedItems;
+    /**
+     * Checks if player is a custom drop button and sends the appropriate reaction.
+     *
+     * @param event called when a button is clicked in a custom drop screen
+     */
+    @SubscribeEvent
+    public void onDropButtonClick(CustomDropsEvent.ClickButton event){
+        UUID playerUUID = event.getPlayer().getUniqueID();
+        if(ongoingRewardQueries.containsKey(playerUUID)){
+            if(event.getPosition() == EnumPositionTriState.LEFT){
+                ongoingRewardQueries.remove(playerUUID);
+            }
+            else if(event.getPosition() == EnumPositionTriState.RIGHT){
+                RewardDropQuery query = ongoingRewardQueries.get(playerUUID);
+                query.takeAll(event.getPlayer());
+                ongoingRewardQueries.remove(playerUUID);
+            }
+        }
     }
 
 }
