@@ -47,6 +47,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.EventBus;
@@ -124,10 +125,13 @@ public class RemoRaids {
     }
 
     @Mod.EventHandler
-    public void onServerStart(FMLServerStartingEvent event){
+    public void onServerStarting(FMLServerStartingEvent event) {
         event.registerServerCommand(new Callback());
         event.registerServerCommand(new RaidsCommand());
+    }
 
+    @Mod.EventHandler
+    public void onServerStart(FMLServerStartedEvent event){
         storage = new RaidBossDataStorage();
     }
 

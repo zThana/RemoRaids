@@ -50,7 +50,6 @@ import java.util.Optional;
  * @author landonjw
  * @since 1.0.0
  */
-
 public interface IPlaceholderService extends IService.Catalog {
 
     /**
@@ -119,9 +118,9 @@ public interface IPlaceholderService extends IService.Catalog {
     /**
      * Generates a set of context that'll be used for placeholder parsing.
      *
-     * @param context
-     * @param arguments
-     * @return
+     * @param context The context that we've established
+     * @param arguments The arguments that'll be supplied to the placeholder parser
+     * @return A new context specifying a set of arguments and source objects
      */
     IPlaceholderContext contextualize(@Nullable IParsingContext context, @Nullable Collection<String> arguments);
 

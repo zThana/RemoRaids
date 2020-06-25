@@ -1,7 +1,8 @@
-package ca.landonjw.remoraids.implementation.rewards;
+package ca.landonjw.remoraids.implementation.rewards.options;
 
 import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.battles.IBossBattle;
+import ca.landonjw.remoraids.implementation.rewards.DropRewardBase;
 import ca.landonjw.remoraids.internal.api.config.Config;
 import ca.landonjw.remoraids.internal.config.MessageConfig;
 import net.minecraft.entity.player.EntityPlayerMP;

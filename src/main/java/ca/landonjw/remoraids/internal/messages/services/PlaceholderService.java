@@ -46,18 +46,6 @@ public class PlaceholderService implements IPlaceholderService {
 	@Override
 	public void registerDefaults() {
 		this.register(IPlaceholderParser.builder()
-				.key("player")
-				.parser(context -> {
-					EntityPlayerMP player = context.getAssociation(EntityPlayerMP.class).orElse(null);
-
-					if(player != null) {
-						return Optional.of(player.getName());
-					}
-
-					return Optional.empty();
-				})
-				.build());
-		this.register(IPlaceholderParser.builder()
 				.key("integer")
 				.parser((context) -> {
 					Integer value = context.getAssociation(Integer.class).orElse(null);

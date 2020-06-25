@@ -7,6 +7,7 @@ import ca.landonjw.remoraids.internal.api.config.KeyFactory;
 import ca.landonjw.remoraids.internal.api.config.keys.BaseConfigKey;
 import ca.landonjw.remoraids.internal.api.config.keys.FunctionalKey;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -37,13 +38,14 @@ public class MessageConfig implements ConfigKeyHolder {
     //
     // -------------------------------------------------------------------------------------------------
     public static final ConfigKey<String> REWARD_RECEIVED = translationKey("rewards.reward-received", "&6You have received a &a&l{reward}&r&6! Click to receive!");
-    public static final ConfigKey<String> TOP_DAMAGE_REWARD_TITLE = translationKey("rewards.top-damage-reward-title", "Top Damage Reward");
-    public static final ConfigKey<String> KILLER_REWARD_TITLE = translationKey("rewards.killer-reward-title", "Killer Reward");
-    public static final ConfigKey<String> PARTICIPATION_REWARD_TITLE = translationKey("rewards.participation-reward-title", "Participation Reward");
+    public static final ConfigKey<String> TOP_DAMAGE_REWARD_TITLE = translationKey("rewards.top-damage-reward-title", "&aTop Damage Reward");
+    public static final ConfigKey<String> KILLER_REWARD_TITLE = translationKey("rewards.killer-reward-title", "&aKiller Reward");
+    public static final ConfigKey<String> PARTICIPATION_REWARD_TITLE = translationKey("rewards.participation-reward-title", "&aParticipation Reward");
 
 
     public static final ConfigKey<String> CURRENCY_RECEIVED = translationKey("rewards.reward-contents.currency-received", "&aYou have received {integer} dollars!");
     public static final ConfigKey<String> POKEMON_RECEIVED = translationKey("rewards.reward-contents.pokemon-received", "&aYou have received a {pokemon}!");
+
     public static final ConfigKey<String> POKEMON_REWARD_CONTENT_TITLE = translationKey("rewards.reward-contents.pokemon-reward-content-title", "Pokemon: {spec}");
     public static final ConfigKey<String> ITEM_REWARD_CONTENT_TITLE = translationKey("rewards.reward-contents.item-reward-content-title", "{itemstack|name} (x {itemstack|count})");
     public static final ConfigKey<String> COMMAND_REWARD_CONTENT_TITLE = translationKey("rewards.reward-contents.command-reward-content-title", "Command: {string}");
@@ -55,7 +57,7 @@ public class MessageConfig implements ConfigKeyHolder {
     //
     // -------------------------------------------------------------------------------------------------
     public static final ConfigKey<String> RESULTS_HEADER = translationKey("battle-results.header", "&8&m==============&r &c[Raid Results] &8&m==============");
-    public static final ConfigKey<String> RESULTS_BODY_DESC = translationKey("battle-results.body.description", "&7Through valiant effort, the raid pokemon,\\n&e{boss}&7, was defeated!");
+    public static final ConfigKey<String> RESULTS_BODY_DESC = translationKey("battle-results.body.description", "&7Through valiant effort, the raid pokemon,\n&e{boss}&7, was defeated!");
     public static final ConfigKey<String> RESULTS_BODY_KILLER = translationKey("battle-results.body.killer", "&cKiller: &e{player}");
     public static final ConfigKey<String> RESULTS_BODY_TOP_DAMAGE_LABEL = translationKey("battle-results.body.top-damage-label", "&aTop {integer} Damage Dealers:");
     public static final ConfigKey<String> RESULTS_BODY_TOP_DAMAGE_CONTENT = translationKey("battle-results.body.top-damage-content", "&e{player}&7: &b{integer}");
@@ -84,12 +86,21 @@ public class MessageConfig implements ConfigKeyHolder {
     public static final ConfigKey<String> UI_COMMON_NEXT_PAGE = translationKey("ui.common.next-page", "&bNext Page");
     public static final ConfigKey<String> UI_COMMON_CURR_PAGE = translationKey("ui.common.current-page", "&bPage {current} / {total}");
     public static final ConfigKey<String> UI_COMMON_PREVIOUS_PAGE = translationKey("ui.common.previous-page", "&bPrevious Page");
-    public static final ConfigKey<String> UI_COMMON_EDIT_ELEMENT = translationKey("ui.common.edit-element", "&6Left click to edit {string}");
-    public static final ConfigKey<String> UI_COMMON_DELETE_ELEMENT = translationKey("ui.common.delete-element", "&cMiddle click to remove {string}");
+    public static final ConfigKey<String> UI_COMMON_EDIT_ELEMENT = translationKey("ui.common.edit-element", "&6Left click to edit");
+    public static final ConfigKey<String> UI_COMMON_DELETE_ELEMENT = translationKey("ui.common.delete-element", "&cMiddle click to remove");
     public static final ConfigKey<String> UI_COMMON_BACK = translationKey("ui.common.back", "&cGo Back");
 
     public static final ConfigKey<String> UI_REGISTRY_TITLE = translationKey("ui.registry.title", "&1&lBoss Registry");
     public static final ConfigKey<String> UI_REGISTRY_BOSS_TITLE = translationKey("ui.registry.boss.title", "&b&lBoss {boss}");
+
+    // Reward Contents
+    public static final ConfigKey<String> UI_ADD_REWARD_CONTENT_ITEM = translationKey("ui.add-reward-content.item.title", "&aAdd an Item");
+    public static final ConfigKey<String> UI_ADD_REWARD_CONTENT_POKEMON = translationKey("ui.add-reward-content.pokemon.title", "&aAdd a Pokemon");
+    public static final ConfigKey<String> UI_ADD_REWARD_CONTENT_COMMAND = translationKey("ui.add-reward-content.command.title", "&aAdd a Command");
+    public static final ConfigKey<String> UI_ADD_REWARD_CONTENT_CURRENCY = translationKey("ui.add-reward-content.currency.title", "&aAdd some Currency");
+
+    public static final ConfigKey<List<String>> UI_POKEMON_INFO = listTranslationKey("", Lists.newArrayList());
+    public static final ConfigKey<List<String>> UI_RAID_BOSS_INFO = listTranslationKey("", Lists.newArrayList());
 
     private static TranslationKey translationKey(String path, String def) {
         KeyFactory<String> factory = ConfigurationAdapter::getString;

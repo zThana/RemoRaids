@@ -62,6 +62,10 @@ public class SpawnAnnouncement implements ISpawnAnnouncement {
         this.channel = (channel != null) ? channel : new ChatChannel();
     }
 
+    public SpawnAnnouncement(@Nullable String announcement, @Nullable IBossSpawnLocation location) {
+
+    }
+
     private SpawnAnnouncement(SpawnAnnouncementBuilder builder) {
         this.announcement = builder.message;
         this.teleport = builder.teleport;
@@ -181,6 +185,16 @@ public class SpawnAnnouncement implements ISpawnAnnouncement {
         @Override
         public ISpawnAnnouncementBuilder warp(World world, Vec3d pos, float rotation) {
             this.teleport = new Teleport(world, pos, rotation);
+            return this;
+        }
+
+        @Override
+        public ISpawnAnnouncementBuilder warp(IBossSpawnLocation location) {
+            this.teleport = new Teleport(
+                    location.getWorld(),
+                    new Vec3d(location.getLocation().x, location.getLocation().y, location.getLocation().z),
+                    location.getRotation()
+            );
             return this;
         }
 

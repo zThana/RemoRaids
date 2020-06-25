@@ -23,7 +23,6 @@ public interface IMessageService extends IService {
      *                {player}.
      * @return The input string interpreted, applying color codes and such respectively
      */
-
     String interpret(@Nonnull String input, @Nullable IParsingContext context);
 
 }

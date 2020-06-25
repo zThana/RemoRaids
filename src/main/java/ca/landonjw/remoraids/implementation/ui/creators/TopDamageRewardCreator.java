@@ -4,7 +4,7 @@ import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.rewards.IReward;
 import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.api.ui.ICreatorUI;
-import ca.landonjw.remoraids.implementation.rewards.TopDamageReward;
+import ca.landonjw.remoraids.implementation.rewards.options.TopDamageReward;
 import ca.landonjw.remoraids.internal.api.config.Config;
 import ca.landonjw.remoraids.internal.config.MessageConfig;
 import net.minecraft.entity.player.EntityPlayerMP;

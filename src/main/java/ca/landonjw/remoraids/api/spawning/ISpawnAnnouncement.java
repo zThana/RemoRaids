@@ -57,6 +57,8 @@ public interface ISpawnAnnouncement extends DataSerializable {
 
         ISpawnAnnouncementBuilder warp(World world, Vec3d pos, float rotation);
 
+        ISpawnAnnouncementBuilder warp(IBossSpawnLocation location);
+
     }
 
     interface ITeleport extends DataSerializable {

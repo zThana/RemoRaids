@@ -3,7 +3,7 @@ package ca.landonjw.remoraids.implementation.ui.editors;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.api.ui.IEditorUI;
-import ca.landonjw.remoraids.implementation.rewards.TopDamageReward;
+import ca.landonjw.remoraids.implementation.rewards.options.TopDamageReward;
 import ca.landonjw.remoraids.implementation.ui.pages.BaseBossUI;
 import ca.landonjw.remoraids.implementation.ui.pages.battle.RewardContentsUI;
 import ca.landonjw.remoraids.internal.inventory.api.Button;

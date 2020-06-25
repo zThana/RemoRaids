@@ -68,17 +68,6 @@ public interface IBossCreator extends IBuilder.Deserializable<IBossSpawner, IBos
 	IBossCreator location(IBossSpawnLocation location);
 
 	/**
-	 * Specifies the announcement to make when a raid pokemon has spawned. Additionally, this
-	 * announcement can allow the user to TP to the location if set.
-	 *
-	 * @param allowTP If this announcement should contain a callback via the message to allow the user
-	 *                to TP to its location.
-	 * @param message The message to broadcast once the boss is spawned
-	 * @return The current instance of the builder
-	 */
-	IBossCreator announcement(boolean allowTP, String message);
-
-	/**
 	 * Specifies the announcement to make when a boss is spawned in. This allows the implementation to supply
 	 * a custom announcement option outside of what the plugin normally allows.
 	 *

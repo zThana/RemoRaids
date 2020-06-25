@@ -95,7 +95,7 @@ public abstract class DropRewardBase implements IReward {
                     .build();
             ITextComponent rewardText = new TextComponentString(service.interpret(config.get(MessageConfig.REWARD_RECEIVED), context));
 
-            rewardText = TextUtils.addCallback(rewardText, (sender) -> {
+            TextUtils.addCallback(rewardText, (sender) -> {
                 RewardDropQuery query = new RewardDropQuery(player.getUniqueID(), this);
                 ongoingRewardQueries.put(player.getUniqueID(), query);
 

@@ -53,22 +53,6 @@ public class BossCreator implements IBossCreator {
 	}
 
 	@Override
-	public IBossCreator announcement(boolean allowTP, String message) {
-		if(allowTP){
-			this.announcement = ISpawnAnnouncement.builder()
-					.message(message)
-					.warp(location.getWorld(), location.getLocation(), location.getRotation())
-					.build();
-		}
-		else{
-			this.announcement = ISpawnAnnouncement.builder()
-					.message(message)
-					.build();
-		}
-		return this;
-	}
-
-	@Override
 	public IBossCreator announcement(ISpawnAnnouncement announcement) {
 		this.announcement = announcement;
 		return this;
@@ -107,7 +91,11 @@ public class BossCreator implements IBossCreator {
 		Preconditions.checkNotNull(boss, "No raid pokemon specified");
 		Preconditions.checkNotNull(location, "No spawn location specified");
 		if(announcement == null) {
-			this.announcement(false, RemoRaids.getMessageConfig().get(MessageConfig.RAID_SPAWN_ANNOUNCE));
+			this.announcement(ISpawnAnnouncement.builder()
+					.message(RemoRaids.getMessageConfig().get(MessageConfig.RAID_SPAWN_ANNOUNCE))
+					.warp(this.location)
+					.build()
+			);
 		}
 
 		return this.controller
