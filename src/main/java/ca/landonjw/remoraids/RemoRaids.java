@@ -44,6 +44,7 @@ import ca.landonjw.remoraids.internal.tasks.TaskTickListener;
 import ca.landonjw.remoraids.internal.text.Callback;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -51,6 +52,8 @@ import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.EventBus;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -115,6 +118,7 @@ public class RemoRaids {
     public void init(FMLInitializationEvent event){
         MinecraftForge.EVENT_BUS.register(new TaskTickListener());
         MinecraftForge.EVENT_BUS.register(new BossUpdateListener());
+        MinecraftForge.EVENT_BUS.register(this);
 
         Pixelmon.EVENT_BUS.register(new EngageListener());
         Pixelmon.EVENT_BUS.register(new BossDropListener());
@@ -122,17 +126,21 @@ public class RemoRaids {
 
         RemoRaids.EVENT_BUS.register(this);
         RemoRaids.EVENT_BUS.register(new RaidBossDeathListener());
+
+        storage = new RaidBossDataStorage();
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public void onWorldLoad(WorldEvent.Load event) {
+        if(storage.getSpawners() == null) {
+            storage.read();
+        }
     }
 
     @Mod.EventHandler
     public void onServerStarting(FMLServerStartingEvent event) {
         event.registerServerCommand(new Callback());
         event.registerServerCommand(new RaidsCommand());
-    }
-
-    @Mod.EventHandler
-    public void onServerStart(FMLServerStartedEvent event){
-        storage = new RaidBossDataStorage();
     }
 
     @Mod.EventHandler

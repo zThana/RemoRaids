@@ -358,7 +358,9 @@ public class Boss implements IBoss {
 			this.id = UUID.fromString(data.get("uuid").getAsString());
 			this.species = EnumSpecies.getFromNameAnyCase(data.get("species").getAsString());
 			this.level = data.get("level").getAsInt();
-			this.form = this.species.getFormEnum(data.get("form").getAsInt());
+			if(data.has("form")) {
+				this.form = this.species.getFormEnum(data.get("form").getAsInt());
+			}
 			this.ability = data.get("ability").getAsString();
 			this.nature = EnumNature.natureFromString(data.get("nature").getAsString());
 			this.gender = Gender.getGender(data.get("gender").getAsString());

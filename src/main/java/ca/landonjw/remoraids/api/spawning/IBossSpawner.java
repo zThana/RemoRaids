@@ -98,6 +98,14 @@ public interface IBossSpawner extends DataSerializable {
      */
     boolean doesPersist();
 
+    /**
+     * Represents a simple marker flag that'll indicate whether this spawner has spawned in its
+     * raid boss this session. This data is not serialized.
+     *
+     * @return True if a spawn has taken place, false otherwise
+     */
+    boolean hasSpawned();
+
     interface IBossSpawnerBuilder extends IBuilder<IBossSpawner, IBossSpawnerBuilder> {
 
         IBossSpawnerBuilder boss(IBoss boss);

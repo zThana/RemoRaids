@@ -1,5 +1,6 @@
 package ca.landonjw.remoraids.implementation.listeners.raids;
 
+import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.events.BossDeathEvent;
 import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -19,6 +20,8 @@ public class RaidBossDeathListener {
 		spawner.getRespawnData().ifPresent(data -> {
 			if(data.isInfinite() || data.hasRemainingRespawns()) {
 				data.run(spawner);
+			} else {
+				RemoRaids.storage.delete(spawner);
 			}
 		});
 	}

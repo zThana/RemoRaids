@@ -15,6 +15,7 @@ import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.client.models.smd.AnimationType;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityStatue;
+import com.pixelmonmod.pixelmon.enums.EnumStatueTextureType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -42,6 +43,8 @@ public class BossSpawner implements IBossSpawner {
     private IRespawnData respawns;
     /** Specifies if the spawner will persist across restarts */
     private transient boolean persists;
+    /** A marker flag to indicate a raid boss has spawned */
+    private transient boolean spawned;
 
     /**
      * Constructor for the boss spawner.
@@ -91,6 +94,8 @@ public class BossSpawner implements IBossSpawner {
             BossSpawnedEvent spawnedEvent = new BossSpawnedEvent(bossEntity, this);
             RemoRaids.EVENT_BUS.post(spawnedEvent);
 
+            this.spawned = true;
+
             return Optional.of(bossEntity);
         }
         return Optional.empty();
@@ -110,6 +115,10 @@ public class BossSpawner implements IBossSpawner {
         Pokemon bossPokemon = this.getBoss().getPokemon();
         statue.setPokemon(bossPokemon);
         statue.setPixelmonScale(this.getBoss().getSize());
+
+        if(bossPokemon.isShiny()) {
+            statue.setTextureType(EnumStatueTextureType.Shiny);
+        }
 
         if(this.getBoss().getTexture().isPresent()){
             NBTTagCompound nbt = new NBTTagCompound();
@@ -207,6 +216,11 @@ public class BossSpawner implements IBossSpawner {
     @Override
     public boolean doesPersist() {
         return this.persists;
+    }
+
+    @Override
+    public boolean hasSpawned() {
+        return this.spawned;
     }
 
     /** {@inheritDoc} */

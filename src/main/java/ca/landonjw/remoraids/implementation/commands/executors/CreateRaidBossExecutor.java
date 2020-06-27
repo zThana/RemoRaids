@@ -77,6 +77,7 @@ public class CreateRaidBossExecutor implements RaidsCommandExecutor {
 			CmdFlags.process(creator, boss, Arrays.stream(arguments)
 					.map(String::toLowerCase)
 					.filter(x -> x.startsWith("-"))
+					.map(x -> x.substring(1))
 					.collect(Collectors.toList())
 			);
 
@@ -161,7 +162,8 @@ public class CreateRaidBossExecutor implements RaidsCommandExecutor {
 
 	private enum CmdFlags {
 
-		PERSISTS((creator, boss, ignore) -> creator.persists(true)),
+		// Persistance
+		P((creator, boss, ignore) -> creator.persists(true)),
 		;
 
 		private Processor<IBossCreator, IBoss.IBossBuilder, Void> processor;
