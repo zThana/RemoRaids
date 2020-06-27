@@ -4,8 +4,10 @@ import ca.landonjw.remoraids.api.boss.engage.IBossEngager;
 import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityStatue;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
-import java.util.UUID;
+import java.util.Optional;
 
 public interface IBossEntity {
 
@@ -13,9 +15,13 @@ public interface IBossEntity {
 
     IBossSpawner getSpawner();
 
-    EntityStatue getEntity();
+    Optional<EntityStatue> getEntity();
 
-    EntityPixelmon getBattleEntity();
+    Optional<EntityPixelmon> getBattleEntity();
+
+    Vec3d getPosition();
+
+    World getWorld();
 
     IBossEngager getBossEngager();
 

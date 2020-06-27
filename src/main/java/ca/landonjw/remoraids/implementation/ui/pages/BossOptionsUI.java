@@ -17,6 +17,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.management.PlayerList;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.Teleporter;
@@ -59,14 +60,14 @@ public class BossOptionsUI extends BaseBossUI {
                     InventoryAPI.getInstance().closePlayerInventory(player);
                     player.sendMessage(new TextComponentString(TextFormatting.GREEN + "Teleport to boss..."));
 
-                    Entity bossStatue = bossEntity.getEntity();
-                    World bossWorld = bossStatue.getEntityWorld();
+                    World bossWorld = bossEntity.getWorld();
                     if(player.dimension != bossWorld.provider.getDimension()){
                         PlayerList playerList = player.getServer().getPlayerList();
                         Teleporter teleporter = ((WorldServer) bossWorld).getDefaultTeleporter();
                         playerList.transferPlayerToDimension(player, bossWorld.provider.getDimension(), teleporter);
                     }
-                    player.setPositionAndUpdate(bossStatue.posX, bossStatue.posY, bossStatue.posZ);
+                    Vec3d pos = bossEntity.getPosition();
+                    player.setPositionAndUpdate(pos.x, pos.y, pos.z);
                 })
                 .build();
 

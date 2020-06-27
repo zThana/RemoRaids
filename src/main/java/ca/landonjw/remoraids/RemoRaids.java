@@ -141,7 +141,7 @@ public class RemoRaids {
             if(spawner.doesPersist()) {
                 storage.save(spawner);
             }
-            spawner.getBoss().getEntity().ifPresent(entity -> entity.getEntity().setDead());
+            spawner.getBoss().getEntity().ifPresent(IBossEntity::despawn);
         }
     }
 

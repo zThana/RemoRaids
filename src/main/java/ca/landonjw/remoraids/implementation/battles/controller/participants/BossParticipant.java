@@ -35,7 +35,7 @@ public class BossParticipant extends BattleParticipant {
 
         this.bossBattle = bossBattle;
         this.bossEntity = Objects.requireNonNull(bossEntity, "boss entity must not be null");
-        this.battleEntity = bossEntity.getBattleEntity();
+        this.battleEntity = bossEntity.getBattleEntity().get();
 
         bossWrapper = new BossWrapper(this, battleEntity);
         this.allPokemon = new PixelmonWrapper[]{bossWrapper};

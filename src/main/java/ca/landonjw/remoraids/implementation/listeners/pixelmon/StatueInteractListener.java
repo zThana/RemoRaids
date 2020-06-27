@@ -26,8 +26,8 @@ public class StatueInteractListener {
      */
     @SubscribeEvent
     public void onStatueDestroy(StatueEvent.DestroyStatue event){
-        for(IBossEntity entity : IBossAPI.getInstance().getBossEntityRegistry().getAllBossEntities()){
-            if(entity.getEntity().getUniqueID().equals(event.statue.getUniqueID())){
+        for(IBossEntity bossEntity : IBossAPI.getInstance().getBossEntityRegistry().getAllBossEntities()){
+            if(bossEntity.getEntity().isPresent() && bossEntity.getEntity().get().equals(event.statue)){
                 event.setCanceled(true);
                 Config config = RemoRaids.getMessageConfig();
                 event.player.sendMessage(new TextComponentString(config.get(MessageConfig.ERROR_CHISEL_INTERACT)));
@@ -43,8 +43,8 @@ public class StatueInteractListener {
      */
     @SubscribeEvent
     public void onStatueModify(StatueEvent.ModifyStatue event){
-        for(IBossEntity entity : IBossAPI.getInstance().getBossEntityRegistry().getAllBossEntities()){
-            if(entity.getEntity().getUniqueID().equals(event.getStatue().getUniqueID())){
+        for(IBossEntity bossEntity : IBossAPI.getInstance().getBossEntityRegistry().getAllBossEntities()){
+            if(bossEntity.getEntity().isPresent() && bossEntity.getEntity().get().equals(event.getStatue())){
                 event.setCanceled(true);
                 Config config = RemoRaids.getMessageConfig();
                 event.player.sendMessage(new TextComponentString(config.get(MessageConfig.ERROR_CHISEL_INTERACT)));

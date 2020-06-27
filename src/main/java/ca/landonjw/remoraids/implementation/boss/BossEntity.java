@@ -27,14 +27,21 @@ import com.pixelmonmod.pixelmon.api.overlay.notice.NoticeOverlay;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityStatue;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.SPacketDestroyEntities;
 import net.minecraft.network.play.server.SPacketTitle;
+import net.minecraft.util.ClassInheritanceMultiMap;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BossInfo;
+import net.minecraft.world.World;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Implementation of {@link IBossEntity}.
@@ -51,29 +58,35 @@ public class BossEntity implements IBossEntity {
     private IBossSpawner spawner;
     /** The boss entity is created from. */
     private IBoss boss;
-    /** The visual representation of the boss entity. */
-    private EntityStatue entity;
-    /** Entity that produces participants for players to fight. */
-    private EntityPixelmon battleEntity;
+    /** The UUID of entity that visually represents the boss. */
+    private UUID statueEntityUUID;
+    /** The UUID of entity that produces participants for players to fight. */
+    private UUID battleEntityUUID;
     /** Used for players to engage battles with the boss entity. */
     private IBossEngager bossEngager;
+    /** World of the boss entity. */
+    private World world;
+    /** Location of the boss entity. */
+    private BlockPos position;
 
     /**
      * Constructor for the boss entity.
      *
-     * @param spawner      The spawner responsible for creating this entity
+     * @param spawner      the spawner responsible for creating this entity
      * @param boss         boss entity is created from
-     * @param entity       visual representation of the boss entity
+     * @param statueEntity visual representation of the boss entity
      * @param battleEntity the entity used to produce participants for players to fight
      */
     public BossEntity(@NonNull IBossSpawner spawner,
                       @NonNull IBoss boss,
-                      @NonNull EntityStatue entity,
+                      @NonNull EntityStatue statueEntity,
                       @NonNull EntityPixelmon battleEntity){
         this.spawner = Objects.requireNonNull(spawner, "spawner cannot be null");
         this.boss = Objects.requireNonNull(boss, "boss must not be null");
-        this.entity = entity;
-        this.battleEntity = battleEntity;
+        this.statueEntityUUID = statueEntity.getUniqueID();
+        this.battleEntityUUID = battleEntity.getUniqueID();
+        this.world = statueEntity.world;
+        this.position = statueEntity.getPosition();
         setEngager();
         vanishBattleEntity();
 
@@ -127,10 +140,10 @@ public class BossEntity implements IBossEntity {
     private void vanishBattleEntity(){
         Task.builder()
                 .execute((task) -> {
-                    if(!entity.isDead){
-                        for(EntityPlayer player : battleEntity.world.playerEntities){
-                            if(player.getDistance(battleEntity) < 100){
-                                SPacketDestroyEntities packet = new SPacketDestroyEntities(battleEntity.getEntityId());
+                    if(!getEntity().isPresent()){
+                        for(EntityPlayer player : world.playerEntities){
+                            if(player.getDistance(getEntity().get()) < 100){
+                                SPacketDestroyEntities packet = new SPacketDestroyEntities(getBattleEntity().get().getEntityId());
                                 ((EntityPlayerMP) player).connection.sendPacket(packet);
                             }
                         }
@@ -156,14 +169,42 @@ public class BossEntity implements IBossEntity {
 
     /** {@inheritDoc} */
     @Override
-    public EntityStatue getEntity() {
-        return entity;
+    public Optional<EntityStatue> getEntity() {
+        ClassInheritanceMultiMap<Entity>[] entityMapList = world.getChunk(position).getEntityLists();
+        for(ClassInheritanceMultiMap<Entity> map : entityMapList){
+            for(EntityStatue statueEntity : map.getByClass(EntityStatue.class)){
+                if(statueEntity.getUniqueID().equals(statueEntityUUID)){
+                    return Optional.of(statueEntity);
+                }
+            }
+        }
+
+        return Optional.empty();
     }
 
     /** {@inheritDoc} */
     @Override
-    public EntityPixelmon getBattleEntity() {
-        return battleEntity;
+    public Optional<EntityPixelmon> getBattleEntity() {
+        ClassInheritanceMultiMap<Entity>[] entityMapList = world.getChunk(position).getEntityLists();
+        for(ClassInheritanceMultiMap<Entity> map : entityMapList){
+            for(EntityPixelmon statueEntity : map.getByClass(EntityPixelmon.class)){
+                if(statueEntity.getUniqueID().equals(battleEntityUUID)){
+                    return Optional.of(statueEntity);
+                }
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
+    public Vec3d getPosition() {
+        return new Vec3d(position.getX(), position.getY(), position.getZ());
+    }
+
+    @Override
+    public World getWorld() {
+        return world;
     }
 
     /** {@inheritDoc} */
@@ -182,8 +223,8 @@ public class BossEntity implements IBossEntity {
         BossDeathEvent deathEvent = new BossDeathEvent(this, battle);
         RemoRaids.EVENT_BUS.post(deathEvent);
 
-        entity.setDead();
-        battleEntity.setDead();
+        getEntity().ifPresent(Entity::setDead);
+        getBattleEntity().ifPresent(Entity::setDead);
 
         /* This is delayed by one tick due to drops not cancelling properly due to the pixelmon entity
          * queueing drop items on death and the boss being deregistered simultaneously, causing the
@@ -202,14 +243,15 @@ public class BossEntity implements IBossEntity {
         if (o == null || getClass() != o.getClass()) return false;
         BossEntity that = (BossEntity) o;
         return Objects.equals(boss, that.boss) &&
-                Objects.equals(entity, that.entity) &&
-                Objects.equals(battleEntity, that.battleEntity) &&
+                Objects.equals(statueEntityUUID, that.statueEntityUUID) &&
+                Objects.equals(battleEntityUUID, that.battleEntityUUID) &&
                 Objects.equals(bossEngager, that.bossEngager);
     }
 
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
-        return Objects.hash(boss, entity, battleEntity, bossEngager);
+        return Objects.hash(boss, statueEntityUUID, battleEntityUUID, bossEngager);
     }
+
 }

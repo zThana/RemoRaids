@@ -39,34 +39,39 @@ public class BossEngager implements IBossEngager {
 
     @Override
     public boolean isPlayerInRange(EntityPlayerMP player) {
-        EntityStatue bossStatue = bossEntity.getEntity();
+        if(bossEntity.getEntity().isPresent()){
+            EntityStatue bossStatue = bossEntity.getEntity().get();
 
-        boolean inRange = false;
+            boolean inRange = false;
 
-        if(!bossStatue.isDead){
-            if(player.world.equals(bossStatue.world)){
-                double xDiff = bossStatue.getEntityBoundingBox().maxX - bossStatue.getEntityBoundingBox().minX;
-                double zDiff = bossStatue.getEntityBoundingBox().maxZ - bossStatue.getEntityBoundingBox().minZ;
-                double largerDiff = (xDiff > zDiff) ? xDiff : zDiff;
-                inRange = player.getDistance(bossStatue) <= engageRange + largerDiff;
+            if(!bossStatue.isDead){
+                if(player.world.equals(bossStatue.world)){
+                    double xDiff = bossStatue.getEntityBoundingBox().maxX - bossStatue.getEntityBoundingBox().minX;
+                    double zDiff = bossStatue.getEntityBoundingBox().maxZ - bossStatue.getEntityBoundingBox().minZ;
+                    double largerDiff = (xDiff > zDiff) ? xDiff : zDiff;
+                    inRange = player.getDistance(bossStatue) <= engageRange + largerDiff;
+                }
             }
+            return inRange;
         }
-        return inRange;
+        return false;
     }
 
     @Override
     public void sendEngageMessage() {
-        IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
-        EntityStatue bossStatue = getBossEntity().getEntity();
+        if(bossEntity.getEntity().isPresent()){
+            IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
+            EntityStatue bossStatue = bossEntity.getEntity().get();
 
-        for(EntityPlayer player : bossStatue.world.playerEntities){
-            EntityPlayerMP playerMP = (EntityPlayerMP) player;
-            if(isPlayerInRange(playerMP) && BattleRegistry.getBattle(playerMP) == null){
-                IParsingContext context = IParsingContext.builder()
-                        .add(IBossEntity.class, () -> bossEntity)
-                        .add(EntityPlayerMP.class, () -> playerMP)
-                        .build();
-                messageChannel.sendMessage(playerMP, service.interpret(message, context));
+            for(EntityPlayer player : bossStatue.world.playerEntities){
+                EntityPlayerMP playerMP = (EntityPlayerMP) player;
+                if(isPlayerInRange(playerMP) && BattleRegistry.getBattle(playerMP) == null){
+                    IParsingContext context = IParsingContext.builder()
+                            .add(IBossEntity.class, () -> bossEntity)
+                            .add(EntityPlayerMP.class, () -> playerMP)
+                            .build();
+                    messageChannel.sendMessage(playerMP, service.interpret(message, context));
+                }
             }
         }
     }
@@ -74,7 +79,7 @@ public class BossEngager implements IBossEngager {
     private void startMessageTask(){
         Task.builder()
                 .execute((task) -> {
-                    if(!getBossEntity().getEntity().isDead){
+                    if(getBossEntity().getEntity().isPresent()){
                         sendEngageMessage();
                     }
                     else{

@@ -29,7 +29,7 @@ public class BossUpdateListener {
     @SubscribeEvent
     public void onUpdate(LivingEvent.LivingUpdateEvent event){
         for(IBossEntity bossEntity : BossEntityRegistry.getInstance().getAllBossEntities()){
-            if(bossEntity.getEntity().equals(event.getEntity())){
+            if(bossEntity.getEntity().isPresent() && bossEntity.getEntity().get().equals(event.getEntity())){
                 event.setCanceled(true);
                 updateBossSize(bossEntity);
             }
@@ -42,8 +42,8 @@ public class BossUpdateListener {
      * @param bossEntity the entity to check and potentially update
      */
     private void updateBossSize(IBossEntity bossEntity){
-        if(bossEntity.getBoss().getSize() != bossEntity.getEntity().getPixelmonScale()){
-            bossEntity.getEntity().setPixelmonScale(bossEntity.getBoss().getSize());
+        if(bossEntity.getBoss().getSize() != bossEntity.getEntity().get().getPixelmonScale()){
+            bossEntity.getEntity().get().setPixelmonScale(bossEntity.getBoss().getSize());
         }
     }
 

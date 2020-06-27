@@ -24,7 +24,7 @@ public class BossDropListener {
     public void onDrop(DropEvent event){
         if(event.isPokemon()){
             for(IBossEntity bossEntity : RemoRaids.getBossAPI().getBossEntityRegistry().getAllBossEntities()){
-                if(bossEntity.getBattleEntity().equals(event.entity)){
+                if(bossEntity.getBattleEntity().isPresent() && bossEntity.getBattleEntity().get().equals(event.entity)){
                     event.setCanceled(true);
                 }
             }
