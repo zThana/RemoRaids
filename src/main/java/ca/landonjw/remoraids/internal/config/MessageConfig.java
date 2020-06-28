@@ -113,7 +113,7 @@ public class MessageConfig implements ConfigKeyHolder {
             "&7Texture: &a{pokemon|texture}",
             "",
             "&cHP: {pokemon|hp} &7/ &6Atk: {pokemon|attack} &7/ &aDef: {pokemon|defence}",
-            "&1SpAtk: {pokemon|special-attack} &7/ &aSpDef: {pokemon|special-defense} &7/ &dSpeed: {pokemon|speed}",
+            "&9SpAtk: {pokemon|spatk} &7/ &aSpDef: {pokemon|spdef} &7/ &dSpeed: {pokemon|speed}",
             "",
             "&7Moves:",
             "{pokemon|moveset}"
@@ -122,7 +122,7 @@ public class MessageConfig implements ConfigKeyHolder {
     public static final ConfigKey<List<String>> UI_RAID_BOSS_LORE = listTranslationKey("ui.pokemon.raid-boss.lore", Lists.newArrayList(
             "&7Level: &a{pokemon|level}",
             "&7Form: &a{pokemon|form}",
-            "&7Size: &a{raid-boss|size}",
+            "&7Size: &a{boss|size}",
             "",
             "&7Ability: &a{pokemon|ability}",
             "&7Nature: &a{pokemon|nature}",
@@ -130,16 +130,13 @@ public class MessageConfig implements ConfigKeyHolder {
             "&7Texture: &a{pokemon|texture}",
             "",
             "&cHP: {pokemon|hp} &7/ &6Atk: {pokemon|attack} &7/ &aDef: {pokemon|defence}",
-            "&1SpAtk: {pokemon|special-attack} &7/ &aSpDef: {pokemon|special-defence} &7/ &dSpeed: {pokemon|speed}",
+            "&9SpAtk: {pokemon|spatk} &7/ &aSpDef: {pokemon|spatk} &7/ &dSpeed: {pokemon|speed}",
             "",
             "&7Moves:",
             "{pokemon|moveset}"
     ));
     public static final ConfigKey<String> UI_POKEMON_NO_TEXTURE = translationKey("ui.pokemon.no-texture", "N/A");
-    public static final ConfigKey<List<String>> UI_POKEMON_MOVESET = listTranslationKey("ui.pokemon.moveset", Lists.newArrayList(
-            "&b{moveset|1} - {moveset|2}",
-            "&b{moveset|3} - {moveset|4}"
-    ));
+    public static final ConfigKey<String> UI_POKEMON_MOVESET = translationKey("ui.pokemon.moveset", "&b{moveset|1}&7/&b{moveset|2}&7/&b{moveset|3}&7/&b{moveset|4}");
 
     //--------------------------------------------------------------------------------------
     //
@@ -151,10 +148,23 @@ public class MessageConfig implements ConfigKeyHolder {
     public static final ConfigKey<String> UI_BOSS_OPTIONS_TELEPORT_MESSAGE = translationKey("ui.boss-options.teleport.message", "&aTeleporting to boss...");
     public static final ConfigKey<String> UI_BOSS_OPTIONS_EDIT_TITLE = translationKey("ui.boss-options.edit", "&bEdit");
     public static final ConfigKey<String> UI_BOSS_OPTIONS_HALT_BATTLES_TITLE = translationKey("ui.boss-options.halt-battles.title", "&cHalt Battles");
-    public static final ConfigKey<String> UI_BOSS_OPTIONS_HALT_BATTLES_FEATURE_UNAVAILABLE = translationKey("ui.boss-options.halt-battles.states.feature-unavailable", "&7This feature is currently unavailable...");
-    public static final ConfigKey<String> UI_BOSS_OPTIONS_HALT_BATTLES_TOGGLED_ON = translationKey("ui.boss-options.halt-battles.states.on", "&fToggled On");
-    public static final ConfigKey<String> UI_BOSS_OPTIONS_HALT_BATTLES_TOGGLED_OFF = translationKey("ui.boss-options.halt-battles.states.off", "&fToggled Off");
-    public static final ConfigKey<String> UI_BOSS_OPTIONS_DESPAWN = translationKey("ui.boss-options.despawn.title", "&cDespawn");
+    public static final ConfigKey<List<String>> UI_BOSS_OPTIONS_HALT_BATTLES_STAGES_FEATURE_UNAVAILABLE = listTranslationKey(
+            "ui.boss-options.halt-battles.stages.feature-unavailable", Lists.newArrayList(
+                    "&7This feature is currently unavailable..."
+            )
+    );
+    public static final ConfigKey<List<String>> UI_BOSS_OPTIONS_HALT_BATTLES_STAGES_ON = listTranslationKey(
+            "ui.boss-options.halt-battles.stages.feature-unavailable", Lists.newArrayList(
+                    "&fToggled &aon"
+            )
+    );
+    public static final ConfigKey<List<String>> UI_BOSS_OPTIONS_HALT_BATTLES_STAGES_OFF = listTranslationKey(
+            "ui.boss-options.halt-battles.stages.feature-unavailable", Lists.newArrayList(
+                    "&fToggled &coff"
+            )
+    );
+    public static final ConfigKey<String> UI_BOSS_OPTIONS_HALT_BATTLES_KICK = translationKey("ui.boss-options.halt-battles.kick-from-battle", "&cYou have been kicked from battle due to ongoing boss editing...");
+    public static final ConfigKey<String> UI_BOSS_OPTIONS_DESPAWN_TITLE = translationKey("ui.boss-options.despawn.title", "&cDespawn");
     public static final ConfigKey<String> UI_BOSS_OPTIONS_DESPAWN_MESSAGE = translationKey("ui.boss-options.despawn.message", "&aBoss pokemon despawned!");
 
     //--------------------------------------------------------------------------------------

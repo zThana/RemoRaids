@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class PokemonPlaceholderParser implements IPlaceholderParser {
@@ -59,18 +61,12 @@ public class PokemonPlaceholderParser implements IPlaceholderParser {
             return pokemon.getCustomTexture();
         }),
         Moveset(pokemon -> {
-            List<String> input = RemoRaids.getMessageConfig().get(MessageConfig.UI_POKEMON_MOVESET);
+            String input = RemoRaids.getMessageConfig().get(MessageConfig.UI_POKEMON_MOVESET);
             IParsingContext internal = IParsingContext.builder()
                     .add(Moveset.class, pokemon::getMoveset)
                     .build();
             IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
-
-            input = input.stream().map(x -> service.interpret(x, internal)).collect(Collectors.toList());
-            StringJoiner joiner = new StringJoiner("\n");
-            for(String i : input) {
-                joiner.add(i);
-            }
-            return joiner;
+            return service.interpret(input, internal);
         }),
         HP(pokemon -> pokemon.getStat(StatsType.HP)),
         Attack(pokemon -> pokemon.getStat(StatsType.Attack)),
@@ -122,7 +118,7 @@ public class PokemonPlaceholderParser implements IPlaceholderParser {
                 return Optional.of(moveset.get(index).getActualMove().getLocalizedName());
             }
 
-            return Optional.empty();
+            return Optional.of("???");
         }
 
     }
