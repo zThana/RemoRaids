@@ -91,7 +91,6 @@ public class MessageConfig implements ConfigKeyHolder {
     public static final ConfigKey<String> UI_COMMON_BACK = translationKey("ui.common.back", "&cGo Back");
 
     public static final ConfigKey<String> UI_REGISTRY_TITLE = translationKey("ui.registry.title", "&1&lBoss Registry");
-    public static final ConfigKey<String> UI_REGISTRY_BOSS_TITLE = translationKey("ui.registry.boss.title", "&b&lBoss {boss}");
 
     // Reward Contents
     public static final ConfigKey<String> UI_ADD_REWARD_CONTENT_ITEM = translationKey("ui.add-reward-content.item.title", "&aAdd an Item");
@@ -99,8 +98,56 @@ public class MessageConfig implements ConfigKeyHolder {
     public static final ConfigKey<String> UI_ADD_REWARD_CONTENT_COMMAND = translationKey("ui.add-reward-content.command.title", "&aAdd a Command");
     public static final ConfigKey<String> UI_ADD_REWARD_CONTENT_CURRENCY = translationKey("ui.add-reward-content.currency.title", "&aAdd some Currency");
 
-    public static final ConfigKey<List<String>> UI_POKEMON_INFO = listTranslationKey("", Lists.newArrayList());
-    public static final ConfigKey<List<String>> UI_RAID_BOSS_INFO = listTranslationKey("", Lists.newArrayList());
+    public static final ConfigKey<String> UI_POKEMON_GENERAL_TITLE = translationKey("ui.pokemon.general.title", "&e{pokemon|species}");
+    public static final ConfigKey<List<String>> UI_POKEMON_GENERAL_LORE = listTranslationKey("ui.pokemon.general.lore", Lists.newArrayList(
+            "&7Level: &a{pokemon|level}",
+            "&7Form: &a{pokemon|form}",
+            "",
+            "&7Ability: &a{pokemon|ability}",
+            "&7Nature: &a{pokemon|nature}",
+            "&7Gender: &a{pokemon|gender}",
+            "&7Texture: &a{pokemon|texture}",
+            "",
+            "&cHP: {pokemon|hp} &7/ &6Atk: {pokemon|attack} &7/ &aDef: {pokemon|defence}",
+            "&1SpAtk: {pokemon|special-attack} &7/ &aSpDef: {pokemon|special-defense} &7/ &dSpeed: {pokemon|speed}",
+            "",
+            "&7Moves:",
+            "{pokemon|moveset}"
+    ));
+    public static final ConfigKey<String> UI_RAID_BOSS_TITLE = translationKey("ui.pokemon.raid-boss.title", "&eBoss {pokemon|species}");
+    public static final ConfigKey<List<String>> UI_RAID_BOSS_LORE = listTranslationKey("ui.pokemon.raid-boss.lore", Lists.newArrayList(
+            "&7Level: &a{pokemon|level}",
+            "&7Form: &a{pokemon|form}",
+            "&7Size: &a{raid-boss|size}",
+            "",
+            "&7Ability: &a{pokemon|ability}",
+            "&7Nature: &a{pokemon|nature}",
+            "&7Gender: &a{pokemon|gender}",
+            "&7Texture: &a{pokemon|texture}",
+            "",
+            "&cHP: {pokemon|hp} &7/ &6Atk: {pokemon|attack} &7/ &aDef: {pokemon|defence}",
+            "&1SpAtk: {pokemon|special-attack} &7/ &aSpDef: {pokemon|special-defence} &7/ &dSpeed: {pokemon|speed}",
+            "",
+            "&7Moves:",
+            "{pokemon|moveset}"
+    ));
+    public static final ConfigKey<String> UI_POKEMON_NO_TEXTURE = translationKey("ui.pokemon.no-texture", "N/A");
+    public static final ConfigKey<List<String>> UI_POKEMON_MOVESET = listTranslationKey("ui.pokemon.moveset", Lists.newArrayList(
+            "&b{moveset|1} - {moveset|2}",
+            "&b{moveset|3} - {moveset|4}"
+    ));
+
+    //--------------------------------------------------------------------------------------
+    //
+    //  Options UI
+    //
+    //--------------------------------------------------------------------------------------
+    public static final ConfigKey<String> UI_BOSS_OPTIONS_TITLE = translationKey("ui.boss-options.title", "&9&lOptions");
+    public static final ConfigKey<String> UI_BOSS_OPTIONS_TELEPORT_TITLE = translationKey("ui.boss-options.teleport.title", "&bTeleport");
+    public static final ConfigKey<String> UI_BOSS_OPTIONS_TELEPORT_MESSAGE = translationKey("ui.boss-options.teleport.message", "&aTeleporting to boss...");
+    public static final ConfigKey<String> UI_BOSS_OPTIONS_EDIT_TITLE = translationKey("ui.boss-options.edit", "&bEdit");
+    public static final ConfigKey<String> UI_BOSS_OPTIONS_HALT_BATTLES_TITLE = translationKey("ui.boss-options.halt-battles.title", "&cHalt Battles");
+
 
     private static TranslationKey translationKey(String path, String def) {
         KeyFactory<String> factory = ConfigurationAdapter::getString;

@@ -86,6 +86,7 @@ public class PlaceholderService implements IPlaceholderService {
 		this.register(new CapacityPlaceholderParser());
 		this.register(new CooldownPlaceholderParser());
 		this.register(new PokemonPlaceholderParser());
+		this.register(new PokemonPlaceholderParser.MovesetPlaceholderParser());
 		this.register(new PokemonSpecPlaceholderParser());
 		this.register(new ItemStackPlaceholderParser());
 		this.register(new SpawnLocationParser());

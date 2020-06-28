@@ -61,7 +61,8 @@ public class BossCreator implements IBossCreator {
 	@Override
 	public IBossCreator respawns(int amount, long time, TimeUnit unit) {
 		this.respawnData = IBossSpawner.IRespawnData.builder()
-				.count(amount)
+				.infinite(amount == -1)
+				.count(Math.max(0, amount))
 				.period(time, unit)
 				.build();
 		return this;

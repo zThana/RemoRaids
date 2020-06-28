@@ -1,14 +1,25 @@
 package ca.landonjw.remoraids.internal.messages.placeholders.provided;
 
+import ca.landonjw.remoraids.RemoRaids;
+import ca.landonjw.remoraids.api.IBossAPI;
+import ca.landonjw.remoraids.api.messages.placeholders.IParsingContext;
 import ca.landonjw.remoraids.api.messages.placeholders.IPlaceholderContext;
 import ca.landonjw.remoraids.api.messages.placeholders.IPlaceholderParser;
+import ca.landonjw.remoraids.api.messages.services.IMessageService;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
+import ca.landonjw.remoraids.internal.messages.placeholders.ParsingContext;
+import ca.landonjw.remoraids.internal.messages.placeholders.PlaceholderParser;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.StringJoiner;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class PokemonPlaceholderParser implements IPlaceholderParser {
 
@@ -40,6 +51,33 @@ public class PokemonPlaceholderParser implements IPlaceholderParser {
         Nature(pokemon -> pokemon.getNature().getLocalizedName()),
         Gender(pokemon -> pokemon.getGender().getLocalizedName()),
         Form(pokemon -> pokemon.getFormEnum().getLocalizedName()),
+        Texture(pokemon -> {
+            if(pokemon.getCustomTexture() == null || pokemon.getCustomTexture().isEmpty()) {
+                return RemoRaids.getMessageConfig().get(MessageConfig.UI_POKEMON_NO_TEXTURE);
+            }
+
+            return pokemon.getCustomTexture();
+        }),
+        Moveset(pokemon -> {
+            List<String> input = RemoRaids.getMessageConfig().get(MessageConfig.UI_POKEMON_MOVESET);
+            IParsingContext internal = IParsingContext.builder()
+                    .add(Moveset.class, pokemon::getMoveset)
+                    .build();
+            IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
+
+            input = input.stream().map(x -> service.interpret(x, internal)).collect(Collectors.toList());
+            StringJoiner joiner = new StringJoiner("\n");
+            for(String i : input) {
+                joiner.add(i);
+            }
+            return joiner;
+        }),
+        HP(pokemon -> pokemon.getStat(StatsType.HP)),
+        Attack(pokemon -> pokemon.getStat(StatsType.Attack)),
+        Defence(pokemon -> pokemon.getStat(StatsType.Defence)),
+        SpAtk(pokemon -> pokemon.getStat(StatsType.SpecialAttack)),
+        SpDef(pokemon -> pokemon.getStat(StatsType.SpecialDefence)),
+        Speed(pokemon -> pokemon.getStat(StatsType.Speed)),
         ;
 
         private Function<Pokemon, Object> parser;
@@ -53,5 +91,39 @@ public class PokemonPlaceholderParser implements IPlaceholderParser {
                     .map(x -> x.parser.apply(context))
                     .map(Object::toString);
         }
+
+    }
+
+    public static class MovesetPlaceholderParser implements IPlaceholderParser {
+
+        @Override
+        public String getKey() {
+            return "moveset";
+        }
+
+        @Override
+        public Optional<String> parse(IPlaceholderContext context) {
+            if(context.getArguments().isPresent()) {
+                List<String> arguments = context.getArguments().get();
+                if(arguments.size() > 0) {
+                    Moveset source = context.getAssociation(Moveset.class).orElse(null);
+                    if(source != null) {
+                        try {
+                            return getMoveIfPresent(source, Integer.parseInt(arguments.get(0)));
+                        } catch (Exception ignore) {}
+                    }
+                }
+            }
+            return Optional.empty();
+        }
+
+        private Optional<String> getMoveIfPresent(Moveset moveset, int index) {
+            if(moveset.size() >= index + 1) {
+                return Optional.of(moveset.get(index).getActualMove().getLocalizedName());
+            }
+
+            return Optional.empty();
+        }
+
     }
 }

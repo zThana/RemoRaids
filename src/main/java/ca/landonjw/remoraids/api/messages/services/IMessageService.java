@@ -4,6 +4,8 @@ import ca.landonjw.remoraids.api.messages.placeholders.IParsingContext;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public interface IMessageService extends IService {
 
@@ -24,5 +26,9 @@ public interface IMessageService extends IService {
      * @return The input string interpreted, applying color codes and such respectively
      */
     String interpret(@Nonnull String input, @Nullable IParsingContext context);
+
+    default List<String> interpret(@Nonnull List<String> input, @Nullable IParsingContext context) {
+        return input.stream().map(x -> this.interpret(x, context)).collect(Collectors.toList());
+    }
 
 }

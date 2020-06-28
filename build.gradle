@@ -68,8 +68,7 @@ gradle.projectsEvaluated {
 dependencies {
     shadow 'com.google.guava:guava:27.1-jre'
     shadow 'com.google.code.gson:gson:2.8.6'
-    shadow 'reforged:server:8.0.2@Pixelmon-1.12.2-8.0.2-server.jar'
-}
+ }
 
 processResources {
     // this will ensure that this task is redone when the versions change.

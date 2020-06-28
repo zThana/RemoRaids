@@ -12,6 +12,7 @@ import ca.landonjw.remoraids.internal.inventory.api.Button;
 import ca.landonjw.remoraids.internal.inventory.api.ButtonType;
 import ca.landonjw.remoraids.internal.inventory.api.Page;
 import ca.landonjw.remoraids.internal.inventory.api.Template;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
 import com.pixelmonmod.pixelmon.items.ItemPixelmonSprite;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -78,12 +79,13 @@ public class RegistryUI {
         for(IBossEntity bossEntity : RemoRaids.getBossAPI().getBossEntityRegistry().getAllBossEntities()){
             IParsingContext context = IParsingContext.builder()
                     .add(IBoss.class, bossEntity::getBoss)
+                    .add(Pokemon.class, () -> bossEntity.getBoss().getPokemon())
                     .build();
 
             Button bossButton = Button.builder()
                     .item(ItemPixelmonSprite.getPhoto(bossEntity.getBoss().getPokemon()))
-                    .displayName(service.interpret(config.get(MessageConfig.UI_REGISTRY_BOSS_TITLE), context))
-                    .lore(UIUtils.getPokemonLore(bossEntity))
+                    .displayName(service.interpret(config.get(MessageConfig.UI_RAID_BOSS_TITLE), context))
+                    .lore(service.interpret(config.get(MessageConfig.UI_RAID_BOSS_LORE), context))
                     .onClick((action) -> {
                         BossOptionsUI options = new BossOptionsUI(null, player, bossEntity);
                         options.open();
