@@ -52,7 +52,7 @@ public class RespawnSettingsUI extends BaseBossUI {
 
             Button setSpawnAmount = Button.builder()
                     .item(new ItemStack(Items.PAPER))
-                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Respawn Limit")
+                    .displayName(config.get(MessageConfig.UI_RESPAWN_SETTINGS_EDIT_LIMIT))
                     .onClick(() -> {
                         RespawnLimitEditorUI editorUI = new RespawnLimitEditorUI(this, player, bossEntity);
                         editorUI.open();
@@ -61,28 +61,26 @@ public class RespawnSettingsUI extends BaseBossUI {
 
             Button.Builder spawnLocationBuilder = Button.builder()
                     .item(new ItemStack(PixelmonItems.rareCandy))
-                    .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Set Respawn Location")
-                    .lore(Arrays.asList(TextFormatting.WHITE + "You must increase the respawn limit for this functionality."));
+                    .displayName(config.get(MessageConfig.UI_RESPAWN_SETTINGS_SET_LOCATION_TITLE))
+                    .lore(Arrays.asList(config.get(MessageConfig.UI_RESPAWN_SETTINGS_LIMIT_INCREASE_NECESSARY)));
 
             Button.Builder respawnCooldownBuilder = Button.builder()
                     .item(new ItemStack(Items.CLOCK))
-                    .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Set Respawn Cooldown")
-                    .lore(Arrays.asList(TextFormatting.WHITE + "You must increase the respawn limit for this functionality."));
+                    .displayName(config.get(MessageConfig.UI_RESPAWN_SETTINGS_EDIT_COOLDOWN))
+                    .lore(Arrays.asList(config.get(MessageConfig.UI_RESPAWN_SETTINGS_LIMIT_INCREASE_NECESSARY)));
 
             if(this.bossEntity.getSpawner().getRespawnData().isPresent()) {
                 IBossSpawner.IRespawnData data = this.bossEntity.getSpawner().getRespawnData().get();
                 if(data.getRemainingRespawns() > 0){
                     spawnLocationBuilder = spawnLocationBuilder
-                            .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Set Respawn Location")
                             .lore(null)
                             .onClick(() -> {
                                 BossSpawnLocation newLocation = new BossSpawnLocation(player);
                                 this.bossEntity.getSpawner().setSpawnLocation(newLocation);
-                                player.sendMessage(new TextComponentString(TextFormatting.GREEN + "New respawn location set."));
+                                player.sendMessage(new TextComponentString(config.get(MessageConfig.UI_RESPAWN_SETTINGS_SET_LOCATION_MESSAGE)));
                             });
 
                     respawnCooldownBuilder = respawnCooldownBuilder
-                            .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Set Respawn Cooldown")
                             .lore(null)
                             .onClick(() -> {
                                 RespawnCooldownEditorUI respawnCooldownEditorUI = new RespawnCooldownEditorUI(this, player, bossEntity);
@@ -115,7 +113,7 @@ public class RespawnSettingsUI extends BaseBossUI {
 
             Page page = Page.builder()
                     .template(template)
-                    .title(TextFormatting.BLUE + "" + TextFormatting.BOLD + "Respawn Settings")
+                    .title(config.get(MessageConfig.UI_RESPAWN_SETTINGS_TITLE))
                     .build();
 
             page.forceOpenPage(player);

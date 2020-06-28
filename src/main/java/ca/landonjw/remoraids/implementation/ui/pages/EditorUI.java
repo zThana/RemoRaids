@@ -48,9 +48,9 @@ public class EditorUI extends BaseBossUI {
         if(bossNotInBattle()){
             Config config = RemoRaids.getMessageConfig();
 
-            Button spawningSettings = Button.builder()
+            Button respawnSettings = Button.builder()
                     .item(new ItemStack(PixelmonItemsHeld.luckyEgg))
-                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Respawn Settings")
+                    .displayName(config.get(MessageConfig.UI_EDITOR_RESPAWN_SETTINGS))
                     .onClick(() -> {
                         RespawnSettingsUI spawnSettings = new RespawnSettingsUI(this, player, bossEntity);
                         spawnSettings.open();
@@ -59,7 +59,7 @@ public class EditorUI extends BaseBossUI {
 
             Button generalSettings = Button.builder()
                     .item(new ItemStack(PixelmonItems.porygonPieces))
-                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "General Settings")
+                    .displayName(config.get(MessageConfig.UI_EDITOR_GENERAL_SETTINGS))
                     .onClick(() -> {
                         GeneralSettingsUI generalUI = new GeneralSettingsUI(this, player, bossEntity);
                         generalUI.open();
@@ -68,7 +68,7 @@ public class EditorUI extends BaseBossUI {
 
             Button battleSettings = Button.builder()
                     .item(new ItemStack(PixelmonItemsPokeballs.pokeBall))
-                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Battle Settings")
+                    .displayName(config.get(MessageConfig.UI_EDITOR_BATTLE_SETTINGS))
                     .onClick(() -> {
                         BattleSettingsUI battleSettingsUI = new BattleSettingsUI(this, player, bossEntity);
                         battleSettingsUI.open();
@@ -88,7 +88,7 @@ public class EditorUI extends BaseBossUI {
                     .line(LineType.Horizontal, 3, 0, 9, getWhiteFiller())
                     .border(0,0, 5,9, getBlueFiller())
                     .set(0, 4, getBossButton())
-                    .set(2, 2, spawningSettings)
+                    .set(2, 2, respawnSettings)
                     .set(2, 4, generalSettings)
                     .set(2, 6, battleSettings)
                     .set(3, 4, back)
@@ -96,7 +96,7 @@ public class EditorUI extends BaseBossUI {
 
             Page page = Page.builder()
                     .template(template)
-                    .title(TextFormatting.BLUE + "" + TextFormatting.BOLD + "Editor")
+                    .title(config.get(MessageConfig.UI_EDITOR_TITLE))
                     .build();
 
             page.forceOpenPage(player);

@@ -157,6 +157,27 @@ public class MessageConfig implements ConfigKeyHolder {
     public static final ConfigKey<String> UI_BOSS_OPTIONS_DESPAWN = translationKey("ui.boss-options.despawn.title", "&cDespawn");
     public static final ConfigKey<String> UI_BOSS_OPTIONS_DESPAWN_MESSAGE = translationKey("ui.boss-options.despawn.message", "&aBoss pokemon despawned!");
 
+    //--------------------------------------------------------------------------------------
+    //
+    //                                    Editor UI
+    //
+    //--------------------------------------------------------------------------------------
+    public static final ConfigKey<String> UI_EDITOR_TITLE = translationKey("ui.editor.title", "&1&lEditor");
+    public static final ConfigKey<String> UI_EDITOR_RESPAWN_SETTINGS = translationKey("ui.editor.respawn-settings", "&bRespawn Settings");
+    public static final ConfigKey<String> UI_EDITOR_GENERAL_SETTINGS = translationKey("ui.editor.general-settings", "&bGeneral Settings");
+    public static final ConfigKey<String> UI_EDITOR_BATTLE_SETTINGS = translationKey("ui.editor.battle-settings", "&bBattle Settings");
+
+    //--------------------------------------------------------------------------------------
+    //
+    //                                Respawn Settings UI
+    //
+    //--------------------------------------------------------------------------------------
+    public static final ConfigKey<String> UI_RESPAWN_SETTINGS_TITLE = translationKey("ui.respawn-settings.title", "&1&lRespawn Settings");
+    public static final ConfigKey<String> UI_RESPAWN_SETTINGS_LIMIT_INCREASE_NECESSARY = translationKey("ui.respawn-settings.limit-increase-necessary", "&cYou must increase the respawn limit for this functionality");
+    public static final ConfigKey<String> UI_RESPAWN_SETTINGS_EDIT_LIMIT = translationKey("ui.respawn-settings.edit-respawn-limit", "&bEdit Respawn Limit");
+    public static final ConfigKey<String> UI_RESPAWN_SETTINGS_SET_LOCATION_TITLE = translationKey("ui.respawn-settings.set-respawn-location.title", "&bSet Respawn Location");
+    public static final ConfigKey<String> UI_RESPAWN_SETTINGS_SET_LOCATION_MESSAGE = translationKey("ui.respawn-settings.set-respawn-location.message", "&aNew respawn location set.");
+    public static final ConfigKey<String> UI_RESPAWN_SETTINGS_EDIT_COOLDOWN = translationKey("ui.respawn-settings.edit-respawn-cooldown", "&bEdit Respawn Cooldown");
 
     private static TranslationKey translationKey(String path, String def) {
         KeyFactory<String> factory = ConfigurationAdapter::getString;
