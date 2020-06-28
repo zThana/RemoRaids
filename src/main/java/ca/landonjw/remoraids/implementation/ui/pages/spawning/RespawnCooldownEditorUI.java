@@ -1,7 +1,10 @@
 package ca.landonjw.remoraids.implementation.ui.pages.spawning;
 
 import ca.landonjw.remoraids.RemoRaids;
+import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
+import ca.landonjw.remoraids.api.messages.placeholders.IParsingContext;
+import ca.landonjw.remoraids.api.messages.services.IMessageService;
 import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.implementation.ui.pages.BaseBossUI;
@@ -60,6 +63,7 @@ public class RespawnCooldownEditorUI extends BaseBossUI {
     public void open() {
         if(bossNotInBattle()){
             Config config = RemoRaids.getMessageConfig();
+            IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
 
             Button back = Button.builder()
                     .item(new ItemStack(Blocks.BARRIER))
@@ -69,123 +73,91 @@ public class RespawnCooldownEditorUI extends BaseBossUI {
                     })
                     .build();
 
-            Button.Builder decrementTimeUnitBuilder = Button.builder()
-                    .item(new ItemStack(PixelmonItems.LtradeHolderLeft));
-            Button.Builder incrementTimeUnitBuilder = Button.builder()
-                    .item(new ItemStack(PixelmonItems.tradeHolderRight));
-            Button.Builder timeUnitBuilder = Button.builder()
-                    .item(new ItemStack(Items.CLOCK));
+            if(!this.bossEntity.getSpawner().getRespawnData().isPresent()){
+                IBossSpawner.IRespawnData data = this.bossEntity.getSpawner().createRespawnData();
+                data.setTotalRespawns(0);
+                data.setTotalWaitPeriod(5, TimeUnit.SECONDS);
+            }
 
-            Button.Builder decrementTimeValueBuilder = Button.builder()
-                    .item(new ItemStack(PixelmonItems.LtradeHolderLeft));
-            Button.Builder incrementTimeValueBuilder = Button.builder()
-                    .item(new ItemStack(PixelmonItems.tradeHolderRight));
-            Button.Builder timeValueBuilder = Button.builder()
-                    .item(new ItemStack(PixelmonItems.hourglassSilver));
+            IBossSpawner spawner = this.bossEntity.getSpawner();
+            IBossSpawner.IRespawnData respawns = spawner.getRespawnData().get();
 
-            if(this.bossEntity.getSpawner().getRespawnData().isPresent()){
-                IBossSpawner spawner = this.bossEntity.getSpawner();
-                IBossSpawner.IRespawnData respawns = spawner.getRespawnData().get();
+            if(currentTimeUnitOrdinal == -1){
+                long cooldownSeconds = respawns.getTotalWaitPeriod(TimeUnit.SECONDS);
 
-                if(currentTimeUnitOrdinal == -1){
-                    long cooldownSeconds = respawns.getTotalWaitPeriod(TimeUnit.SECONDS);
-
-                    if(cooldownSeconds % SECONDS_IN_DAY == 0){
-                        currentTimeUnitOrdinal = 3;
-                    }
-                    else if(cooldownSeconds % SECONDS_IN_HOUR == 0){
-                        currentTimeUnitOrdinal = 2;
-                    }
-                    else if(cooldownSeconds % SECONDS_IN_MINUTE == 0){
-                        currentTimeUnitOrdinal = 1;
-                    }
-                    else{
-                        currentTimeUnitOrdinal = 0;
-                    }
+                if(cooldownSeconds % SECONDS_IN_DAY == 0){
+                    currentTimeUnitOrdinal = 3;
                 }
-
-                String strPrevUnit = validTimeUnits[(currentTimeUnitOrdinal - 1 + validTimeUnits.length) % validTimeUnits.length].name().toLowerCase();
-                strPrevUnit = strPrevUnit.substring(0,1).toUpperCase().concat(strPrevUnit.substring(1));
-
-                String strCurrentUnit = validTimeUnits[currentTimeUnitOrdinal].name().toLowerCase();
-                strCurrentUnit = strCurrentUnit.substring(0,1).toUpperCase().concat(strCurrentUnit.substring(1));
-
-                String strNextUnit = validTimeUnits[(currentTimeUnitOrdinal + 1) % validTimeUnits.length].name().toLowerCase();
-                strNextUnit = strNextUnit.substring(0,1).toUpperCase().concat(strNextUnit.substring(1));
-
-
-                decrementTimeUnitBuilder = decrementTimeUnitBuilder
-                        .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD +
-                                "Change Time Unit (" + strPrevUnit + ")")
-                        .onClick(() -> {
-                            TimeUnit oldUnit = validTimeUnits[currentTimeUnitOrdinal];
-                            currentTimeUnitOrdinal = (currentTimeUnitOrdinal - 1 + validTimeUnits.length) % validTimeUnits.length;
-                            respawns.setTotalWaitPeriod(respawns.getTotalWaitPeriod(oldUnit), validTimeUnits[currentTimeUnitOrdinal]);
-                            open();
-                        });
-                incrementTimeUnitBuilder = incrementTimeUnitBuilder
-                        .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD +
-                                "Change Time Unit (" + strNextUnit + ")")
-                        .onClick(() -> {
-                            TimeUnit oldUnit = validTimeUnits[currentTimeUnitOrdinal];
-                            currentTimeUnitOrdinal = (currentTimeUnitOrdinal + 1) % validTimeUnits.length;
-                            respawns.setTotalWaitPeriod(respawns.getTotalWaitPeriod(oldUnit), validTimeUnits[currentTimeUnitOrdinal]);
-                            open();
-                        });
-
-                timeUnitBuilder = timeUnitBuilder
-                        .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Time Unit: " + strCurrentUnit);
-
-                decrementTimeValueBuilder = decrementTimeValueBuilder
-                        .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Decrement Cooldown Time")
-                        .onClick(() -> {
-                            TimeUnit currentUnit = validTimeUnits[currentTimeUnitOrdinal];
-                            respawns.setTotalWaitPeriod(respawns.getTotalWaitPeriod(currentUnit) - 1, currentUnit);
-                            open();
-                        });
-                incrementTimeValueBuilder = incrementTimeValueBuilder
-                        .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Increment Cooldown Time")
-                        .onClick(() -> {
-                            TimeUnit currentUnit = validTimeUnits[currentTimeUnitOrdinal];
-                            respawns.setTotalWaitPeriod(respawns.getTotalWaitPeriod(currentUnit) + 1, currentUnit);
-                            open();
-                        });
-                timeValueBuilder = timeValueBuilder
-                        .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Cooldown Time: " + respawns.getTotalWaitPeriod(validTimeUnits[currentTimeUnitOrdinal]));
-            }
-            else{
-                decrementTimeUnitBuilder = decrementTimeUnitBuilder
-                        .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Change Time Unit")
-                        .lore(Arrays.asList(TextFormatting.WHITE + "This feature is not currently available."));
-
-                timeUnitBuilder = timeUnitBuilder
-                        .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Time Unit: Unavailable")
-                        .lore(Arrays.asList(TextFormatting.WHITE + "This feature is not currently available."));
-
-                incrementTimeUnitBuilder = incrementTimeUnitBuilder
-                        .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Change Time Unit")
-                        .lore(Arrays.asList(TextFormatting.WHITE + "This feature is not currently available."));
-
-                decrementTimeValueBuilder = decrementTimeValueBuilder
-                        .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Decrement Cooldown Time")
-                        .lore(Arrays.asList(TextFormatting.WHITE + "This feature is not currently available."));
-
-                timeValueBuilder = timeValueBuilder
-                        .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Cooldown: Unavailable")
-                        .lore(Arrays.asList(TextFormatting.WHITE + "This feature is not currently available."));
-
-                incrementTimeValueBuilder = incrementTimeValueBuilder
-                        .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Increment Cooldown Time")
-                        .lore(Arrays.asList(TextFormatting.WHITE + "This feature is not currently available."));
+                else if(cooldownSeconds % SECONDS_IN_HOUR == 0){
+                    currentTimeUnitOrdinal = 2;
+                }
+                else if(cooldownSeconds % SECONDS_IN_MINUTE == 0){
+                    currentTimeUnitOrdinal = 1;
+                }
+                else{
+                    currentTimeUnitOrdinal = 0;
+                }
             }
 
-            Button decrementTimeUnit = decrementTimeUnitBuilder.build();
-            Button timeUnit = timeUnitBuilder.build();
-            Button incrementTimeUnit = incrementTimeUnitBuilder.build();
+            TimeUnit unit = validTimeUnits[currentTimeUnitOrdinal];
+            long value = respawns.getTotalWaitPeriod(unit);
 
-            Button decrementTimeValue = decrementTimeValueBuilder.build();
-            Button timeValue = timeValueBuilder.build();
-            Button incrementTimeValue = incrementTimeValueBuilder.build();
+            IParsingContext context = IParsingContext.builder()
+                    .add(TimeUnit.class, () -> unit)
+                    .add(Long.class, () -> value)
+                    .build();
+
+            Button decrementTimeUnit = Button.builder()
+                    .item(new ItemStack(PixelmonItems.LtradeHolderLeft))
+                    .displayName(config.get(MessageConfig.UI_RESPAWN_COOLDOWN_EDITOR_DECREASE_UNIT))
+                    .onClick(() -> {
+                        TimeUnit oldUnit = validTimeUnits[currentTimeUnitOrdinal];
+                        currentTimeUnitOrdinal = (currentTimeUnitOrdinal - 1 + validTimeUnits.length) % validTimeUnits.length;
+                        respawns.setTotalWaitPeriod(respawns.getTotalWaitPeriod(oldUnit), validTimeUnits[currentTimeUnitOrdinal]);
+                        open();
+                    })
+                    .build();
+
+            Button incrementTimeUnit = Button.builder()
+                    .item(new ItemStack(PixelmonItems.tradeHolderRight))
+                    .displayName(config.get(MessageConfig.UI_RESPAWN_COOLDOWN_EDITOR_INCREASE_UNIT))
+                    .onClick(() -> {
+                        TimeUnit oldUnit = validTimeUnits[currentTimeUnitOrdinal];
+                        currentTimeUnitOrdinal = (currentTimeUnitOrdinal + 1) % validTimeUnits.length;
+                        respawns.setTotalWaitPeriod(respawns.getTotalWaitPeriod(oldUnit), validTimeUnits[currentTimeUnitOrdinal]);
+                        open();
+                    })
+                    .build();
+
+            Button timeUnit = Button.builder()
+                    .item(new ItemStack(Items.CLOCK))
+                    .displayName(service.interpret(config.get(MessageConfig.UI_RESPAWN_COOLDOWN_EDITOR_CURRENT_UNIT), context))
+                    .build();
+
+            Button decrementTimeValue = Button.builder()
+                    .item(new ItemStack(PixelmonItems.LtradeHolderLeft))
+                    .displayName(config.get(MessageConfig.UI_RESPAWN_COOLDOWN_EDITOR_DECREASE_VALUE))
+                    .onClick(() -> {
+                        TimeUnit currentUnit = validTimeUnits[currentTimeUnitOrdinal];
+                        respawns.setTotalWaitPeriod(respawns.getTotalWaitPeriod(currentUnit) - 1, currentUnit);
+                        open();
+                    })
+                    .build();
+
+            Button incrementTimeValue = Button.builder()
+                    .item(new ItemStack(PixelmonItems.tradeHolderRight))
+                    .displayName(config.get(MessageConfig.UI_RESPAWN_COOLDOWN_EDITOR_INCREASE_VALUE))
+                    .onClick(() -> {
+                        TimeUnit currentUnit = validTimeUnits[currentTimeUnitOrdinal];
+                        respawns.setTotalWaitPeriod(respawns.getTotalWaitPeriod(currentUnit) + 1, currentUnit);
+                        open();
+                    })
+                    .build();
+
+            Button timeValue = Button.builder()
+                    .item(new ItemStack(PixelmonItems.hourglassSilver))
+                    .displayName(service.interpret(config.get(MessageConfig.UI_RESPAWN_COOLDOWN_EDITOR_CURRENT_VALUE), context))
+                    .build();
 
             Template template = Template.builder(5)
                     .line(LineType.Horizontal, 1, 0, 9, getWhiteFiller())
@@ -203,7 +175,7 @@ public class RespawnCooldownEditorUI extends BaseBossUI {
 
             Page page = Page.builder()
                     .template(template)
-                    .title(TextFormatting.BLUE + "" + TextFormatting.BOLD + "Edit Respawn Cooldown")
+                    .title(service.interpret(config.get(MessageConfig.UI_RESPAWN_COOLDOWN_EDITOR_TITLE), context))
                     .build();
 
             page.forceOpenPage(player);

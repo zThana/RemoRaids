@@ -91,6 +91,8 @@ public class PlaceholderService implements IPlaceholderService {
 		this.register(new ItemStackPlaceholderParser());
 		this.register(new SpawnLocationParser());
 		this.register(new SpawnAnnouncement.PositionPlaceholderParser());
+		this.register(new RespawnDataPlaceholderParser());
+		this.register(new TimePlaceholderParser());
 	}
 
 }

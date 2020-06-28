@@ -179,6 +179,30 @@ public class MessageConfig implements ConfigKeyHolder {
     public static final ConfigKey<String> UI_RESPAWN_SETTINGS_SET_LOCATION_MESSAGE = translationKey("ui.respawn-settings.set-respawn-location.message", "&aNew respawn location set.");
     public static final ConfigKey<String> UI_RESPAWN_SETTINGS_EDIT_COOLDOWN = translationKey("ui.respawn-settings.edit-respawn-cooldown", "&bEdit Respawn Cooldown");
 
+    //--------------------------------------------------------------------------------------
+    //
+    //                              Respawn Limit Editor UI
+    //
+    //--------------------------------------------------------------------------------------
+    public static final ConfigKey<String> UI_RESPAWN_LIMIT_EDITOR_TITLE = translationKey("ui.respawn-limit-editor.title", "&a&lEdit Respawn Limit ({respawnvalue|total})");
+    public static final ConfigKey<String> UI_RESPAWN_LIMIT_EDITOR_CURRENT_LIMIT = translationKey("ui.respawn-limit-editor.current-display.current-limit", "&bRespawn Limit: {respawnvalue|current}");
+    public static final ConfigKey<String> UI_RESPAWN_LIMIT_EDITOR_TIMES_RESPAWNED = translationKey("ui.respawn-limit-editor.times-respawned", "&fTimes Respawned: {respawnvalue|total}");
+    public static final ConfigKey<String> UI_RESPAWN_LIMIT_EDITOR_INCREASE = translationKey("ui.respawn-limit-editor.increase", "&bIncrease Spawn Limit");
+    public static final ConfigKey<String> UI_RESPAWN_LIMIT_EDITOR_DECREASE = translationKey("ui.respawn-limit-editor.decrease", "&bDecrease Spawn Limit");
+
+    //--------------------------------------------------------------------------------------
+    //
+    //                              Respawn Cooldown Editor UI
+    //
+    //--------------------------------------------------------------------------------------
+    public static final ConfigKey<String> UI_RESPAWN_COOLDOWN_EDITOR_TITLE = translationKey("ui.respawn-cooldown-editor.title", "&1&lEdit Respawn Cooldown ({time|value} {time|units})");
+    public static final ConfigKey<String> UI_RESPAWN_COOLDOWN_EDITOR_INCREASE_UNIT = translationKey("ui.respawn-cooldown-editor.increase-unit", "&bNext Time Unit");
+    public static final ConfigKey<String> UI_RESPAWN_COOLDOWN_EDITOR_CURRENT_UNIT = translationKey("ui.respawn-cooldown-editor.current-unit", "&bTime Unit: {time|unit}");
+    public static final ConfigKey<String> UI_RESPAWN_COOLDOWN_EDITOR_DECREASE_UNIT = translationKey("ui.respawn-cooldown-editor.decrease-unit", "&bPrevious Time Unit");
+    public static final ConfigKey<String> UI_RESPAWN_COOLDOWN_EDITOR_INCREASE_VALUE = translationKey("ui.respawn-cooldown-editor.increase-value", "&bIncrement Time Value");
+    public static final ConfigKey<String> UI_RESPAWN_COOLDOWN_EDITOR_CURRENT_VALUE = translationKey("ui.respawn-cooldown-editor.current-value", "&bCooldown Time: {time|value}");
+    public static final ConfigKey<String> UI_RESPAWN_COOLDOWN_EDITOR_DECREASE_VALUE = translationKey("ui.respawn-cooldown-editor.decrease-value", "&bDecrement Time Value");
+
     private static TranslationKey translationKey(String path, String def) {
         KeyFactory<String> factory = ConfigurationAdapter::getString;
         return new TranslationKey(factory, path, def);

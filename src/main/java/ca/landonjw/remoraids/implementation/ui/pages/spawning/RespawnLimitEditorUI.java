@@ -1,7 +1,10 @@
 package ca.landonjw.remoraids.implementation.ui.pages.spawning;
 
 import ca.landonjw.remoraids.RemoRaids;
+import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
+import ca.landonjw.remoraids.api.messages.placeholders.IParsingContext;
+import ca.landonjw.remoraids.api.messages.services.IMessageService;
 import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.implementation.ui.pages.BaseBossUI;
@@ -48,6 +51,7 @@ public class RespawnLimitEditorUI extends BaseBossUI {
     public void open() {
         if(bossNotInBattle()){
             Config config = RemoRaids.getMessageConfig();
+            IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
 
             Button back = Button.builder()
                     .item(new ItemStack(Blocks.BARRIER))
@@ -57,85 +61,59 @@ public class RespawnLimitEditorUI extends BaseBossUI {
                     })
                     .build();
 
-            Template.Builder templateBuilder = Template.builder(5)
+            if(!this.bossEntity.getSpawner().getRespawnData().isPresent()){
+                IBossSpawner.IRespawnData data = this.bossEntity.getSpawner().createRespawnData();
+                data.setTotalRespawns(0);
+                data.setTotalWaitPeriod(5, TimeUnit.SECONDS);
+            }
+
+            IBossSpawner spawner = this.bossEntity.getSpawner();
+            IBossSpawner.IRespawnData respawnData = spawner.getRespawnData().get();
+
+            IParsingContext context = IParsingContext.builder()
+                    .add(IBossSpawner.IRespawnData.class, () -> respawnData)
+                    .build();
+
+            Button spawnAmount = Button.builder()
+                    .item(new ItemStack(Items.PAPER))
+                    .displayName(service.interpret(config.get(MessageConfig.UI_RESPAWN_LIMIT_EDITOR_CURRENT_LIMIT), context))
+                    .lore(Arrays.asList(service.interpret(config.get(MessageConfig.UI_RESPAWN_LIMIT_EDITOR_TIMES_RESPAWNED), context)))
+                    .build();
+
+            Button decrementSpawns = Button.builder()
+                    .item(new ItemStack(PixelmonItems.LtradeHolderLeft))
+                    .displayName(config.get(MessageConfig.UI_RESPAWN_LIMIT_EDITOR_DECREASE))
+                    .onClick(() -> {
+                        if(respawnData.getTotalRespawns() > 0){
+                            respawnData.setTotalRespawns(respawnData.getTotalRespawns() - 1);
+                        }
+                        open();
+                    })
+                    .build();
+
+            Button incrementSpawns = Button.builder()
+                    .item(new ItemStack(PixelmonItems.tradeHolderRight))
+                    .displayName(config.get(MessageConfig.UI_RESPAWN_LIMIT_EDITOR_INCREASE))
+                    .onClick(() -> {
+                        respawnData.setTotalRespawns(respawnData.getTotalRespawns() + 1);
+                        open();
+                    })
+                    .build();
+
+            Template template = Template.builder(5)
                     .line(LineType.Horizontal, 1, 0, 9, getWhiteFiller())
                     .line(LineType.Horizontal, 3, 0, 9, getWhiteFiller())
                     .border(0,0, 5,9, getBlueFiller())
                     .set(0, 4, getBossButton())
-                    .set(3, 4, back);
-
-            int spawnLimit = 0;
-            if(this.bossEntity.getSpawner().getRespawnData().isPresent()){
-                IBossSpawner spawner = this.bossEntity.getSpawner();
-                IBossSpawner.IRespawnData respawns = spawner.getRespawnData().get();
-
-                spawnLimit = respawns.getTotalRespawns();
-
-                Button spawnAmount = Button.builder()
-                        .item(new ItemStack(Items.PAPER))
-                        .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Respawn Limit: " + respawns.getTotalRespawns())
-                        .lore(Arrays.asList(TextFormatting.WHITE + "Times Respawned: " + (respawns.getTotalRespawns() - respawns.getRemainingRespawns())))
-                        .build();
-
-                Button decrementSpawns = Button.builder()
-                        .item(new ItemStack(PixelmonItems.LtradeHolderLeft))
-                        .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Decrease Spawn Limit")
-                        .onClick(() -> {
-                            if(respawns.getTotalRespawns() > 0){
-                                respawns.setTotalRespawns(respawns.getTotalRespawns() - 1);
-                            }
-                            open();
-                        })
-                        .build();
-
-                Button incrementSpawns = Button.builder()
-                        .item(new ItemStack(PixelmonItems.tradeHolderRight))
-                        .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Increase Spawn Limit")
-                        .onClick(() -> {
-                            respawns.setTotalRespawns(respawns.getTotalRespawns() + 1);
-                            open();
-                        })
-                        .build();
-
-                templateBuilder = templateBuilder
-                        .set(2, 3, decrementSpawns)
-                        .set(2, 4, spawnAmount)
-                        .set(2, 5, incrementSpawns);
-            }
-            else{
-                Button spawnAmount = Button.builder()
-                        .item(new ItemStack(Items.PAPER))
-                        .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Respawn Limit: 0")
-                        .lore(Arrays.asList(TextFormatting.WHITE + "Times Respawned: 0"))
-                        .build();
-
-                Button decrementSpawns = Button.builder()
-                        .item(new ItemStack(PixelmonItems.LtradeHolderLeft))
-                        .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Decrease Spawn Limit")
-                        .build();
-
-                Button incrementSpawns = Button.builder()
-                        .item(new ItemStack(PixelmonItems.tradeHolderRight))
-                        .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Increase Spawn Limit")
-                        .onClick(() -> {
-                            IBossSpawner.IRespawnData data = this.bossEntity.getSpawner().createRespawnData();
-                            data.setTotalRespawns(1);
-                            data.setTotalWaitPeriod(5, TimeUnit.SECONDS);
-                            open();
-                        })
-                        .build();
-
-                templateBuilder = templateBuilder
-                        .set(2, 3, decrementSpawns)
-                        .set(2, 4, spawnAmount)
-                        .set(2, 5, incrementSpawns);
-            }
-
-            Template template = templateBuilder.build();
+                    .set(3, 4, back)
+                    .set(2, 3, decrementSpawns)
+                    .set(2, 4, spawnAmount)
+                    .set(2, 5, incrementSpawns)
+                    .build();
 
             Page page = Page.builder()
                     .template(template)
-                    .title(TextFormatting.BLUE + "" + TextFormatting.BOLD + "Edit Respawn Limit (" + spawnLimit + ")")
+                    .title(service.interpret(config.get(MessageConfig.UI_RESPAWN_LIMIT_EDITOR_TITLE), context))
                     .build();
 
             page.forceOpenPage(player);
