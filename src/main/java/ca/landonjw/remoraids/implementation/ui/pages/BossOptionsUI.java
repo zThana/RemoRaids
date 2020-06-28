@@ -55,10 +55,10 @@ public class BossOptionsUI extends BaseBossUI {
 
         Button teleport = Button.builder()
                 .item(new ItemStack(Items.ENDER_PEARL))
-                .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Teleport")
+                .displayName(config.get(MessageConfig.UI_BOSS_OPTIONS_TELEPORT_TITLE))
                 .onClick(() -> {
                     InventoryAPI.getInstance().closePlayerInventory(player);
-                    player.sendMessage(new TextComponentString(TextFormatting.GREEN + "Teleport to boss..."));
+                    player.sendMessage(new TextComponentString(config.get(MessageConfig.UI_BOSS_OPTIONS_TELEPORT_MESSAGE)));
 
                     World bossWorld = bossEntity.getWorld();
                     if(player.dimension != bossWorld.provider.getDimension()){
@@ -73,7 +73,7 @@ public class BossOptionsUI extends BaseBossUI {
 
         Button edit = Button.builder()
                 .item(new ItemStack(Items.WRITABLE_BOOK))
-                .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit")
+                .displayName(config.get(MessageConfig.UI_BOSS_OPTIONS_EDIT_TITLE))
                 .onClick(() -> {
                     EditorUI editor = new EditorUI(this, player, bossEntity);
                     editor.open();
@@ -82,20 +82,16 @@ public class BossOptionsUI extends BaseBossUI {
 
         Button.Builder preventBattlesBuilder = Button.builder()
                 .item(new ItemStack(Blocks.TORCH))
-                .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Halt Battles")
-                .lore(Arrays.asList(TextFormatting.WHITE + "This feature is currently unavailable."));
-
+                .displayName(config.get(MessageConfig.UI_BOSS_OPTIONS_HALT_BATTLES_TITLE))
+                .lore(Arrays.asList(config.get(MessageConfig.UI_BOSS_OPTIONS_HALT_BATTLES_FEATURE_UNAVAILABLE)));
 
         String haltedRestraintId = config.get(MessageConfig.HALTED_BOSS_RESTRAINT_TITLE);
         if(RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(bossEntity).isPresent()){
             IBossBattle battle = RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(bossEntity).get();
             if(bossEntity.getBoss().getBattleSettings().containsBattleRestraint(haltedRestraintId)){
-                ItemStack fullOrb = new ItemStack(PixelmonItems.tresOrb);
-                fullOrb.setItemDamage(ItemShrineOrb.full);
-
                 preventBattlesBuilder = preventBattlesBuilder
                         .item(new ItemStack(Blocks.REDSTONE_TORCH))
-                        .lore(Arrays.asList(TextFormatting.WHITE + "Toggled on"))
+                        .lore(Arrays.asList(config.get(MessageConfig.UI_BOSS_OPTIONS_HALT_BATTLES_TOGGLED_ON)))
                         .onClick(() -> {
                             bossEntity.getBoss().getBattleSettings().removeBattleRestraint(haltedRestraintId);
                             open();
@@ -103,11 +99,11 @@ public class BossOptionsUI extends BaseBossUI {
             }
             else{
                 preventBattlesBuilder = preventBattlesBuilder
-                        .lore(Arrays.asList(TextFormatting.WHITE + "Toggled off"))
+                        .lore(Arrays.asList(config.get(MessageConfig.UI_BOSS_OPTIONS_HALT_BATTLES_TOGGLED_OFF)))
                         .onClick(() -> {
                             bossEntity.getBoss().getBattleSettings().getBattleRestraints().add(new HaltedBossRestraint(bossEntity.getBoss()));
                             for(EntityPlayerMP player : battle.getPlayersInBattle()){
-                                player.sendMessage(new TextComponentString(TextFormatting.RED + "You have been kicked from battle due to ongoing boss editing."));
+                                player.sendMessage(new TextComponentString(config.get(MessageConfig.HALTED_BOSS_RESTRAINT_KICK)));
                             }
                             battle.endAllBattles();
                             open();
@@ -118,11 +114,11 @@ public class BossOptionsUI extends BaseBossUI {
 
         Button despawn = Button.builder()
                 .item(new ItemStack(PixelmonBlocks.trashcanBlock))
-                .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Despawn")
+                .displayName(config.get(MessageConfig.UI_BOSS_OPTIONS_DESPAWN))
                 .onClick(() -> {
                     bossEntity.despawn();
                     InventoryAPI.getInstance().closePlayerInventory(player);
-                    player.sendMessage(new TextComponentString(TextFormatting.GREEN + "Boss Pokemon despawned."));
+                    player.sendMessage(new TextComponentString(config.get(MessageConfig.UI_BOSS_OPTIONS_DESPAWN_MESSAGE)));
                 })
                 .build();
 
@@ -149,7 +145,7 @@ public class BossOptionsUI extends BaseBossUI {
 
         Page page = Page.builder()
                 .template(template)
-                .title(TextFormatting.BLUE + "" + TextFormatting.BOLD + "Options")
+                .title(config.get(MessageConfig.UI_BOSS_OPTIONS_TITLE))
                 .build();
 
         page.forceOpenPage(player);

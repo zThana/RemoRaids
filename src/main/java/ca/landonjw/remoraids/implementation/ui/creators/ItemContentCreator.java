@@ -45,7 +45,7 @@ public class ItemContentCreator implements ICreatorUI<IRewardContent> {
     @Override
     public String getCreatorTitle() {
         Config config = RemoRaids.getMessageConfig();
-        return config.get(MessageConfig.ITEM_REWARD_CONTENT_TITLE);
+        return config.get(MessageConfig.UI_ADD_REWARD_CONTENT_ITEM);
     }
 
     class Creator {

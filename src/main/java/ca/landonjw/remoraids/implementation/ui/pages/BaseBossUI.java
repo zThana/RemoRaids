@@ -1,9 +1,15 @@
 package ca.landonjw.remoraids.implementation.ui.pages;
 
 import ca.landonjw.remoraids.RemoRaids;
+import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
+import ca.landonjw.remoraids.api.messages.placeholders.IParsingContext;
+import ca.landonjw.remoraids.api.messages.services.IMessageService;
 import ca.landonjw.remoraids.api.ui.IBossUI;
+import ca.landonjw.remoraids.internal.api.config.Config;
+import ca.landonjw.remoraids.internal.config.MessageConfig;
 import ca.landonjw.remoraids.internal.inventory.api.Button;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.items.ItemPixelmonSprite;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -90,10 +96,16 @@ public abstract class BaseBossUI implements IBossUI {
      * @return button that represents the boss
      */
     public Button getBossButton(){
+        Config config = RemoRaids.getMessageConfig();
+        IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
+        IParsingContext context = IParsingContext.builder()
+                .add(IBossEntity.class, () -> bossEntity)
+                .add(Pokemon.class, () -> bossEntity.getBoss().getPokemon())
+                .build();
         return Button.builder()
                 .item(ItemPixelmonSprite.getPhoto(bossEntity.getBoss().getPokemon()))
-                .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Boss " + bossEntity.getBoss().getPokemon().getSpecies().name)
-                .lore(UIUtils.getPokemonLore(bossEntity))
+                .displayName(service.interpret(config.get(MessageConfig.UI_RAID_BOSS_TITLE), context))
+                .lore(service.interpret(config.get(MessageConfig.UI_RAID_BOSS_LORE), context))
                 .build();
     }
 

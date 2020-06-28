@@ -31,18 +31,18 @@ public class MessageConfig implements ConfigKeyHolder {
     public static final ConfigKey<String> NO_REBATTLE_RESTRAINT_WARNING = translationKey("restraints.no-rebattle-restraint-warning", "&cYou cannot attempt to battle this raid boss again...");
     public static final ConfigKey<String> HALTED_BOSS_RESTRAINT_TITLE = translationKey("restraints.halted-boss-restraint-title", "Halted Boss Restraint");
     public static final ConfigKey<String> HALTED_BOSS_RESTRAINT_WARNING = translationKey("restraints.halted-boss-restraint-warning", "&cThis boss is not allowed to battle currently!");
+    public static final ConfigKey<String> HALTED_BOSS_RESTRAINT_KICK = translationKey("restraints.halted-boss-restraint-warning", "&cYou have been kicked from battle due to ongoing boss editing.");
 
     // -------------------------------------------------------------------------------------------------
     //
     //                                       Rewards Messages
     //
     // -------------------------------------------------------------------------------------------------
-    public static final ConfigKey<String> REWARD_RECEIVED = translationKey("rewards.reward-received", "&6You have received a &a&l{reward}&r&6! Click to receive!");
     public static final ConfigKey<String> TOP_DAMAGE_REWARD_TITLE = translationKey("rewards.top-damage-reward-title", "&aTop Damage Reward");
     public static final ConfigKey<String> KILLER_REWARD_TITLE = translationKey("rewards.killer-reward-title", "&aKiller Reward");
     public static final ConfigKey<String> PARTICIPATION_REWARD_TITLE = translationKey("rewards.participation-reward-title", "&aParticipation Reward");
 
-
+    public static final ConfigKey<String> REWARD_RECEIVED = translationKey("rewards.reward-received", "&6You have received a &a&l{reward}&r&6! Click to receive!");
     public static final ConfigKey<String> CURRENCY_RECEIVED = translationKey("rewards.reward-contents.currency-received", "&aYou have received {integer} dollars!");
     public static final ConfigKey<String> POKEMON_RECEIVED = translationKey("rewards.reward-contents.pokemon-received", "&aYou have received a {pokemon}!");
 
@@ -92,7 +92,11 @@ public class MessageConfig implements ConfigKeyHolder {
 
     public static final ConfigKey<String> UI_REGISTRY_TITLE = translationKey("ui.registry.title", "&1&lBoss Registry");
 
-    // Reward Contents
+    // -------------------------------------------------------------------------------------------------
+    //
+    //                                     Reward Contents UI
+    //
+    // -------------------------------------------------------------------------------------------------
     public static final ConfigKey<String> UI_ADD_REWARD_CONTENT_ITEM = translationKey("ui.add-reward-content.item.title", "&aAdd an Item");
     public static final ConfigKey<String> UI_ADD_REWARD_CONTENT_POKEMON = translationKey("ui.add-reward-content.pokemon.title", "&aAdd a Pokemon");
     public static final ConfigKey<String> UI_ADD_REWARD_CONTENT_COMMAND = translationKey("ui.add-reward-content.command.title", "&aAdd a Command");
@@ -139,7 +143,7 @@ public class MessageConfig implements ConfigKeyHolder {
 
     //--------------------------------------------------------------------------------------
     //
-    //  Options UI
+    //                                   Boss Options UI
     //
     //--------------------------------------------------------------------------------------
     public static final ConfigKey<String> UI_BOSS_OPTIONS_TITLE = translationKey("ui.boss-options.title", "&9&lOptions");
@@ -147,6 +151,11 @@ public class MessageConfig implements ConfigKeyHolder {
     public static final ConfigKey<String> UI_BOSS_OPTIONS_TELEPORT_MESSAGE = translationKey("ui.boss-options.teleport.message", "&aTeleporting to boss...");
     public static final ConfigKey<String> UI_BOSS_OPTIONS_EDIT_TITLE = translationKey("ui.boss-options.edit", "&bEdit");
     public static final ConfigKey<String> UI_BOSS_OPTIONS_HALT_BATTLES_TITLE = translationKey("ui.boss-options.halt-battles.title", "&cHalt Battles");
+    public static final ConfigKey<String> UI_BOSS_OPTIONS_HALT_BATTLES_FEATURE_UNAVAILABLE = translationKey("ui.boss-options.halt-battles.states.feature-unavailable", "&7This feature is currently unavailable...");
+    public static final ConfigKey<String> UI_BOSS_OPTIONS_HALT_BATTLES_TOGGLED_ON = translationKey("ui.boss-options.halt-battles.states.on", "&fToggled On");
+    public static final ConfigKey<String> UI_BOSS_OPTIONS_HALT_BATTLES_TOGGLED_OFF = translationKey("ui.boss-options.halt-battles.states.off", "&fToggled Off");
+    public static final ConfigKey<String> UI_BOSS_OPTIONS_DESPAWN = translationKey("ui.boss-options.despawn.title", "&cDespawn");
+    public static final ConfigKey<String> UI_BOSS_OPTIONS_DESPAWN_MESSAGE = translationKey("ui.boss-options.despawn.message", "&aBoss pokemon despawned!");
 
 
     private static TranslationKey translationKey(String path, String def) {

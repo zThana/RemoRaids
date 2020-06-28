@@ -44,7 +44,7 @@ public class CurrencyContentCreator implements ICreatorUI<IRewardContent> {
     @Override
     public String getCreatorTitle() {
         Config config = RemoRaids.getMessageConfig();
-        return config.get(MessageConfig.CURRENCY_REWARD_CONTENT_TITLE);
+        return config.get(MessageConfig.UI_ADD_REWARD_CONTENT_CURRENCY);
     }
 
     class Creator {
