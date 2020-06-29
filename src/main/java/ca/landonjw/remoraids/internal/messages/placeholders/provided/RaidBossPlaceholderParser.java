@@ -43,9 +43,7 @@ public class RaidBossPlaceholderParser implements IPlaceholderParser {
 		}
 		switch(arg) {
 			case "size":
-				return Optional.of("" + boss.getSize());
-			case "size%":
-				return Optional.of("" + boss.getSize() * 100);
+				return Optional.of("" + (int) (boss.getSize() * 100) + "%");
 			case "gender":
 				return Optional.of("" + boss.getPokemon().getGender().name());
 			case "level":

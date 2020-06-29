@@ -1,7 +1,6 @@
 package ca.landonjw.remoraids.api.battles;
 
 import ca.landonjw.remoraids.api.boss.IBossEntity;
-import ca.landonjw.remoraids.api.rewards.IReward;
 import com.pixelmonmod.pixelmon.battles.controller.BattleControllerBase;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import net.minecraft.entity.player.EntityPlayerMP;

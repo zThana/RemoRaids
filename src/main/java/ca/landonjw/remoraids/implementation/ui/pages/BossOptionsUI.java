@@ -83,7 +83,7 @@ public class BossOptionsUI extends BaseBossUI {
         Button.Builder preventBattlesBuilder = Button.builder()
                 .item(new ItemStack(Blocks.TORCH))
                 .displayName(config.get(MessageConfig.UI_BOSS_OPTIONS_HALT_BATTLES_TITLE))
-                .lore(Arrays.asList(config.get(MessageConfig.UI_BOSS_OPTIONS_HALT_BATTLES_FEATURE_UNAVAILABLE)));
+                .lore(config.get(MessageConfig.UI_BOSS_OPTIONS_HALT_BATTLES_STAGES_FEATURE_UNAVAILABLE));
 
         String haltedRestraintId = config.get(MessageConfig.HALTED_BOSS_RESTRAINT_TITLE);
         if(RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(bossEntity).isPresent()){
@@ -91,7 +91,7 @@ public class BossOptionsUI extends BaseBossUI {
             if(bossEntity.getBoss().getBattleSettings().containsBattleRestraint(haltedRestraintId)){
                 preventBattlesBuilder = preventBattlesBuilder
                         .item(new ItemStack(Blocks.REDSTONE_TORCH))
-                        .lore(Arrays.asList(config.get(MessageConfig.UI_BOSS_OPTIONS_HALT_BATTLES_TOGGLED_ON)))
+                        .lore(config.get(MessageConfig.UI_BOSS_OPTIONS_HALT_BATTLES_STAGES_ON))
                         .onClick(() -> {
                             bossEntity.getBoss().getBattleSettings().removeBattleRestraint(haltedRestraintId);
                             open();
@@ -99,11 +99,11 @@ public class BossOptionsUI extends BaseBossUI {
             }
             else{
                 preventBattlesBuilder = preventBattlesBuilder
-                        .lore(Arrays.asList(config.get(MessageConfig.UI_BOSS_OPTIONS_HALT_BATTLES_TOGGLED_OFF)))
+                        .lore(config.get(MessageConfig.UI_BOSS_OPTIONS_HALT_BATTLES_STAGES_OFF))
                         .onClick(() -> {
                             bossEntity.getBoss().getBattleSettings().getBattleRestraints().add(new HaltedBossRestraint(bossEntity.getBoss()));
                             for(EntityPlayerMP player : battle.getPlayersInBattle()){
-                                player.sendMessage(new TextComponentString(config.get(MessageConfig.HALTED_BOSS_RESTRAINT_KICK)));
+                                player.sendMessage(new TextComponentString(config.get(MessageConfig.UI_BOSS_OPTIONS_HALT_BATTLES_KICK)));
                             }
                             battle.endAllBattles();
                             open();
@@ -114,7 +114,7 @@ public class BossOptionsUI extends BaseBossUI {
 
         Button despawn = Button.builder()
                 .item(new ItemStack(PixelmonBlocks.trashcanBlock))
-                .displayName(config.get(MessageConfig.UI_BOSS_OPTIONS_DESPAWN))
+                .displayName(config.get(MessageConfig.UI_BOSS_OPTIONS_DESPAWN_TITLE))
                 .onClick(() -> {
                     bossEntity.despawn();
                     InventoryAPI.getInstance().closePlayerInventory(player);
