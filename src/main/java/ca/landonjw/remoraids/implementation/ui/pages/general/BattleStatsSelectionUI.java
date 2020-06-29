@@ -1,7 +1,10 @@
 package ca.landonjw.remoraids.implementation.ui.pages.general;
 
 import ca.landonjw.remoraids.RemoRaids;
+import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
+import ca.landonjw.remoraids.api.messages.placeholders.IParsingContext;
+import ca.landonjw.remoraids.api.messages.services.IMessageService;
 import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.implementation.ui.pages.BaseBossUI;
 import ca.landonjw.remoraids.internal.api.config.Config;
@@ -14,6 +17,7 @@ import com.pixelmonmod.pixelmon.config.PixelmonItemsHeld;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 
@@ -30,6 +34,15 @@ import java.util.Arrays;
  */
 public class BattleStatsSelectionUI extends BaseBossUI {
 
+    private final Item[] CHOICE_ITEMS = {
+            PixelmonItemsHeld.powerWeight,
+            PixelmonItemsHeld.powerBracer,
+            PixelmonItemsHeld.powerBelt,
+            PixelmonItemsHeld.powerLens,
+            PixelmonItemsHeld.powerBand,
+            PixelmonItemsHeld.powerAnklet
+    };
+
     /**
      * Default constructor.
      *
@@ -45,6 +58,7 @@ public class BattleStatsSelectionUI extends BaseBossUI {
     @Override
     public void open() {
         Config config = RemoRaids.getMessageConfig();
+        IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
 
         Button back = Button.builder()
                 .item(new ItemStack(Blocks.BARRIER))
@@ -54,88 +68,55 @@ public class BattleStatsSelectionUI extends BaseBossUI {
                 })
                 .build();
 
-        Button health;
-
-        if(RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(bossEntity).get().getPlayersInBattle().size() == 0){
-            health = Button.builder()
-                    .item(new ItemStack(PixelmonItemsHeld.powerWeight))
-                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Health")
-                    .onClick(() -> {
-                        BossStatEditorUI statEditor = new BossStatEditorUI(this, player, bossEntity, StatsType.HP);
-                        statEditor.open();
-                    })
-                    .build();
-        }
-        else{
-            health = Button.builder()
-                    .item(new ItemStack(PixelmonItemsHeld.powerWeight))
-                    .displayName(TextFormatting.RED + "" + TextFormatting.BOLD + "Edit Health")
-                    .lore(Arrays.asList(TextFormatting.WHITE + "You cannot modify this stat while boss is in battle!"))
-                    .build();
-        }
-
-        Button attack = Button.builder()
-                .item(new ItemStack(PixelmonItemsHeld.powerBracer))
-                .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Attack")
-                .onClick(() -> {
-                    BossStatEditorUI statEditor = new BossStatEditorUI(this, player, bossEntity, StatsType.Attack);
-                    statEditor.open();
-                })
-                .build();
-
-        Button defence = Button.builder()
-                .item(new ItemStack(PixelmonItemsHeld.powerBelt))
-                .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Defence")
-                .onClick(() -> {
-                    BossStatEditorUI statEditor = new BossStatEditorUI(this, player, bossEntity, StatsType.Defence);
-                    statEditor.open();
-                })
-                .build();
-
-        Button specialAttack = Button.builder()
-                .item(new ItemStack(PixelmonItemsHeld.powerLens))
-                .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Special Attack")
-                .onClick(() -> {
-                    BossStatEditorUI statEditor = new BossStatEditorUI(this, player, bossEntity, StatsType.SpecialAttack);
-                    statEditor.open();
-                })
-                .build();
-
-        Button specialDefence = Button.builder()
-                .item(new ItemStack(PixelmonItemsHeld.powerBand))
-                .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Special Defence")
-                .onClick(() -> {
-                    BossStatEditorUI statEditor = new BossStatEditorUI(this, player, bossEntity, StatsType.SpecialDefence);
-                    statEditor.open();
-                })
-                .build();
-
-        Button speed = Button.builder()
-                .item(new ItemStack(PixelmonItemsHeld.powerAnklet))
-                .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Speed")
-                .onClick(() -> {
-                    BossStatEditorUI statEditor = new BossStatEditorUI(this, player, bossEntity, StatsType.Speed);
-                    statEditor.open();
-                })
-                .build();
-
-        Template template = Template.builder(5)
+        Template.Builder templateBuilder = Template.builder(6)
                 .line(LineType.Horizontal, 1, 0, 9, getWhiteFiller())
                 .line(LineType.Horizontal, 3, 0, 9, getWhiteFiller())
                 .border(0,0, 5,9, getBlueFiller())
                 .set(0, 4, getBossButton())
-                .set(2, 1, health)
-                .set(2, 2, attack)
-                .set(2, 3, defence)
-                .set(2, 5, specialAttack)
-                .set(2, 6, specialDefence)
-                .set(2, 7, speed)
-                .set(3, 4, back)
-                .build();
+                .set(3, 4, back);
+
+        for(int i = 0; i < 6; i++){
+            StatsType type = StatsType.getStatValues()[i];
+
+            IParsingContext context = IParsingContext.builder()
+                    .add(StatsType.class, () -> type)
+                    .add(Integer.class, () -> bossEntity.getBoss().getStat(type))
+                    .build();
+
+            Button button;
+            if(i == 0 && RemoRaids.getBossAPI().getBossBattleRegistry().getBossBattle(bossEntity).get().getPlayersInBattle().size() != 0){
+                button = Button.builder()
+                        .item(new ItemStack(CHOICE_ITEMS[i]))
+                        .displayName(service.interpret(config.get(MessageConfig.UI_BATTLE_STAT_SELECTION_EDIT_STAT), context))
+                        .lore(Arrays.asList(config.get(MessageConfig.BOSS_IN_BATTLE_MODIFICATION)))
+                        .build();
+            }
+            else{
+                button = Button.builder()
+                        .item(new ItemStack(CHOICE_ITEMS[i]))
+                        .displayName(service.interpret(config.get(MessageConfig.UI_BATTLE_STAT_SELECTION_EDIT_STAT), context))
+                        .onClick(() -> {
+                            BossStatEditorUI statEditor = new BossStatEditorUI(this, player, bossEntity, type);
+                            statEditor.open();
+                        })
+                        .build();
+            }
+
+            int column;
+            if(i <= 2){
+                column = 1 + i;
+            }
+            else{
+                column = 2 + i;
+            }
+
+            templateBuilder = templateBuilder
+                    .set(2, column, button);
+        }
 
         Page page = Page.builder()
-                .template(template)
-                .title(TextFormatting.BLUE + "" + TextFormatting.BOLD + "Stat Selection")
+                .template(templateBuilder.build())
+                .title(config.get(MessageConfig.UI_BATTLE_STAT_SELECTION_TITLE))
                 .build();
 
         page.forceOpenPage(player);

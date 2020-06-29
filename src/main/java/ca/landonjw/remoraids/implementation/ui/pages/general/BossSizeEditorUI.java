@@ -1,7 +1,11 @@
 package ca.landonjw.remoraids.implementation.ui.pages.general;
 
 import ca.landonjw.remoraids.RemoRaids;
+import ca.landonjw.remoraids.api.IBossAPI;
+import ca.landonjw.remoraids.api.boss.IBoss;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
+import ca.landonjw.remoraids.api.messages.placeholders.IParsingContext;
+import ca.landonjw.remoraids.api.messages.services.IMessageService;
 import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.implementation.ui.pages.BaseBossUI;
 import ca.landonjw.remoraids.internal.api.config.Config;
@@ -42,10 +46,14 @@ public class BossSizeEditorUI extends BaseBossUI {
     /** {@inheritDoc} */
     public void open() {
         Config config = RemoRaids.getMessageConfig();
+        IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
+        IParsingContext context = IParsingContext.builder()
+                .add(IBoss.class, () -> bossEntity.getBoss())
+                .build();
 
         Button decrementSize = Button.builder()
                 .item(new ItemStack(PixelmonItems.LtradeHolderLeft))
-                .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Decrease Size")
+                .displayName(config.get(MessageConfig.UI_BOSS_SIZE_EDITOR_DECREASE))
                 .onClick(() -> {
                     bossEntity.getBoss().setSize(bossEntity.getBoss().getSize() - 0.25f);
                     open();
@@ -54,7 +62,7 @@ public class BossSizeEditorUI extends BaseBossUI {
 
         Button incrementSize = Button.builder()
                 .item(new ItemStack(PixelmonItems.tradeHolderRight))
-                .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Increase Size")
+                .displayName(config.get(MessageConfig.UI_BOSS_SIZE_EDITOR_INCREASE))
                 .onClick(() -> {
                     bossEntity.getBoss().setSize(bossEntity.getBoss().getSize() + 0.25f);
                     open();
@@ -81,7 +89,7 @@ public class BossSizeEditorUI extends BaseBossUI {
 
         Page page = Page.builder()
                 .template(template)
-                .title(TextFormatting.BLUE + "" + TextFormatting.BOLD + "Edit Size (" + (bossEntity.getBoss().getSize() * 100) + "%" + ")")
+                .title(service.interpret(config.get(MessageConfig.UI_BOSS_SIZE_EDITOR_TITLE), context))
                 .build();
 
         page.forceOpenPage(player);

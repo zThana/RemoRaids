@@ -47,7 +47,7 @@ public class GeneralSettingsUI extends BaseBossUI {
 
             Button setStats = Button.builder()
                     .item(new ItemStack(Items.PAPER))
-                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Stats")
+                    .displayName(config.get(MessageConfig.UI_GENERAL_EDIT_STATS))
                     .onClick(() -> {
                         BattleStatsSelectionUI statsSelection = new BattleStatsSelectionUI(this, player, bossEntity);
                         statsSelection.open();
@@ -56,7 +56,7 @@ public class GeneralSettingsUI extends BaseBossUI {
 
             Button setSize = Button.builder()
                     .item(new ItemStack(PixelmonItems.rareCandy))
-                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Size")
+                    .displayName(config.get(MessageConfig.UI_GENERAL_EDIT_SIZE))
                     .onClick(() -> {
                         BossSizeEditorUI sizeEditor = new BossSizeEditorUI(this, player, bossEntity);
                         sizeEditor.open();
@@ -83,7 +83,7 @@ public class GeneralSettingsUI extends BaseBossUI {
 
             Page page = Page.builder()
                     .template(template)
-                    .title(TextFormatting.BLUE + "" + TextFormatting.BOLD + "General Settings")
+                    .title(config.get(MessageConfig.UI_GENERAL_SETTINGS_TITLE))
                     .build();
 
             page.forceOpenPage(player);

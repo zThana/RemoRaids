@@ -1,8 +1,11 @@
 package ca.landonjw.remoraids.implementation.ui.pages.general;
 
 import ca.landonjw.remoraids.RemoRaids;
+import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.battles.IBossBattle;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
+import ca.landonjw.remoraids.api.messages.placeholders.IParsingContext;
+import ca.landonjw.remoraids.api.messages.services.IMessageService;
 import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.implementation.ui.pages.BaseBossUI;
 import ca.landonjw.remoraids.internal.api.config.Config;
@@ -49,6 +52,12 @@ public class BossStatEditorUI extends BaseBossUI {
     public void open() {
         if(bossNotInBattle()){
             Config config = RemoRaids.getMessageConfig();
+            IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
+
+            IParsingContext context = IParsingContext.builder()
+                    .add(StatsType.class, () -> type)
+                    .add(Integer.class, () -> bossEntity.getBoss().getStat(type))
+                    .build();
 
             Button back = Button.builder()
                     .item(new ItemStack(Blocks.BARRIER))
@@ -60,7 +69,7 @@ public class BossStatEditorUI extends BaseBossUI {
 
             Button decrementStat = Button.builder()
                     .item(new ItemStack(PixelmonItems.LtradeHolderLeft))
-                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Decrease Size")
+                    .displayName(service.interpret(config.get(MessageConfig.UI_BOSS_STAT_EDITOR_DECREASE), context))
                     .onClick(() -> {
                         if(bossEntity.getBoss().getStat(type) - 25 > 0) {
                             bossEntity.getBoss().setStat(type, bossEntity.getBoss().getStat(type) - 25);
@@ -76,7 +85,7 @@ public class BossStatEditorUI extends BaseBossUI {
 
             Button incrementStat = Button.builder()
                     .item(new ItemStack(PixelmonItems.tradeHolderRight))
-                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Increase Size")
+                    .displayName(service.interpret(config.get(MessageConfig.UI_BOSS_STAT_EDITOR_INCREASE), context))
                     .onClick(() -> {
                         if(bossEntity.getBoss().getStat(type) + 25 < Short.MAX_VALUE){
                             bossEntity.getBoss().setStat(type, bossEntity.getBoss().getStat(type) + 25);
@@ -102,7 +111,7 @@ public class BossStatEditorUI extends BaseBossUI {
 
             Page page = Page.builder()
                     .template(template)
-                    .title(TextFormatting.BLUE + "" + TextFormatting.BOLD + "Edit " + type.getTranslatedName().getUnformattedComponentText() + "(" + bossEntity.getBoss().getStat(type) + ")")
+                    .title(service.interpret(config.get(MessageConfig.UI_BOSS_STAT_EDITOR_TITLE), context))
                     .build();
 
             page.forceOpenPage(player);

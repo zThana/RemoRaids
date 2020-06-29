@@ -77,6 +77,7 @@ public class MessageConfig implements ConfigKeyHolder {
     //
     // -------------------------------------------------------------------------------------------------
     public static final ConfigKey<String> ERROR_CHISEL_INTERACT = translationKey("errors.chisel-interaction", "&cYou may not perform this action on a raid boss!");
+    public static final ConfigKey<String> BOSS_IN_BATTLE_MODIFICATION = translationKey("errors.boss-in-battle-modification", "&cYou cannot modify this while boss is in battle!");
 
 	// -------------------------------------------------------------------------------------------------
     //
@@ -202,6 +203,41 @@ public class MessageConfig implements ConfigKeyHolder {
     public static final ConfigKey<String> UI_RESPAWN_COOLDOWN_EDITOR_INCREASE_VALUE = translationKey("ui.respawn-cooldown-editor.increase-value", "&bIncrement Time Value");
     public static final ConfigKey<String> UI_RESPAWN_COOLDOWN_EDITOR_CURRENT_VALUE = translationKey("ui.respawn-cooldown-editor.current-value", "&bCooldown Time: {time|value}");
     public static final ConfigKey<String> UI_RESPAWN_COOLDOWN_EDITOR_DECREASE_VALUE = translationKey("ui.respawn-cooldown-editor.decrease-value", "&bDecrement Time Value");
+
+    //--------------------------------------------------------------------------------------
+    //
+    //                              Respawn Cooldown Editor UI
+    //
+    //--------------------------------------------------------------------------------------
+    public static final ConfigKey<String> UI_GENERAL_SETTINGS_TITLE = translationKey("ui.general-settings.title", "&1&lGeneral Settings");
+    public static final ConfigKey<String> UI_GENERAL_EDIT_STATS = translationKey("ui.general-settings.edit-stats", "&bEdit Stats");
+    public static final ConfigKey<String> UI_GENERAL_EDIT_SIZE = translationKey("ui.general-settings.edit-size", "&bEdit Size");
+
+    //--------------------------------------------------------------------------------------
+    //
+    //                                    Boss Stat Editor
+    //
+    //--------------------------------------------------------------------------------------
+    public static final ConfigKey<String> UI_BOSS_STAT_EDITOR_TITLE = translationKey("ui.boss-stat-editor.title", "&1&lEdit {stat} ({stat|value})");
+    public static final ConfigKey<String> UI_BOSS_STAT_EDITOR_INCREASE = translationKey("ui.boss-stat-editor.increase", "&bIncrease Stat");
+    public static final ConfigKey<String> UI_BOSS_STAT_EDITOR_DECREASE = translationKey("ui.boss-stat-editor.decrease", "&bDecrease Stat");
+
+    //--------------------------------------------------------------------------------------
+    //
+    //                                  Battle Stat Selection
+    //
+    //--------------------------------------------------------------------------------------
+    public static final ConfigKey<String> UI_BATTLE_STAT_SELECTION_TITLE = translationKey("ui.battle-stat-selection.title", "&1&lStat Selection");
+    public static final ConfigKey<String> UI_BATTLE_STAT_SELECTION_EDIT_STAT = translationKey("ui.battle-stat-selection.edit-stat", "&bEdit {stat}");
+
+    //--------------------------------------------------------------------------------------
+    //
+    //                                    Boss Size Editor
+    //
+    //--------------------------------------------------------------------------------------
+    public static final ConfigKey<String> UI_BOSS_SIZE_EDITOR_TITLE = translationKey("ui.boss-size-editor.title", "&1&lEdit Size ({boss|size%}%)");
+    public static final ConfigKey<String> UI_BOSS_SIZE_EDITOR_INCREASE = translationKey("ui.boss-size-editor.increase", "&bIncrease Size");
+    public static final ConfigKey<String> UI_BOSS_SIZE_EDITOR_DECREASE = translationKey("ui.boss-size-editor.decrease", "&bDecrease Size");
 
     private static TranslationKey translationKey(String path, String def) {
         KeyFactory<String> factory = ConfigurationAdapter::getString;
