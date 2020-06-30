@@ -386,6 +386,7 @@ public class Boss implements IBoss {
         /** {@inheritDoc} */
 		@Override
         public IBossBuilder from(IBoss input) {
+			this.id = input.getUniqueId();
             return this.species(input.getPokemon().getSpecies())
 		            .form(input.getPokemon().getFormEnum())
 		            .level(input.getPokemon().getLevel())

@@ -116,6 +116,7 @@ public class BossCreator implements IBossCreator {
 		}
 		this.location = IBossSpawnLocation.builder().deserialize(json.get("location").getAsJsonObject()).build();
 		this.announcement = ISpawnAnnouncement.builder().deserialize(json.get("announcement").getAsJsonObject()).build();
+		this.persisting = true;
 
 		return this;
 	}
