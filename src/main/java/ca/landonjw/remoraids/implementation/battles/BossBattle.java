@@ -107,12 +107,10 @@ public class BossBattle implements IBossBattle {
     @Override
     @SuppressWarnings("ConstantConditions")
     public List<UUID> getTopDamageDealers() {
-        List<UUID> damageDealers = new ArrayList<>(playerDamageDealt.keySet());
-        damageDealers.stream()
+        return playerDamageDealt.keySet().stream()
                 .filter(x -> FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(x) != null)
-                .collect(Collectors.toList())
-                .sort((val1, val2) -> playerDamageDealt.get(val2) - playerDamageDealt.get(val1));
-        return damageDealers;
+                .sorted((val1, val2) -> playerDamageDealt.get(val2) - playerDamageDealt.get(val1))
+                .collect(Collectors.toList());
     }
 
     /** {@inheritDoc} */
