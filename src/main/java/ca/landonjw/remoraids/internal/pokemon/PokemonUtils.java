@@ -32,6 +32,7 @@ public class PokemonUtils {
     public static Pokemon clonePokemon(Pokemon pokemon){
         Pokemon clonedPokemon = Pixelmon.pokemonFactory.create(pokemon.getSpecies());
 
+        clonedPokemon.setUUID(pokemon.getUUID());
         clonedPokemon.setForm(pokemon.getForm());
         clonedPokemon.setLevel(pokemon.getLevel());
         clonedPokemon.setNickname(pokemon.getNickname());

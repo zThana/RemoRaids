@@ -247,39 +247,28 @@ public class BossBattle implements IBossBattle {
         //Create an list of players in order of highest damage dealt in the battle
         List<EntityPlayerMP> contributors = getTopDamageDealers().stream()
                 .map(id -> FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(id))
+                .sorted(Comparator.comparingInt(player -> getDamageDealt(player.getUniqueID()).get()))
                 .collect(Collectors.toList());
-        contributors.sort(Comparator.comparingInt(player -> getDamageDealt(player.getUniqueID()).get()));
 
         Config config = RemoRaids.getMessageConfig();
         IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
 
-        IParsingContext bossContext = IParsingContext.builder()
-                .add(IBoss.class, () -> bossEntity.getBoss())
-                .build();
+        IParsingContext.Builder bossContext = IParsingContext.builder()
+                .add(IBoss.class, () -> bossEntity.getBoss());
 
         //Create output to send to players
         List<String> output = Lists.newArrayList();
-        output.add(service.interpret(config.get(MessageConfig.RESULTS_HEADER), bossContext));
-        output.add(service.interpret(config.get(MessageConfig.RESULTS_BODY_DESC), bossContext));
-        output.add("");
-
         getKiller().ifPresent(killer -> {
             EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(killer);
-
-            IParsingContext killerContext = IParsingContext.builder()
-                    .add(IBoss.class, () -> bossEntity.getBoss())
-                    .add(EntityPlayerMP.class, () -> player)
-                    .build();
-            output.add(service.interpret(config.get(MessageConfig.RESULTS_BODY_KILLER), killerContext));
-            output.add("");
+            bossContext.add(EntityPlayerMP.class, () -> player);
         });
 
-        IParsingContext dealersLabelContext = IParsingContext.builder()
+        IParsingContext context = bossContext
                 .add(IBoss.class, () -> bossEntity.getBoss())
                 .add(Integer.class, () -> Math.min(3, contributors.size()))
                 .build();
 
-        output.add(service.interpret(config.get(MessageConfig.RESULTS_BODY_TOP_DAMAGE_LABEL), dealersLabelContext));
+        output.addAll(service.interpret(config.get(MessageConfig.RESULTS_HEADER), context));
         for(int i = 0; i < Math.min(3, contributors.size()); i++) {
             int damage = getDamageDealt(contributors.get(i).getUniqueID()).get();
             EntityPlayerMP player = contributors.get(i);
@@ -290,7 +279,7 @@ public class BossBattle implements IBossBattle {
                     .build();
             output.add(service.interpret(config.get(MessageConfig.RESULTS_BODY_TOP_DAMAGE_CONTENT), damageDealerContext));
         }
-        output.add(service.interpret(config.get(MessageConfig.RESULTS_FOOTER), bossContext));
+        output.add(service.interpret(config.get(MessageConfig.RESULTS_FOOTER), context));
 
         //Send summary to all players
         for(EntityPlayerMP player : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers()) {

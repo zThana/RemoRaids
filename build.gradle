@@ -32,7 +32,7 @@ group = modGroup
 archivesBaseName = modBaseName
 
 ext {
-    pixelmon = "7.3.1"
+    pixelmon = "8.0.2"
 }
 
 minecraft {

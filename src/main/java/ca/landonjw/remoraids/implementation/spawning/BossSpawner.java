@@ -101,6 +101,15 @@ public class BossSpawner implements IBossSpawner {
         return Optional.empty();
     }
 
+    @Override
+    public EntityPixelmon fix() {
+        if(this.getBoss().getEntity().get().getBattleEntity().isPresent()) {
+            return this.getBoss().getEntity().get().getBattleEntity().get();
+        }
+
+        return this.createAndSpawnBattleEntity();
+    }
+
     /**
      * Creates a statue entity to serve as a decoy for the boss.
      *
@@ -167,8 +176,8 @@ public class BossSpawner implements IBossSpawner {
 
         Pokemon bossPokemon = this.getBoss().getPokemon();
         battleEntity.setPokemon(PokemonUtils.clonePokemon(bossPokemon));
-        battleEntity.enablePersistence();
         battleEntity.setPixelmonScale(0);
+        battleEntity.enablePersistence();
 
         battleEntity.setNoAI(true);
 

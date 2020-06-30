@@ -2,6 +2,7 @@ package ca.landonjw.remoraids.implementation.ui.pages;
 
 import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.IBossAPI;
+import ca.landonjw.remoraids.api.boss.IBoss;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.messages.placeholders.IParsingContext;
 import ca.landonjw.remoraids.api.messages.services.IMessageService;
@@ -99,7 +100,7 @@ public abstract class BaseBossUI implements IBossUI {
         Config config = RemoRaids.getMessageConfig();
         IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
         IParsingContext context = IParsingContext.builder()
-                .add(IBossEntity.class, () -> bossEntity)
+                .add(IBoss.class, bossEntity::getBoss)
                 .add(Pokemon.class, () -> bossEntity.getBoss().getPokemon())
                 .build();
         return Button.builder()

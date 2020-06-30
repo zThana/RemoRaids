@@ -86,7 +86,7 @@ public class AddRestraintUI extends BaseBossUI {
                 .template(template)
                 .dynamicContentArea(2, 2, 1, 5)
                 .dynamicContents(creatorButtons)
-                .title(TextFormatting.BLUE + "" + TextFormatting.BOLD + "Add Restraint")
+                .title(config.get(MessageConfig.UI_BATTLES_ADD_RESTRAINT_TITLE))
                 .build();
 
         page.forceOpenPage(player);

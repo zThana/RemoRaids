@@ -6,6 +6,7 @@ import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.util.DataSerializable;
 import ca.landonjw.remoraids.api.util.IBuilder;
 import ca.landonjw.remoraids.implementation.BossAPI;
+import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -42,6 +43,16 @@ public interface IBossSpawner extends DataSerializable {
      * failed
      */
     Optional<IBossEntity> spawn(boolean announce);
+
+    /**
+     * An internal method to be used by reference of the raid boss battle entity. During chunk unloads, the battle
+     * entity to a raid boss may be lost. This here will respawn that raid boss if it is found to be missing.
+     *
+     * NOTE: Let the system use this, there's no reason to call this externally.
+     *
+     * @return The newly crafted entity representing this raid boss for battles
+     */
+    EntityPixelmon fix();
 
     /**
      * Specifies the raid boss that'll be spawned in from this raid boss spawner.

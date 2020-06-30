@@ -39,7 +39,7 @@ public class RestraintsUI extends BaseBossUI {
     }
 
     /** {@inheritDoc} */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public void open() {
         if(bossNotInBattle()){
@@ -64,6 +64,7 @@ public class RestraintsUI extends BaseBossUI {
                 Button restraintButton = Button.builder()
                         .item(new ItemStack(Items.FILLED_MAP))
                         .displayName(TextFormatting.AQUA + restraint.getId())
+                        .lore(lore)
                         .onClick((action) -> {
                             if(action.getClickType() == ClickType.CLONE){
                                 restraints.remove(restraint);
@@ -84,7 +85,7 @@ public class RestraintsUI extends BaseBossUI {
 
             Button addRestraint = Button.builder()
                     .item(new ItemStack(PixelmonItems.pokemonEditor))
-                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Add Restraint")
+                    .displayName(config.get(MessageConfig.UI_BATTLES_RESTRAINT_SETTINGS_ADD_RESTRAINT))
                     .onClick(() -> {
                         AddRestraintUI addRestraintUI = new AddRestraintUI(this, player, bossEntity);
                         addRestraintUI.open();
@@ -118,7 +119,7 @@ public class RestraintsUI extends BaseBossUI {
                     .template(template)
                     .dynamicContentArea(2, 2, 1, 5)
                     .dynamicContents(restraintButtons)
-                    .title(TextFormatting.BLUE + "" + TextFormatting.BOLD + "Restraint Settings")
+                    .title(config.get(MessageConfig.UI_BATTLES_RESTRAINT_SETTINGS_TITLE))
                     .build();
 
             page.forceOpenPage(player);

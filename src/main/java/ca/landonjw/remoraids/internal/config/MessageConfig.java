@@ -23,15 +23,14 @@ public class MessageConfig implements ConfigKeyHolder {
     //                                      Restraints Messages
     //
     // -------------------------------------------------------------------------------------------------
-    public static final ConfigKey<String> CAPACITY_RESTRAINT_TITLE = translationKey("restraints.capacity-restraint-title", "Capacity Restraint");
+    public static final ConfigKey<String> CAPACITY_RESTRAINT_TITLE = translationKey("restraints.capacity-restraint-title", "&bCapacity Restraint");
     public static final ConfigKey<String> CAPACITY_RESTRAINT_WARNING = translationKey("restraints.capacity-restraint-warning", "&cThere are too many players currently battling the boss...");
-    public static final ConfigKey<String> COOLDOWN_RESTRAINT_TITLE = translationKey("restraints.cooldown-restraint-title", "&cYou cannot battle the boss for another {hours} hour(s), {trimmed-minutes} minute(s) and {trimmed-seconds} second(s)...");
+    public static final ConfigKey<String> COOLDOWN_RESTRAINT_TITLE = translationKey("restraints.cooldown-restraint-title", "&bCooldown Constraint");
     public static final ConfigKey<String> COOLDOWN_RESTRAINT_WARNING = translationKey("restraints.cooldown-restraint-warning", "&cYou cannot battle the boss for another {hours} hour(s), {trimmed-minutes} minute(s) and {trimmed-seconds} second(s)...");
-    public static final ConfigKey<String> NO_REBATTLE_RESTRAINT_TITLE = translationKey("restraints.no-rebattle-restraint-title", "No Rebattle Restraint");
+    public static final ConfigKey<String> NO_REBATTLE_RESTRAINT_TITLE = translationKey("restraints.no-rebattle-restraint-title", "&bNo Rebattle Restraint");
     public static final ConfigKey<String> NO_REBATTLE_RESTRAINT_WARNING = translationKey("restraints.no-rebattle-restraint-warning", "&cYou cannot attempt to battle this raid boss again...");
-    public static final ConfigKey<String> HALTED_BOSS_RESTRAINT_TITLE = translationKey("restraints.halted-boss-restraint-title", "Halted Boss Restraint");
+    public static final ConfigKey<String> HALTED_BOSS_RESTRAINT_TITLE = translationKey("restraints.halted-boss-restraint-title", "&bHalted Boss Restraint");
     public static final ConfigKey<String> HALTED_BOSS_RESTRAINT_WARNING = translationKey("restraints.halted-boss-restraint-warning", "&cThis boss is not allowed to battle currently!");
-    public static final ConfigKey<String> HALTED_BOSS_RESTRAINT_KICK = translationKey("restraints.halted-boss-restraint-warning", "&cYou have been kicked from battle due to ongoing boss editing.");
 
     // -------------------------------------------------------------------------------------------------
     //
@@ -56,10 +55,16 @@ public class MessageConfig implements ConfigKeyHolder {
     //                                   Battle Display Messaging
     //
     // -------------------------------------------------------------------------------------------------
-    public static final ConfigKey<String> RESULTS_HEADER = translationKey("battle-results.header", "&8&m==============&r &c[Raid Results] &8&m==============");
-    public static final ConfigKey<String> RESULTS_BODY_DESC = translationKey("battle-results.body.description", "&7Through valiant effort, the raid pokemon,\n&e{boss}&7, was defeated!");
-    public static final ConfigKey<String> RESULTS_BODY_KILLER = translationKey("battle-results.body.killer", "&cKiller: &e{player}");
-    public static final ConfigKey<String> RESULTS_BODY_TOP_DAMAGE_LABEL = translationKey("battle-results.body.top-damage-label", "&aTop {integer} Damage Dealers:");
+    public static final ConfigKey<List<String>> RESULTS_HEADER = listTranslationKey("battle-results.header", Lists.newArrayList(
+            "&8&m==============&r &c[Raid Results] &8&m==============",
+            "&7Through valiant effort, the raid pokemon,",
+            "&e{boss}&7, was defeated!",
+            "",
+            "&cKiller: &e{player}",
+            "",
+            "&aTop {integer} Damage Dealers:"
+    ));
+
     public static final ConfigKey<String> RESULTS_BODY_TOP_DAMAGE_CONTENT = translationKey("battle-results.body.top-damage-content", "&e{player}&7: &b{integer}");
     public static final ConfigKey<String> RESULTS_FOOTER = translationKey("battle-results.footer", "&8&m==================================");
 
@@ -131,7 +136,7 @@ public class MessageConfig implements ConfigKeyHolder {
             "&7Texture: &a{pokemon|texture}",
             "",
             "&cHP: {pokemon|hp} &7/ &6Atk: {pokemon|attack} &7/ &aDef: {pokemon|defence}",
-            "&9SpAtk: {pokemon|spatk} &7/ &aSpDef: {pokemon|spatk} &7/ &dSpeed: {pokemon|speed}",
+            "&9SpAtk: {pokemon|spatk} &7/ &aSpDef: {pokemon|spdef} &7/ &dSpeed: {pokemon|speed}",
             "",
             "&7Moves:",
             "{pokemon|moveset}"
@@ -206,7 +211,7 @@ public class MessageConfig implements ConfigKeyHolder {
     //                              Respawn Cooldown Editor UI
     //
     //--------------------------------------------------------------------------------------
-    public static final ConfigKey<String> UI_RESPAWN_COOLDOWN_EDITOR_TITLE = translationKey("ui.respawn-cooldown-editor.title", "&1&lEdit Respawn Cooldown ({time|value} {time|units})");
+    public static final ConfigKey<String> UI_RESPAWN_COOLDOWN_EDITOR_TITLE = translationKey("ui.respawn-cooldown-editor.title", "&1&lEdit Respawn Cooldown ({time|value} {time|unit})");
     public static final ConfigKey<String> UI_RESPAWN_COOLDOWN_EDITOR_INCREASE_UNIT = translationKey("ui.respawn-cooldown-editor.increase-unit", "&bNext Time Unit");
     public static final ConfigKey<String> UI_RESPAWN_COOLDOWN_EDITOR_CURRENT_UNIT = translationKey("ui.respawn-cooldown-editor.current-unit", "&bTime Unit: {time|unit}");
     public static final ConfigKey<String> UI_RESPAWN_COOLDOWN_EDITOR_DECREASE_UNIT = translationKey("ui.respawn-cooldown-editor.decrease-unit", "&bPrevious Time Unit");
@@ -245,9 +250,63 @@ public class MessageConfig implements ConfigKeyHolder {
     //                                    Boss Size Editor
     //
     //--------------------------------------------------------------------------------------
-    public static final ConfigKey<String> UI_BOSS_SIZE_EDITOR_TITLE = translationKey("ui.boss-size-editor.title", "&1&lEdit Size ({boss|size%}%)");
+    public static final ConfigKey<String> UI_BOSS_SIZE_EDITOR_TITLE = translationKey("ui.boss-size-editor.title", "&1&lEdit Size ({boss|size})");
     public static final ConfigKey<String> UI_BOSS_SIZE_EDITOR_INCREASE = translationKey("ui.boss-size-editor.increase", "&bIncrease Size");
     public static final ConfigKey<String> UI_BOSS_SIZE_EDITOR_DECREASE = translationKey("ui.boss-size-editor.decrease", "&bDecrease Size");
+
+    //--------------------------------------------------------------------------------------
+    //
+    //                              Add Restraint UI
+    //
+    //--------------------------------------------------------------------------------------
+    public static final ConfigKey<String> UI_BATTLES_ADD_RESTRAINT_TITLE = translationKey("ui.battles.add-restraint.title", "&9&lAdd Restraint");
+
+    //--------------------------------------------------------------------------------------
+    //
+    //                              Add Reward Content UI
+    //
+    //--------------------------------------------------------------------------------------
+    public static final ConfigKey<String> UI_BATTLES_ADD_REWARD_CONTENT_TITLE = translationKey("ui.battles.add-reward-content.title", "&9&lAdd Reward Content");
+
+    //--------------------------------------------------------------------------------------
+    //
+    //                              Add Reward UI
+    //
+    //--------------------------------------------------------------------------------------
+    public static final ConfigKey<String> UI_BATTLES_ADD_REWARD_TITLE = translationKey("ui.battles.add-reward.title", "&9&lAdd Reward");
+
+    //--------------------------------------------------------------------------------------
+    //
+    //                              Battle Settings UI
+    //
+    //--------------------------------------------------------------------------------------
+    public static final ConfigKey<String> UI_BATTLES_BATTLE_SETTINGS_TITLE = translationKey("ui.battles.battle-settings.title", "&9&lBattle Settings");
+    public static final ConfigKey<String> UI_BATTLES_BATTLE_SETTINGS_EDIT_RESTRAINTS = translationKey("ui.battles.battle-settings.edit-restraints", "&bEdit Restraints");
+    public static final ConfigKey<String> UI_BATTLES_BATTLE_SETTINGS_EDIT_REWARDS = translationKey("ui.battles.battle-settings.edit-rewards", "&bEdit Rewards");
+
+    //--------------------------------------------------------------------------------------
+    //
+    //                              Restraint Settings UI
+    //
+    //--------------------------------------------------------------------------------------
+    public static final ConfigKey<String> UI_BATTLES_RESTRAINT_SETTINGS_TITLE = translationKey("ui.battles.restraint-settings.title", "&9&lRestraint Settings");
+    public static final ConfigKey<String> UI_BATTLES_RESTRAINT_SETTINGS_ADD_RESTRAINT = translationKey("ui.battles.restraint-settings.add-restraint", "&bAdd Restraint");
+
+    //--------------------------------------------------------------------------------------
+    //
+    //                              Reward Content Settings UI
+    //
+    //--------------------------------------------------------------------------------------
+    public static final ConfigKey<String> UI_BATTLES_REWARD_CONTENT_SETTINGS_TITLE = translationKey("ui.battles.reward-content-settings.title", "&9&lReward Content Settings");
+    public static final ConfigKey<String> UI_BATTLES_REWARD_CONTENT_SETTINGS_ADD_REWARD_CONTENT = translationKey("ui.battles.reward-content-settings.add-reward-content", "&bAdd Reward Content");
+
+    //--------------------------------------------------------------------------------------
+    //
+    //                              Reward Settings UI
+    //
+    //--------------------------------------------------------------------------------------
+    public static final ConfigKey<String> UI_BATTLES_REWARD_SETTINGS_TITLE = translationKey("ui.battles.reward-settings.title", "&9&lReward Settings");
+    public static final ConfigKey<String> UI_BATTLES_REWARD_SETTINGS_ADD_REWARD = translationKey("ui.battles.reward-settings.add-reward-content", "&bAdd Reward");
 
     private static TranslationKey translationKey(String path, String def) {
         KeyFactory<String> factory = ConfigurationAdapter::getString;

@@ -81,7 +81,7 @@ public class RewardContentsUI extends BaseBossUI {
 
             Button addRewardContent = Button.builder()
                     .item(new ItemStack(PixelmonItems.pokemonEditor))
-                    .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Add Reward Content")
+                    .displayName(config.get(MessageConfig.UI_BATTLES_REWARD_CONTENT_SETTINGS_ADD_REWARD_CONTENT))
                     .onClick(() -> {
                         AddRewardContentUI addContentUI = new AddRewardContentUI(this, player, bossEntity, reward);
                         addContentUI.open();
@@ -115,7 +115,7 @@ public class RewardContentsUI extends BaseBossUI {
                     .template(template)
                     .dynamicContentArea(2, 2, 1, 5)
                     .dynamicContents(rewardContentButtons)
-                    .title(TextFormatting.BLUE + "" + TextFormatting.BOLD + "Reward Settings")
+                    .title(config.get(MessageConfig.UI_BATTLES_REWARD_CONTENT_SETTINGS_TITLE))
                     .build();
 
             page.forceOpenPage(player);

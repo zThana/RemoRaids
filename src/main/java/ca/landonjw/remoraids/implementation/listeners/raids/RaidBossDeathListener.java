@@ -17,13 +17,21 @@ public class RaidBossDeathListener {
 	@SubscribeEvent
 	public void onRaidBossDeath(BossDeathEvent event) {
 		final IBossSpawner spawner = event.getBossEntity().getSpawner();
-		spawner.getRespawnData().ifPresent(data -> {
+
+		if(spawner.getRespawnData().isPresent()) {
+			IBossSpawner.IRespawnData data = spawner.getRespawnData().get();
 			if(data.isInfinite() || data.hasRemainingRespawns()) {
 				data.run(spawner);
 			} else {
+				if(spawner.doesPersist()) {
+					RemoRaids.storage.delete(spawner);
+				}
+			}
+		} else {
+			if(spawner.doesPersist()) {
 				RemoRaids.storage.delete(spawner);
 			}
-		});
+		}
 	}
 
 }

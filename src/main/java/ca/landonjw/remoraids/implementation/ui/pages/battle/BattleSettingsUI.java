@@ -47,7 +47,7 @@ public class BattleSettingsUI extends BaseBossUI {
 
         Button restraints = Button.builder()
                 .item(new ItemStack(Blocks.IRON_BARS))
-                .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Restraints")
+                .displayName(config.get(MessageConfig.UI_BATTLES_BATTLE_SETTINGS_EDIT_RESTRAINTS))
                 .onClick(() -> {
                     RestraintsUI restraintsUI = new RestraintsUI(this, player, bossEntity);
                     restraintsUI.open();
@@ -56,7 +56,7 @@ public class BattleSettingsUI extends BaseBossUI {
 
         Button rewards = Button.builder()
                 .item(new ItemStack(PixelmonItemsValuables.nugget))
-                .displayName(TextFormatting.AQUA + "" + TextFormatting.BOLD + "Edit Rewards")
+                .displayName(config.get(MessageConfig.UI_BATTLES_BATTLE_SETTINGS_EDIT_REWARDS))
                 .onClick(() -> {
                     RewardsUI rewardsUI = new RewardsUI(this, player, bossEntity);
                     rewardsUI.open();
@@ -75,7 +75,7 @@ public class BattleSettingsUI extends BaseBossUI {
 
         Page page = Page.builder()
                 .template(template)
-                .title(TextFormatting.BLUE + "" + TextFormatting.BOLD + "Battle Settings")
+                .title(config.get(MessageConfig.UI_BATTLES_BATTLE_SETTINGS_TITLE))
                 .build();
 
         page.forceOpenPage(player);

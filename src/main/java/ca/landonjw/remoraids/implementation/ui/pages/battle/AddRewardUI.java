@@ -89,7 +89,7 @@ public class AddRewardUI extends BaseBossUI {
                 .template(template)
                 .dynamicContentArea(2, 2, 1, 5)
                 .dynamicContents(creatorButtons)
-                .title(TextFormatting.BLUE + "" + TextFormatting.BOLD + "Add Reward")
+                .title(config.get(MessageConfig.UI_BATTLES_ADD_REWARD_TITLE))
                 .build();
 
         page.forceOpenPage(player);

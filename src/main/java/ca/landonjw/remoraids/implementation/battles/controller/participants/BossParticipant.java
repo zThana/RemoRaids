@@ -2,6 +2,7 @@ package ca.landonjw.remoraids.implementation.battles.controller.participants;
 
 import ca.landonjw.remoraids.api.battles.IBossBattle;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
+import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import ca.landonjw.remoraids.implementation.battles.controller.BossWrapper;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.battles.controller.BattleControllerBase;
@@ -35,13 +36,16 @@ public class BossParticipant extends BattleParticipant {
 
         this.bossBattle = bossBattle;
         this.bossEntity = Objects.requireNonNull(bossEntity, "boss entity must not be null");
-        this.battleEntity = bossEntity.getBattleEntity().get();
+
+        this.battleEntity = bossEntity.getBattleEntity().orElseGet(() -> {
+            IBossSpawner spawner = bossEntity.getSpawner();
+            return spawner.fix();
+        });
 
         bossWrapper = new BossWrapper(this, battleEntity);
         this.allPokemon = new PixelmonWrapper[]{bossWrapper};
         this.controlledPokemon.add(bossWrapper);
     }
-
 
     public IBossEntity getBossEntity(){
         return bossEntity;
@@ -109,7 +113,7 @@ public class BossParticipant extends BattleParticipant {
     }
 
     /**
-     * Ends the battle for the participant. This kills the boss.
+     * Ends the battle for the participant.
      */
     @Override
     public void endBattle() {

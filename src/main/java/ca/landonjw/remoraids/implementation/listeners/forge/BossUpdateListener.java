@@ -87,6 +87,7 @@ public class BossUpdateListener {
                     spawner.spawn(false);
                 }
             }
+
         }
     }
 
