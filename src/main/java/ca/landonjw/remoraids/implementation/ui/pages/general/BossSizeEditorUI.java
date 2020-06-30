@@ -55,7 +55,9 @@ public class BossSizeEditorUI extends BaseBossUI {
                 .item(new ItemStack(PixelmonItems.LtradeHolderLeft))
                 .displayName(config.get(MessageConfig.UI_BOSS_SIZE_EDITOR_DECREASE))
                 .onClick(() -> {
-                    bossEntity.getBoss().setSize(bossEntity.getBoss().getSize() - 0.25f);
+                    if(bossEntity.getBoss().getSize() - 0.25 > 0){
+                        bossEntity.getBoss().setSize(bossEntity.getBoss().getSize() - 0.25f);
+                    }
                     open();
                 })
                 .build();

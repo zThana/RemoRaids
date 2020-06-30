@@ -8,6 +8,8 @@ import ca.landonjw.remoraids.api.util.IBuilder;
 import ca.landonjw.remoraids.implementation.BossAPI;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -16,6 +18,9 @@ import java.util.function.Supplier;
  * Represents a system that will be run in order to spawn a raid boss. A spawner takes into consideration
  * three main variables. The first being the boss it'll spawn, the location to spawn it at, and the announcement
  * template to send when the boss is spawned.
+ *
+ * @author NickImpact
+ * @since  1.0.0
  */
 public interface IBossSpawner extends DataSerializable {
 
@@ -117,16 +122,50 @@ public interface IBossSpawner extends DataSerializable {
      */
     boolean hasSpawned();
 
+    /**
+     * Builder for a {@link IBossSpawner}.
+     */
     interface IBossSpawnerBuilder extends IBuilder<IBossSpawner, IBossSpawnerBuilder> {
 
-        IBossSpawnerBuilder boss(IBoss boss);
+        /**
+         * Sets the boss the spawner will spawn.
+         *
+         * @param boss the boss to spawn
+         * @return builder instance with boss set
+         */
+        IBossSpawnerBuilder boss(@Nonnull IBoss boss);
 
-        IBossSpawnerBuilder location(IBossSpawnLocation location);
+        /**
+         * Sets the location the boss will spawn at.
+         *
+         * @param location the location boss will spawn at
+         * @return builder instance with location set
+         */
+        IBossSpawnerBuilder location(@Nonnull IBossSpawnLocation location);
 
-        IBossSpawnerBuilder announcement(ISpawnAnnouncement announcement);
+        /**
+         * Sets the announcement the boss will spawn with.
+         * If the announcement is null, no announcement will be set.
+         *
+         * @param announcement the announcement that will be sent with
+         * @return builder instance with announcement set
+         */
+        IBossSpawnerBuilder announcement(@Nullable ISpawnAnnouncement announcement);
 
-        IBossSpawnerBuilder respawns(IRespawnData data);
+        /**
+         * Sets the respawn data that defines how the spawner will respawn.
+         *
+         * @param data respawn data to apply to the spawner
+         * @return builder instance with respawn data set
+         */
+        IBossSpawnerBuilder respawns(@Nullable IRespawnData data);
 
+        /**
+         * Sets if the spawner should persist over server restarts.
+         *
+         * @param persists if the spawner should persist over server restarts
+         * @return builder instance with persistence set
+         */
         IBossSpawnerBuilder persists(boolean persists);
 
     }
@@ -264,6 +303,9 @@ public interface IBossSpawner extends DataSerializable {
             return IBossAPI.getInstance().getRaidRegistry().createBuilder(IRespawnDataBuilder.class);
         }
 
+        /**
+         * Builder for respawn data.
+         */
         interface IRespawnDataBuilder extends IBuilder.Deserializable<IRespawnData, IRespawnDataBuilder> {
 
             /**
@@ -271,15 +313,36 @@ public interface IBossSpawner extends DataSerializable {
              * the spawner's raid boss can respawn on an infinite cycle, or have a limit to the amount
              * of times it can be respawned.
              *
-             * @param state The state you wish to set this flag to
-             * @return The builder modified by this call
+             * @param state the state you wish to set this flag to
+             * @return the builder modified by this call
              */
             IRespawnDataBuilder infinite(boolean state);
 
+            /**
+             * Sets the total number of times the boss should be respawned.
+             *
+             * @param count the number of times the boss should be respawned
+             * @return the builder instance with count set
+             */
             IRespawnDataBuilder count(int count);
 
+            /**
+             * Sets the period of time before a boss will respawn after death.
+             *
+             * @param time amount of time to elapse before respawn
+             * @param unit unit of time
+             * @return the builder instance with time period set
+             */
             IRespawnDataBuilder period(long time, TimeUnit unit);
 
+            /**
+             * Sets the amount of respawns that have already occurred.
+             *
+             * This is used for the purpose of deserialization and can often be disregarded.
+             *
+             * @param used the number of respawns that have already occurred
+             * @return the builder instance with used respawns set
+             */
             IRespawnDataBuilder used(int used);
 
         }

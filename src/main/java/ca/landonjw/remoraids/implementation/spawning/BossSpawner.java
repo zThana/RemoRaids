@@ -58,8 +58,8 @@ public class BossSpawner implements IBossSpawner {
                        @Nullable ISpawnAnnouncement announcement,
                        @Nullable IRespawnData respawns,
                        boolean persists){
-        this.boss = boss;
-        this.spawnLocation = spawnLocation;
+        this.boss = Objects.requireNonNull(boss);
+        this.spawnLocation = Objects.requireNonNull(spawnLocation);
         this.announcement = announcement;
         this.respawns = respawns;
         this.persists = persists;
@@ -288,6 +288,12 @@ public class BossSpawner implements IBossSpawner {
 
         @Override
         public IBossSpawner build() {
+            if(boss == null){
+                throw new IllegalStateException("builder requires boss");
+            }
+            if(location == null){
+                throw new IllegalStateException("builder requires location");
+            }
             return new BossSpawner(
                     this.boss,
                     this.location,

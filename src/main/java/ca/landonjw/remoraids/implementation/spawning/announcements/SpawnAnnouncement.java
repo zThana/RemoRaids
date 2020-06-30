@@ -62,8 +62,8 @@ public class SpawnAnnouncement implements ISpawnAnnouncement {
         this.channel = (channel != null) ? channel : new ChatChannel();
     }
 
-    public SpawnAnnouncement(@Nullable String announcement, @Nullable IBossSpawnLocation location) {
-
+    public SpawnAnnouncement(@Nullable String announcement, @Nullable Teleport teleport) {
+        this(announcement, teleport, new ChatChannel());
     }
 
     private SpawnAnnouncement(SpawnAnnouncementBuilder builder) {
@@ -98,7 +98,7 @@ public class SpawnAnnouncement implements ISpawnAnnouncement {
 
     @Override
     public Optional<ITeleport> getTeleport() {
-        return Optional.empty();
+        return Optional.ofNullable(teleport);
     }
 
     /**
@@ -129,7 +129,6 @@ public class SpawnAnnouncement implements ISpawnAnnouncement {
 
             TextUtils.addCallback(text, teleportConsumer, false);
         }
-
 
         return text;
     }

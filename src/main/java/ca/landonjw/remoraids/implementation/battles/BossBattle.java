@@ -171,7 +171,7 @@ public class BossBattle implements IBossBattle {
                 getBattleSettings().getBattleRestraints().forEach((restraint) -> restraint.onBattleStart(player));
                 playerBattleMap.put(player, battleController);
 
-                BossBattleStartedEvent battleStarted = new BossBattleStartedEvent(bossEntity, player, battleController);
+                BossBattleStartedEvent battleStarted = new BossBattleStartedEvent(bossEntity, player, this, battleController);
                 RemoRaids.EVENT_BUS.post(battleStarted);
             }
         }

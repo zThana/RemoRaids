@@ -8,6 +8,7 @@ import ca.landonjw.remoraids.api.registry.IRaidRegistry;
  * A general basis for components that this plugin will communicate with.
  *
  * @author NickImpact
+ * @author landonjw
  * @since 1.0.0
  */
 public interface IBossAPI {

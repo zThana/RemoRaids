@@ -27,6 +27,11 @@ public interface IBossBattleSettings extends DataSerializable {
      */
     Optional<BattleRules> getBattleRules();
 
+    /**
+     * Sets the battle rules of the battle settings.
+     *
+     * @param battleRules battle rules to set
+     */
     void setBattleRules(@Nullable BattleRules battleRules);
 
     /**
@@ -37,8 +42,19 @@ public interface IBossBattleSettings extends DataSerializable {
      */
     Set<IBattleRestraint> getBattleRestraints();
 
+    /**
+     * Checks if the battle settings contains a battle restraint with a given identifier.
+     *
+     * @param id identifier to check
+     * @return true if settings contains restraint, false if it doesn't contain restraint
+     */
     boolean containsBattleRestraint(String id);
 
+    /**
+     * Removes a battle restraint with a given identifier from the settings if present
+     *
+     * @param id identifier of battle restraint to remove
+     */
     void removeBattleRestraint(String id);
 
     /**

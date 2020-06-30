@@ -21,6 +21,11 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("UnusedReturnValue")
 public interface IBossCreator extends IBuilder.Deserializable<IBossSpawner, IBossCreator> {
 
+	/**
+	 * Initializes a new instance of the boss creator.
+	 *
+	 * @return new instance of boss creator
+	 */
 	static IBossCreator initialize() {
 		return IBossAPI.getInstance().getRaidRegistry().createBuilder(IBossCreator.class);
 	}

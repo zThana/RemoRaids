@@ -116,6 +116,13 @@ public interface IBoss extends DataSerializable {
 	 */
 	void setTexture(@NonNull String texture);
 
+	/**
+	 * Gets the settings to be used by the boss instance in battle. This contains information
+	 * regarding the restraints imposed on players during battle and the rewards to be distributed
+	 * upon boss death.
+	 *
+	 * @return the battle settings
+	 */
 	IBossBattleSettings getBattleSettings();
 
 	/**
@@ -253,6 +260,12 @@ public interface IBoss extends DataSerializable {
 		 */
 		IBossBuilder moveset(Moveset moveset);
 
+		/**
+		 * Sets the settings to be used by the boss for battles.
+		 *
+		 * @param battleSettings The settings to be used by the boss for battles
+		 * @return The builder after being modified by this call
+		 */
 		IBossBuilder battleSettings(IBossBattleSettings battleSettings);
 
 	}

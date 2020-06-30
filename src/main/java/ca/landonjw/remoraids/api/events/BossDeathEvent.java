@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Event that occurs when a {@link IBossEntity} dies.
+ * Fired when a {@link IBossEntity} dies.
  *
  * @author landonjw
  * @since  1.0.0
