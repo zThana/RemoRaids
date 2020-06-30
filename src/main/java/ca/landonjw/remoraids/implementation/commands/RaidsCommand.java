@@ -45,22 +45,27 @@ public class RaidsCommand extends CommandBase {
 
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-		if (args.length >= 1) {
-			String sub = args[0].toLowerCase();
-			RaidsCommandExecutor executor = executors.get(sub);
-			if (executor != null) {
-				String[] arguments = new String[args.length - 1];
-				System.arraycopy(args, 1, arguments, 0, args.length - 1);
-				executor.execute(server, sender, arguments);
+		if(sender.canUseCommand(4, "remoraids.admin")){
+			if (args.length >= 1) {
+				String sub = args[0].toLowerCase();
+				RaidsCommandExecutor executor = executors.get(sub);
+				if (executor != null) {
+					String[] arguments = new String[args.length - 1];
+					System.arraycopy(args, 1, arguments, 0, args.length - 1);
+					executor.execute(server, sender, arguments);
+				}
+				else {
+					sender.sendMessage(new TextComponentString(TextFormatting.RED + "Sub-command not recognized!"));
+					sender.sendMessage(new TextComponentString(""));
+					sender.sendMessage(new TextComponentString(this.getUsage(sender)));
+				}
 			}
 			else {
-				sender.sendMessage(new TextComponentString(TextFormatting.RED + "Sub-command not recognized!"));
-				sender.sendMessage(new TextComponentString(""));
 				sender.sendMessage(new TextComponentString(this.getUsage(sender)));
 			}
 		}
-		else {
-			sender.sendMessage(new TextComponentString(this.getUsage(sender)));
+		else{
+			sender.sendMessage(new TextComponentString(TextFormatting.RED + "You do not have permission to use this command!"));
 		}
 	}
 
