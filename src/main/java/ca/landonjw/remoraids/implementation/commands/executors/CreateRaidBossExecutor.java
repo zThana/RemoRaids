@@ -19,13 +19,13 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.Tuple;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -72,7 +72,8 @@ public class CreateRaidBossExecutor implements RaidsCommandExecutor {
 					.map(x -> x.split(":"))
 					.filter(x -> x.length == 2)
 					.filter(x -> Arrays.stream(design.args).noneMatch(y -> y.toLowerCase().equals(x[0].toLowerCase())))
-					.collect(Collectors.toMap(x -> x[0], x -> x[1])));
+					.map(x -> new Tuple<>(x[0], x[1]))
+					.collect(Collectors.toList()));
 
 			CmdFlags.process(creator, boss, Arrays.stream(arguments)
 					.map(String::toLowerCase)
@@ -108,7 +109,7 @@ public class CreateRaidBossExecutor implements RaidsCommandExecutor {
 		}),
 		MOVES((creator, boss, input) -> {
 			Moveset moveset = new Moveset();
-			String[] split = input.split(",");
+			String[] split = input.replace("_", " ").split(",");
 			for (int i = 0; i < split.length && i < 4; i++) {
 				Attack attack = new Attack(split[i]);
 				if (attack.getMove() == null) {
@@ -120,25 +121,34 @@ public class CreateRaidBossExecutor implements RaidsCommandExecutor {
 		}),
 		STAT((creator, boss, input) -> {
 			String[] separator = input.split("\\|");
-			if (separator.length != 2) {
+			if (separator.length % 2 != 0) {
 				return;
 			}
 
-			StatsType stat = Arrays.stream(StatsType.getStatValues()).filter(st -> st.name().toLowerCase().equals(separator[0])).findAny().orElse(null);
-			if (stat == null) {
-				return;
-			}
+			for(int i = 1; i < separator.length; i += 2){
+				int statIndex = i - 1;
+				int valueIndex = i;
+				StatsType stat = Arrays.stream(StatsType.getStatValues()).filter(st -> st.name().toLowerCase().equals(separator[statIndex])).findAny().orElse(null);
+				if (stat == null) {
+					return;
+				}
 
-			String parsed = separator[1].replace("x", "");
-			int value = Math.max(1, Integer.parseInt(parsed));
-			boss.stat(stat, value, separator[1].contains("x"));
+				String parsed = separator[valueIndex].replace("x", "");
+				int value = Math.max(1, Integer.parseInt(parsed));
+				boss.stat(stat, value, separator[valueIndex].contains("x"));
+			}
 		}),
 		RESPAWN((creator, boss, input) -> {
 			String[] args = input.split("\\|");
 			if (args.length != 2) {
 				return;
 			}
-			creator.respawns(Integer.parseInt(args[0]), Long.parseLong(args[1]), TimeUnit.SECONDS);
+			if(args[0].equalsIgnoreCase("infinite")){
+				creator.respawns(0, Long.parseLong(args[1]), TimeUnit.SECONDS);
+			}
+			else{
+				creator.respawns(Integer.parseInt(args[0]), Long.parseLong(args[1]), TimeUnit.SECONDS);
+			}
 		})
 		;
 
@@ -148,13 +158,13 @@ public class CreateRaidBossExecutor implements RaidsCommandExecutor {
 			this.processor = processor;
 		}
 
-		public static void process(IBossCreator creator, IBoss.IBossBuilder boss, Map<String, String> arguments) {
-			for(Map.Entry<String, String> argument : arguments.entrySet()) {
+		public static void process(IBossCreator creator, IBoss.IBossBuilder boss, List<Tuple<String, String>> arguments) {
+			for(Tuple<String, String> argument : arguments) {
 				Arrays.stream(ExtraArgs.values())
-						.filter(x -> x.name().toLowerCase().equals(argument.getKey()))
+						.filter(x -> x.name().toLowerCase().equals(argument.getFirst()))
 						.findAny()
 						.ifPresent(x -> {
-							x.processor.accept(creator, boss, argument.getValue());
+							x.processor.accept(creator, boss, argument.getSecond());
 						});
 			}
 		}

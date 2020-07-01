@@ -120,6 +120,9 @@ public class RespawnData implements IBossSpawner.IRespawnData {
 
 		@Override
 		public IRespawnDataBuilder count(int count) {
+			if(count == -1){
+				infinite(true);
+			}
 			this.count = count;
 			return this;
 		}

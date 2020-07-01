@@ -22,12 +22,20 @@ public class RespawnDataPlaceholderParser implements IPlaceholderParser {
             List<String> arguments = context.getArguments().orElse(Collections.emptyList());
             if(arguments.size() == 1){
                 switch(arguments.get(0)){
-                    case "current":
-                        return Optional.of("" + (data.getTotalRespawns() - data.getRemainingRespawns()));
                     case "total":
-                        return Optional.of("" + data.getTotalRespawns());
+                        if(data.isInfinite()){
+                            return Optional.of("Infinite");
+                        }
+                        else{
+                            return Optional.of("" + data.getTotalRespawns());
+                        }
                     case "remaining":
-                        return Optional.of("" + data.getRemainingRespawns());
+                        if(data.isInfinite()){
+                            return Optional.of("Infinite");
+                        }
+                        else{
+                            return Optional.of("" + Math.max(0, data.getRemainingRespawns()));
+                        }
                 }
             }
         }

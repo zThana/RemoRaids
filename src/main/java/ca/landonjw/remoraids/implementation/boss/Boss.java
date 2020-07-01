@@ -251,6 +251,19 @@ public class Boss implements IBoss {
         /** Map corresponding to each stat of the boss. Tuple represents a value, and if the value is intended as an amplification or flat value. */
         private Map<StatsType, Tuple<Integer, Boolean>> stats = Maps.newHashMap();
 
+        @Override
+        public IBossBuilder pokemon(Pokemon pokemon) {
+            this.species = pokemon.getSpecies();
+            this.level = pokemon.getLevel();
+            this.form = pokemon.getFormEnum();
+            this.shiny = pokemon.isShiny();
+            this.nature = pokemon.getNature();
+            this.ability = pokemon.getAbility().getName();
+            this.gender = pokemon.getGender();
+            this.moveset = pokemon.getMoveset().copy();
+            return this;
+        }
+
         /** {@inheritDoc} */
         @Override
         public IBossBuilder spec(PokemonSpec spec) {

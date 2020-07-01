@@ -77,7 +77,7 @@ public class RespawnLimitEditorUI extends BaseBossUI {
             Button spawnAmount = Button.builder()
                     .item(new ItemStack(Items.PAPER))
                     .displayName(service.interpret(config.get(MessageConfig.UI_RESPAWN_LIMIT_EDITOR_CURRENT_LIMIT), context))
-                    .lore(Arrays.asList(service.interpret(config.get(MessageConfig.UI_RESPAWN_LIMIT_EDITOR_TIMES_RESPAWNED), context)))
+                    .lore(Arrays.asList(service.interpret(config.get(MessageConfig.UI_RESPAWN_LIMIT_EDITOR_REMAINING_RESPAWNS), context)))
                     .build();
 
             Button decrementSpawns = Button.builder()
@@ -87,6 +87,10 @@ public class RespawnLimitEditorUI extends BaseBossUI {
                         if(respawnData.getTotalRespawns() > 0){
                             respawnData.setTotalRespawns(respawnData.getTotalRespawns() - 1);
                         }
+                        else{
+                            respawnData.setTotalRespawns(-1);
+                            respawnData.setInfinite(true);
+                        }
                         open();
                     })
                     .build();
@@ -95,6 +99,9 @@ public class RespawnLimitEditorUI extends BaseBossUI {
                     .item(new ItemStack(PixelmonItems.tradeHolderRight))
                     .displayName(config.get(MessageConfig.UI_RESPAWN_LIMIT_EDITOR_INCREASE))
                     .onClick(() -> {
+                        if(respawnData.isInfinite()){
+                            respawnData.setInfinite(false);
+                        }
                         respawnData.setTotalRespawns(respawnData.getTotalRespawns() + 1);
                         open();
                     })

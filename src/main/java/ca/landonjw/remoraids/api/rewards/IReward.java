@@ -1,7 +1,6 @@
 package ca.landonjw.remoraids.api.rewards;
 
 import ca.landonjw.remoraids.api.battles.IBossBattle;
-import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.rewards.contents.IRewardContent;
 import net.minecraft.entity.player.EntityPlayerMP;
 

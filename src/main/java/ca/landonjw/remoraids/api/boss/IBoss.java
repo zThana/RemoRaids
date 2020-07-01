@@ -142,6 +142,16 @@ public interface IBoss extends DataSerializable {
 	interface IBossBuilder extends IBuilder.Deserializable<IBoss, IBossBuilder> {
 
 		/**
+		 * Builds the raid boss from a {@link Pokemon}. This will essentially copy all
+		 * characteristics of the pokemon supplied for purposes of the boss. The
+		 * supplied pokemon will <strong>not</strong> be directly used or modified.
+		 *
+		 * @param pokemon The Pokemon to create raid boss from
+		 * @return The builder after being modified by this call
+		 */
+		IBossBuilder pokemon(Pokemon pokemon);
+
+		/**
 		 * Builds the raid boss from a {@link PokemonSpec}. Essentially, for all build options
 		 * available, this function will call each and every one of them.
 		 *
