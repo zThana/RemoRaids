@@ -245,7 +245,6 @@ public class BossBattle implements IBossBattle {
         //Create an list of players in order of highest damage dealt in the battle
         List<EntityPlayerMP> contributors = getTopDamageDealers().stream()
                 .map(id -> FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(id))
-                .sorted(Comparator.comparingInt(player -> getDamageDealt(player.getUniqueID()).get()))
                 .collect(Collectors.toList());
 
         Config config = RemoRaids.getMessageConfig();

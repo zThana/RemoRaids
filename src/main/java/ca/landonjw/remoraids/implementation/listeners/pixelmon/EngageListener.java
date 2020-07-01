@@ -2,11 +2,15 @@ package ca.landonjw.remoraids.implementation.listeners.pixelmon;
 
 import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.battles.IBossBattle;
+import ca.landonjw.remoraids.api.boss.IBoss;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.implementation.boss.BossEntityRegistry;
 import com.pixelmonmod.pixelmon.api.events.PixelmonSendOutEvent;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -29,8 +33,19 @@ public class EngageListener {
             for(IBossEntity bossEntity : BossEntityRegistry.getInstance().getAllBossEntities()){
                 if(bossEntity.getBossEngager().isPlayerInRange(event.player)){
                     event.setCanceled(true);
-                    IBossBattle battle = IBossAPI.getInstance().getBossBattleRegistry().getBossBattle(bossEntity).get();
-                    battle.startBattle(event.player, event.pokemon.getOrSpawnPixelmon(event.player));
+                    EntityPlayerMP player = event.player;
+                    IBoss boss = bossEntity.getBoss();
+                    if(!boss.getBattleSettings().validate(player)){
+                        List<String> rejectionReasons = boss.getBattleSettings().getRejectionMessages(player);
+                        for(String reason : rejectionReasons){
+                            player.sendMessage(new TextComponentString(reason));
+                        }
+                        return;
+                    }
+                    else{
+                        IBossBattle battle = IBossAPI.getInstance().getBossBattleRegistry().getBossBattle(bossEntity).get();
+                        battle.startBattle(event.player, event.pokemon.getOrSpawnPixelmon(event.player));
+                    }
                 }
             }
         }
