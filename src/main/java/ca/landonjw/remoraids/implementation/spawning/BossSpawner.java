@@ -176,6 +176,7 @@ public class BossSpawner implements IBossSpawner {
 
         Pokemon bossPokemon = this.getBoss().getPokemon();
         battleEntity.setPokemon(PokemonUtils.clonePokemon(bossPokemon));
+        battleEntity.getPokemonData().getBonusStats().setPreventsCapture(true);
         battleEntity.setPixelmonScale(0);
         battleEntity.enablePersistence();
 
