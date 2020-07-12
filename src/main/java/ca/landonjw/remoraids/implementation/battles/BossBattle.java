@@ -20,6 +20,7 @@ import ca.landonjw.remoraids.internal.api.config.Config;
 import ca.landonjw.remoraids.internal.config.MessageConfig;
 import ca.landonjw.remoraids.internal.config.RestraintsConfig;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.controller.BattleControllerBase;
@@ -290,16 +291,29 @@ public class BossBattle implements IBossBattle {
     @Override
     public void distributeRewards() {
         List<EntityPlayerMP> rewardsReceived = Lists.newArrayList();
+        Map<Integer, List<IReward>> rewardsByPriority = Maps.newHashMap();
+        for(IReward reward : getBattleSettings().getRewards()){
+            if(!rewardsByPriority.containsKey(reward.getPriority())){
+                rewardsByPriority.put(reward.getPriority(), Lists.newArrayList());
+            }
+            rewardsByPriority.get(reward.getPriority()).add(reward);
+        }
 
-        List<IReward> rewards = Lists.newArrayList(getBattleSettings().getRewards());
-        rewards.sort(Comparator.comparingInt(IReward::getPriority).reversed());
-        for(IReward reward : rewards){
-            for(EntityPlayerMP player : reward.getWinnersList(this)){
-                if(!rewardsReceived.contains(player)){
-                    reward.distributeReward(player);
-                    rewardsReceived.add(player);
+        List<Map.Entry<Integer, List<IReward>>> sortedEntries = Lists.newArrayList(rewardsByPriority.entrySet());
+        sortedEntries.sort((entry1, entry2) -> entry2.getKey() - entry1.getKey());
+        for(Map.Entry<Integer, List<IReward>> entry : sortedEntries){
+            List<EntityPlayerMP> playersReceivedPerPriority = Lists.newArrayList();
+            for(IReward reward : entry.getValue()){
+                for(EntityPlayerMP player : reward.getWinnersList(this)){
+                    if(!rewardsReceived.contains(player)){
+                        reward.distributeReward(player);
+                        if(!playersReceivedPerPriority.contains(player)){
+                            playersReceivedPerPriority.add(player);
+                        }
+                    }
                 }
             }
+            rewardsReceived.addAll(playersReceivedPerPriority);
         }
     }
 
