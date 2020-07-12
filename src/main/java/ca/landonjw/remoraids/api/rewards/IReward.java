@@ -18,9 +18,9 @@ public interface IReward {
     /**
      * Distributes the rewards to players who battled a boss.
      *
-     * @param battle battle to distribute reward for.
+     * @param player the player to distribute reward to.
      */
-    void distributeReward(IBossBattle battle);
+    void distributeReward(EntityPlayerMP player);
 
     /**
      * Gets all players that will receive the reward.
@@ -63,5 +63,7 @@ public interface IReward {
      * @return A description of the reward and it's contents.
      */
     String getDescription();
+
+    int getPriority();
 
 }

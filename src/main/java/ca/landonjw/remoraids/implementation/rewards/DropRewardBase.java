@@ -83,32 +83,28 @@ public abstract class DropRewardBase implements IReward {
         contents.clear();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void distributeReward(IBossBattle battle) {
-        for(EntityPlayerMP player : getWinnersList(battle)){
-            Config config = RemoRaids.getMessageConfig();
-            IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
-            IParsingContext context = IParsingContext.builder()
-                    .add(EntityPlayerMP.class, () -> player)
-                    .add(IReward.class, () -> this)
-                    .build();
-            ITextComponent rewardText = new TextComponentString(service.interpret(config.get(MessageConfig.REWARD_RECEIVED), context));
+    public void distributeReward(EntityPlayerMP player){
+        Config config = RemoRaids.getMessageConfig();
+        IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
+        IParsingContext context = IParsingContext.builder()
+                .add(EntityPlayerMP.class, () -> player)
+                .add(IReward.class, () -> this)
+                .build();
+        ITextComponent rewardText = new TextComponentString(service.interpret(config.get(MessageConfig.REWARD_RECEIVED), context));
 
-            TextUtils.addCallback(rewardText, (sender) -> {
-                RewardDropQuery query = new RewardDropQuery(player.getUniqueID(), this);
-                ongoingRewardQueries.put(player.getUniqueID(), query);
+        TextUtils.addCallback(rewardText, (sender) -> {
+            RewardDropQuery query = new RewardDropQuery(player.getUniqueID(), this);
+            ongoingRewardQueries.put(player.getUniqueID(), query);
 
-                CustomDropScreen.builder()
-                        .setItems(contents.stream().map(IRewardContent::toItemStack).collect(Collectors.toList()))
-                        .setTitle(new TextComponentString(getDescription()))
-                        .setButtonText(EnumPositionTriState.RIGHT, "Take All") //TODO: Make these configurable?
-                        .setButtonText(EnumPositionTriState.LEFT, "Drop All")
-                        .sendTo(player);
-            }, true);
+            CustomDropScreen.builder()
+                    .setItems(contents.stream().map(IRewardContent::toItemStack).collect(Collectors.toList()))
+                    .setTitle(new TextComponentString(getDescription()))
+                    .setButtonText(EnumPositionTriState.RIGHT, "Take All") //TODO: Make these configurable?
+                    .setButtonText(EnumPositionTriState.LEFT, "Drop All")
+                    .sendTo(player);
+        }, true);
 
-            player.sendMessage(rewardText);
-        }
+        player.sendMessage(rewardText);
     }
 
     /**

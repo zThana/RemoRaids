@@ -289,8 +289,17 @@ public class BossBattle implements IBossBattle {
     /** {@inheritDoc} */
     @Override
     public void distributeRewards() {
-        for(IReward reward : getBattleSettings().getRewards()){
-            reward.distributeReward(this);
+        List<EntityPlayerMP> rewardsReceived = Lists.newArrayList();
+
+        List<IReward> rewards = Lists.newArrayList(getBattleSettings().getRewards());
+        rewards.sort(Comparator.comparingInt(IReward::getPriority).reversed());
+        for(IReward reward : rewards){
+            for(EntityPlayerMP player : reward.getWinnersList(this)){
+                if(!rewardsReceived.contains(player)){
+                    reward.distributeReward(player);
+                    rewardsReceived.add(player);
+                }
+            }
         }
     }
 

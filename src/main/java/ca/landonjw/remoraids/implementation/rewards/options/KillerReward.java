@@ -6,6 +6,7 @@ import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.rewards.contents.IRewardContent;
 import ca.landonjw.remoraids.implementation.rewards.DropRewardBase;
 import ca.landonjw.remoraids.internal.api.config.Config;
+import ca.landonjw.remoraids.internal.config.GeneralConfig;
 import ca.landonjw.remoraids.internal.config.MessageConfig;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.PlayerList;
@@ -46,6 +47,12 @@ public class KillerReward extends DropRewardBase {
     public String getDescription() {
         Config config = RemoRaids.getMessageConfig();
         return config.get(MessageConfig.KILLER_REWARD_TITLE);
+    }
+
+    @Override
+    public int getPriority() {
+        Config config = RemoRaids.getGeneralConfig();
+        return config.get(GeneralConfig.KILLER_REWARD_PRIORITY);
     }
 
 }

@@ -23,6 +23,10 @@ public class GeneralConfig implements ConfigKeyHolder {
         return (float) in;
     });
 
+    public static final ConfigKey<Integer> KILLER_REWARD_PRIORITY = intKey("reward-priority.killer-reward", 3);
+    public static final ConfigKey<Integer> TOP_DAMAGE_REWARD_PRIORITY = intKey("reward-priority.top-damage-reward", 2);
+    public static final ConfigKey<Integer> PARTICIPATION_REWARD_PRIORITY = intKey("reward-priority.participation-reward", 1);
+
     private static final Map<String, ConfigKey<?>> KEYS;
     private static final int SIZE;
 
@@ -75,4 +79,5 @@ public class GeneralConfig implements ConfigKeyHolder {
     public int getSize() {
         return SIZE;
     }
+
 }
