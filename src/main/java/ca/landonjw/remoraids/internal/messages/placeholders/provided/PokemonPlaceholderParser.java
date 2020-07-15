@@ -114,8 +114,8 @@ public class PokemonPlaceholderParser implements IPlaceholderParser {
         }
 
         private Optional<String> getMoveIfPresent(Moveset moveset, int index) {
-            if(moveset.size() >= index + 1) {
-                return Optional.of(moveset.get(index).getActualMove().getLocalizedName());
+            if(moveset.size() >= index) {
+                return Optional.of(moveset.get(index - 1).getActualMove().getLocalizedName());
             }
 
             return Optional.of("???");
