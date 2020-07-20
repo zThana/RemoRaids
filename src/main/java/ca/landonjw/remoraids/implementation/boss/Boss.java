@@ -73,7 +73,15 @@ public class Boss implements IBoss {
      */
     private Boss(@NonNull BossBuilder builder) {
         this.uniqueId = builder.id;
-        this.pokemon = Pixelmon.pokemonFactory.create(builder.species);
+        if(builder.spec != null && builder.species == null){
+            this.pokemon = Pixelmon.pokemonFactory.create(builder.spec);
+        }
+        else{
+            this.pokemon = Pixelmon.pokemonFactory.create(builder.species);
+            if(builder.spec != null){
+                builder.spec.apply(pokemon);
+            }
+        }
         applyIfNotNull(builder.form, this.pokemon::setForm);
         applyIfNotNull(builder.level, this.pokemon::setLevel);
         applyIfNotNull(builder.nature, this.pokemon::setNature);
@@ -91,7 +99,6 @@ public class Boss implements IBoss {
         applyIfNotNull(builder.moveset, moveset -> {
         	this.pokemon.getMoveset().attacks = moveset.attacks;
         });
-
         this.size = Math.max(1, builder.size);
         applyIfNotNull(builder.texture, this.pokemon::setCustomTexture);
         this.battleSettings = (builder.battleSettings != null) ? battleSettings : new BossBattleSettings();
@@ -226,6 +233,7 @@ public class Boss implements IBoss {
 
 		private UUID id = UUID.randomUUID();
 
+		private PokemonSpec spec;
 	    /** The Pokemon species of the boss. May be null. */
         private EnumSpecies species;
         /** The form of the boss. May be null. */
@@ -267,16 +275,7 @@ public class Boss implements IBoss {
         /** {@inheritDoc} */
         @Override
         public IBossBuilder spec(PokemonSpec spec) {
-        	applyIfNotNull(spec.name, s -> this.species = EnumSpecies.getFromNameAnyCase(s));
-			applyIfNotNull(spec.level, lvl -> this.level = lvl);
-			applyIfNotNull(spec.form, f -> {
-				Preconditions.checkNotNull(this.species, "The species must be configured for a form to be passed along");
-				this.form = this.species.getFormEnum((int) f);
-			});
-			applyIfNotNull(spec.shiny, b -> this.shiny = b);
-			applyIfNotNull(spec.nature, n -> this.nature = EnumNature.getNatureFromIndex((int) n));
-			applyIfNotNull(spec.ability, a -> this.ability = a);
-			applyIfNotNull(spec.gender, g -> this.gender = Gender.getGender(g));
+        	this.spec = spec;
             return this;
         }
 
@@ -423,7 +422,6 @@ public class Boss implements IBoss {
         /** {@inheritDoc} */
         @Override
         public IBoss build() {
-        	Preconditions.checkNotNull(this.species, "A raid boss must have a species specified to be created!");
             return new Boss(this);
         }
 
