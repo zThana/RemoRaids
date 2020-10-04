@@ -245,4 +245,9 @@ public class BossParticipant extends BattleParticipant {
     public UUID getNextPokemonUUID() {
         return null;
     }
+
+    @Override
+    public boolean canDynamax() {
+        return false;
+    }
 }
