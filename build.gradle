@@ -32,7 +32,7 @@ group = modGroup
 archivesBaseName = modBaseName
 
 ext {
-    pixelmon = "8.0.2"
+    pixelmon = "8.1.0"
 }
 
 minecraft {
@@ -68,7 +68,7 @@ gradle.projectsEvaluated {
 dependencies {
     shadow 'com.google.guava:guava:27.1-jre'
     shadow 'com.google.code.gson:gson:2.8.6'
-    shadow 'reforged:server:8.0.2@Pixelmon-1.12.2-8.0.2-server.jar'
+    shadow 'reforged:server:8.1.0@Pixelmon-1.12.2-8.1.0-server.jar'
 }
 
 processResources {

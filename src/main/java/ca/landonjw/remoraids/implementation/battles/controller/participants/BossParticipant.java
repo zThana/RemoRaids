@@ -117,7 +117,7 @@ public class BossParticipant extends BattleParticipant {
      */
     @Override
     public void endBattle() {
-        this.controlledPokemon.get(0).entity.endBattle();
+        this.controlledPokemon.get(0).entity.onEndBattle();
     }
 
     /**
