@@ -65,6 +65,13 @@ public class CreateRaidBossExecutor implements RaidsCommandExecutor {
 
 			IBossCreator creator = IBossCreator.initialize();
 			IBoss.IBossBuilder boss = IBoss.builder();
+
+			BattleRules rules = new BattleRules();
+			rules.setNewClauses(RemoRaids.getRestraintsConfig().get(RestraintsConfig.BANNED_CLAUSES));
+			IBossBattleSettings settings = new BossBattleSettings();
+			settings.setBattleRules(rules);
+			boss = boss.battleSettings(settings);
+
 			PokemonSpec design = PokemonSpec.from(arguments);
 
 			ExtraArgs.process(creator, boss, Arrays.stream(arguments)
