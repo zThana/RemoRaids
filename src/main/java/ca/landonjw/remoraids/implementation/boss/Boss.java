@@ -101,7 +101,7 @@ public class Boss implements IBoss {
         });
         this.size = Math.max(1, builder.size);
         applyIfNotNull(builder.texture, this.pokemon::setCustomTexture);
-        this.battleSettings = (builder.battleSettings != null) ? battleSettings : new BossBattleSettings();
+        this.battleSettings = (builder.battleSettings != null) ? builder.battleSettings : new BossBattleSettings();
     }
 
     private static <T> void applyIfNotNull(T input, Consumer<T> consumer) {
