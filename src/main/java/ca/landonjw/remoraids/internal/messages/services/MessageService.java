@@ -1,14 +1,15 @@
 package ca.landonjw.remoraids.internal.messages.services;
 
-import ca.landonjw.remoraids.api.IBossAPI;
-import ca.landonjw.remoraids.api.messages.services.IMessageService;
-import ca.landonjw.remoraids.api.messages.placeholders.IParsingContext;
-import ca.landonjw.remoraids.api.messages.services.IPlaceholderService;
-
-import javax.annotation.Nonnull;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.annotation.Nonnull;
+
+import ca.landonjw.remoraids.api.IBossAPI;
+import ca.landonjw.remoraids.api.messages.placeholders.IParsingContext;
+import ca.landonjw.remoraids.api.messages.services.IMessageService;
+import ca.landonjw.remoraids.api.messages.services.IPlaceholderService;
 
 public class MessageService implements IMessageService {
 
@@ -21,24 +22,24 @@ public class MessageService implements IMessageService {
 		StringBuilder output = new StringBuilder();
 		String working = input;
 
-		while(!working.isEmpty()) {
+		while (!working.isEmpty()) {
 			Matcher matcher = PLACEHOLDER_LOCATOR.matcher(working);
-			if(matcher.find()) {
+			if (matcher.find()) {
 				String[] token = matcher.group(2).replace("{", "").replace("}", "").toLowerCase().split("\\|");
 
 				String placeholder = token[0];
 				String[] arguments = null;
-				if(token.length > 1) {
+				if (token.length > 1) {
 					arguments = token[1].split(",");
 				}
 
-				if(matcher.group(1) != null) {
+				if (matcher.group(1) != null) {
 					output.append(matcher.group(1));
 					working = working.replaceFirst("^[^{]+", "");
 				}
 
 				Optional<String> result = service.parse(placeholder, context, arguments);
-				if(result.isPresent()) {
+				if (result.isPresent()) {
 					output.append(result.get());
 				} else {
 					output.append(matcher.group(2));

@@ -10,21 +10,21 @@ import ca.landonjw.remoraids.internal.registry.InternalRaidsRegistry;
 
 public class BossAPI implements IBossAPI {
 
-    private IRaidRegistry registry = new InternalRaidsRegistry();
+	private final IRaidRegistry registry = new InternalRaidsRegistry();
 
-    @Override
-    public IRaidRegistry getRaidRegistry() {
-        return this.registry;
-    }
+	@Override
+	public IRaidRegistry getRaidRegistry() {
+		return this.registry;
+	}
 
-    @Override
-    public IBossEntityRegistry getBossEntityRegistry() {
-        return BossEntityRegistry.getInstance();
-    }
+	@Override
+	public IBossEntityRegistry getBossEntityRegistry() {
+		return BossEntityRegistry.getInstance();
+	}
 
-    @Override
-    public IBossBattleRegistry getBossBattleRegistry() {
-        return BossBattleRegistry.getInstance();
-    }
+	@Override
+	public IBossBattleRegistry getBossBattleRegistry() {
+		return BossBattleRegistry.getInstance();
+	}
 
 }

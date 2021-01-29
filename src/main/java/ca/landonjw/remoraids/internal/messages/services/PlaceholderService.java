@@ -1,20 +1,32 @@
 package ca.landonjw.remoraids.internal.messages.services;
 
-import ca.landonjw.remoraids.api.rewards.IReward;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import com.google.common.collect.Maps;
+
 import ca.landonjw.remoraids.api.messages.placeholders.IParsingContext;
 import ca.landonjw.remoraids.api.messages.placeholders.IPlaceholderContext;
 import ca.landonjw.remoraids.api.messages.placeholders.IPlaceholderParser;
 import ca.landonjw.remoraids.api.messages.services.IPlaceholderService;
-import ca.landonjw.remoraids.internal.messages.placeholders.provided.*;
+import ca.landonjw.remoraids.api.rewards.IReward;
 import ca.landonjw.remoraids.implementation.spawning.announcements.SpawnAnnouncement;
-import com.google.common.collect.Maps;
-import net.minecraft.entity.player.EntityPlayerMP;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
+import ca.landonjw.remoraids.internal.messages.placeholders.provided.BattleClausePlaceholder;
+import ca.landonjw.remoraids.internal.messages.placeholders.provided.CapacityPlaceholderParser;
+import ca.landonjw.remoraids.internal.messages.placeholders.provided.CooldownPlaceholderParser;
+import ca.landonjw.remoraids.internal.messages.placeholders.provided.ItemStackPlaceholderParser;
+import ca.landonjw.remoraids.internal.messages.placeholders.provided.PlayerPlaceholderParser;
+import ca.landonjw.remoraids.internal.messages.placeholders.provided.PokemonPlaceholderParser;
+import ca.landonjw.remoraids.internal.messages.placeholders.provided.PokemonSpecPlaceholderParser;
+import ca.landonjw.remoraids.internal.messages.placeholders.provided.RaidBossPlaceholderParser;
+import ca.landonjw.remoraids.internal.messages.placeholders.provided.RespawnDataPlaceholderParser;
+import ca.landonjw.remoraids.internal.messages.placeholders.provided.SpawnLocationParser;
+import ca.landonjw.remoraids.internal.messages.placeholders.provided.StatPlaceholderParser;
+import ca.landonjw.remoraids.internal.messages.placeholders.provided.TimePlaceholderParser;
 
 public class PlaceholderService implements IPlaceholderService {
 
@@ -32,10 +44,7 @@ public class PlaceholderService implements IPlaceholderService {
 
 	@Override
 	public IPlaceholderContext contextualize(@Nullable IParsingContext context, @Nullable Collection<String> arguments) {
-		return IPlaceholderContext.builder()
-				.fromParsingContext((context != null) ? context : IParsingContext.builder().build())
-				.arguments(arguments)
-				.build();
+		return IPlaceholderContext.builder().fromParsingContext((context != null) ? context : IParsingContext.builder().build()).arguments(arguments).build();
 	}
 
 	@Override
@@ -45,41 +54,32 @@ public class PlaceholderService implements IPlaceholderService {
 
 	@Override
 	public void registerDefaults() {
-		this.register(IPlaceholderParser.builder()
-				.key("integer")
-				.parser((context) -> {
-					Integer value = context.getAssociation(Integer.class).orElse(null);
+		this.register(IPlaceholderParser.builder().key("integer").parser((context) -> {
+			Integer value = context.getAssociation(Integer.class).orElse(null);
 
-					if(value != null){
-						return Optional.of(value.toString());
-					}
-					return Optional.empty();
-				})
-				.build());
+			if (value != null) {
+				return Optional.of(value.toString());
+			}
+			return Optional.empty();
+		}).build());
 
-		this.register(IPlaceholderParser.builder()
-				.key("string")
-				.parser((context) -> {
-					String value = context.getAssociation(String.class).orElse(null);
+		this.register(IPlaceholderParser.builder().key("string").parser((context) -> {
+			String value = context.getAssociation(String.class).orElse(null);
 
-					if(value != null){
-						return Optional.of(value);
-					}
-					return Optional.empty();
-				})
-				.build());
+			if (value != null) {
+				return Optional.of(value);
+			}
+			return Optional.empty();
+		}).build());
 
-		this.register(IPlaceholderParser.builder()
-				.key("reward")
-				.parser((context) -> {
-					IReward reward = context.getAssociation(IReward.class).orElse(null);
+		this.register(IPlaceholderParser.builder().key("reward").parser((context) -> {
+			IReward reward = context.getAssociation(IReward.class).orElse(null);
 
-					if(reward != null){
-						return Optional.of(reward.getDescription());
-					}
-					return Optional.empty();
-				})
-				.build());
+			if (reward != null) {
+				return Optional.of(reward.getDescription());
+			}
+			return Optional.empty();
+		}).build());
 
 		this.register(new PlayerPlaceholderParser());
 		this.register(new RaidBossPlaceholderParser());
@@ -94,6 +94,7 @@ public class PlaceholderService implements IPlaceholderService {
 		this.register(new RespawnDataPlaceholderParser());
 		this.register(new TimePlaceholderParser());
 		this.register(new StatPlaceholderParser());
+		this.register(new BattleClausePlaceholder());
 	}
 
 }

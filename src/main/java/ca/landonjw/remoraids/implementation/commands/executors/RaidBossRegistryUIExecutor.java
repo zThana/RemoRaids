@@ -1,5 +1,8 @@
 package ca.landonjw.remoraids.implementation.commands.executors;
 
+import java.util.Collections;
+import java.util.List;
+
 import ca.landonjw.remoraids.api.boss.IBossEntityRegistry;
 import ca.landonjw.remoraids.implementation.ui.pages.RegistryUI;
 import ca.landonjw.remoraids.internal.commands.RaidsCommandExecutor;
@@ -8,15 +11,12 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
-import java.util.Collections;
-import java.util.List;
-
 /**
  * Sub-command used for opening the registry UI, which contains all raids currently spawned and registered within the
  * {@link IBossEntityRegistry}.
  *
  * @author landonjw
- * @since  1.0.0
+ * @since 1.0.0
  */
 public class RaidBossRegistryUIExecutor implements RaidsCommandExecutor {
 

@@ -1,10 +1,10 @@
 package ca.landonjw.remoraids.internal.messages.placeholders;
 
-import ca.landonjw.remoraids.api.messages.placeholders.IPlaceholderContext;
-import ca.landonjw.remoraids.api.messages.placeholders.IPlaceholderParser;
-
 import java.util.Optional;
 import java.util.function.Function;
+
+import ca.landonjw.remoraids.api.messages.placeholders.IPlaceholderContext;
+import ca.landonjw.remoraids.api.messages.placeholders.IPlaceholderParser;
 
 public class PlaceholderParser implements IPlaceholderParser {
 

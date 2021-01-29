@@ -3,6 +3,7 @@ package ca.landonjw.remoraids.implementation.listeners.raids;
 import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.events.BossDeathEvent;
 import ca.landonjw.remoraids.api.spawning.IBossSpawner;
+import ca.landonjw.remoraids.api.spawning.IRespawnData;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class RaidBossDeathListener {
@@ -18,17 +19,17 @@ public class RaidBossDeathListener {
 	public void onRaidBossDeath(BossDeathEvent event) {
 		final IBossSpawner spawner = event.getBossEntity().getSpawner();
 
-		if(spawner.getRespawnData().isPresent()) {
-			IBossSpawner.IRespawnData data = spawner.getRespawnData().get();
-			if(data.isInfinite() || data.hasRemainingRespawns()) {
+		if (spawner.getRespawnData().isPresent()) {
+			IRespawnData data = spawner.getRespawnData().get();
+			if (data.isInfinite() || data.hasRemainingRespawns()) {
 				data.run(spawner);
 			} else {
-				if(spawner.doesPersist()) {
+				if (spawner.doesPersist()) {
 					RemoRaids.storage.delete(spawner);
 				}
 			}
 		} else {
-			if(spawner.doesPersist()) {
+			if (spawner.doesPersist()) {
 				RemoRaids.storage.delete(spawner);
 			}
 		}

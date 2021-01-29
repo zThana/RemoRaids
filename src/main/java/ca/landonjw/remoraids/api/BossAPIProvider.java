@@ -7,7 +7,7 @@ public class BossAPIProvider {
 	private static IBossAPI instance;
 
 	public static @NonNull IBossAPI get() {
-		if(instance == null) {
+		if (instance == null) {
 			throw new IllegalStateException("The Boss API is not loaded");
 		}
 

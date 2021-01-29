@@ -1,10 +1,10 @@
 package ca.landonjw.remoraids.api.registry;
 
-import ca.landonjw.remoraids.api.spawning.IBossSpawner;
-import ca.landonjw.remoraids.api.util.IBuilder;
-
 import java.util.Optional;
 import java.util.function.Supplier;
+
+import ca.landonjw.remoraids.api.spawning.IBossSpawner;
+import ca.landonjw.remoraids.api.util.IBuilder;
 
 /**
  * Represents a collection tool that maps objects to an interface or referencable typing. The goal
@@ -21,9 +21,9 @@ public interface IRaidRegistry {
 	 * the API to provide objects that are implemented elsewhere, so the main face of the API can simply
 	 * be declaration and informative.
 	 *
-	 * @param type The type we are registering to the registry
+	 * @param type  The type we are registering to the registry
 	 * @param value The intended output object for this type marking
-	 * @param <T> The common inherited type between the type marking and implementation
+	 * @param <T>   The common inherited type between the type marking and implementation
 	 */
 	<T> void register(Class<T> type, T value);
 
@@ -32,7 +32,7 @@ public interface IRaidRegistry {
 	 * is not within the API, this call will return an empty optional.
 	 *
 	 * @param type The input type to match and find
-	 * @param <T> The type inherited by the type marking and implementation
+	 * @param <T>  The type inherited by the type marking and implementation
 	 * @return A Optionally wrapped instance bound to the input type, or an empty Optional
 	 */
 	<T> Optional<T> get(Class<T> type);
@@ -44,7 +44,7 @@ public interface IRaidRegistry {
 	 * call.
 	 *
 	 * @param type The input type to match and find
-	 * @param <T> The type inherited by the type marking and implementation
+	 * @param <T>  The type inherited by the type marking and implementation
 	 * @return The bound typing
 	 * @throws IllegalArgumentException If the input type had no registered instance
 	 */
@@ -55,9 +55,9 @@ public interface IRaidRegistry {
 	/**
 	 * Registers a builder that will be created when a user wishes to create a new instance.
 	 *
-	 * @param type The type of builder being registered
+	 * @param type    The type of builder being registered
 	 * @param builder The implementation of the builder
-	 * @param <T> The common type pairing between the declaration and implementation
+	 * @param <T>     The common type pairing between the declaration and implementation
 	 */
 	<T extends IBuilder<?, ?>> void registerBuilderSupplier(Class<T> type, Supplier<? extends T> builder);
 
@@ -65,7 +65,7 @@ public interface IRaidRegistry {
 	 * Constructs a new builder based on the input builder type.
 	 *
 	 * @param type The type of builder to create
-	 * @param <T> The common type matching between declaration and implementation
+	 * @param <T>  The common type matching between declaration and implementation
 	 * @return A new builder matching the input typing
 	 * @throws IllegalArgumentException If no builder is available that matches that typing
 	 */
@@ -76,11 +76,11 @@ public interface IRaidRegistry {
 	 * are referenced via a String key. This is to allow for dynamic loading during deserialization of a boss
 	 * spawner.
 	 *
-	 * @param key The key this spawner should be attached to. This key is what will be referenced when attempting
-	 *            to deserialize the spawner.
+	 * @param key     The key this spawner should be attached to. This key is what will be referenced when attempting
+	 *                to deserialize the spawner.
 	 * @param builder The supplier that will provide the new instance of a builder.
-	 * @param <T> An implementation of the {@link ca.landonjw.remoraids.api.spawning.IBossSpawner.IBossSpawnerBuilder
-	 *            IBossSpawnerBuilder}
+	 * @param <T>     An implementation of the {@link ca.landonjw.remoraids.api.spawning.IBossSpawner.IBossSpawnerBuilder
+	 *                IBossSpawnerBuilder}
 	 */
 	<T extends IBossSpawner.IBossSpawnerBuilder> void registerSpawnerBuilderSupplier(String key, Supplier<T> builder);
 

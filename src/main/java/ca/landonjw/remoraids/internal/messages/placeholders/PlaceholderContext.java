@@ -1,17 +1,22 @@
 package ca.landonjw.remoraids.internal.messages.placeholders;
 
-import ca.landonjw.remoraids.api.messages.placeholders.IParsingContext;
-import ca.landonjw.remoraids.api.messages.placeholders.IPlaceholderContext;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Supplier;
+
 import com.google.common.collect.Lists;
 
-import java.util.*;
-import java.util.function.Supplier;
+import ca.landonjw.remoraids.api.messages.placeholders.IParsingContext;
+import ca.landonjw.remoraids.api.messages.placeholders.IPlaceholderContext;
 
 public class PlaceholderContext extends ParsingContext implements IPlaceholderContext {
 
 	private final List<String> arguments;
 
-	private PlaceholderContext(Map<Class<?>, List<Supplier<?>>> contextObjects, List<String> arguments){
+	private PlaceholderContext(Map<Class<?>, List<Supplier<?>>> contextObjects, List<String> arguments) {
 		super(contextObjects);
 		this.arguments = arguments;
 	}

@@ -1,11 +1,20 @@
 package ca.landonjw.remoraids.implementation.ui.pages.spawning;
 
+import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import com.pixelmonmod.pixelmon.config.PixelmonItems;
+
 import ca.landonjw.remoraids.RemoRaids;
 import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.messages.placeholders.IParsingContext;
 import ca.landonjw.remoraids.api.messages.services.IMessageService;
 import ca.landonjw.remoraids.api.spawning.IBossSpawner;
+import ca.landonjw.remoraids.api.spawning.IRespawnData;
 import ca.landonjw.remoraids.api.ui.IBossUI;
 import ca.landonjw.remoraids.implementation.ui.pages.BaseBossUI;
 import ca.landonjw.remoraids.internal.api.config.Config;
@@ -14,117 +23,79 @@ import ca.landonjw.remoraids.internal.inventory.api.Button;
 import ca.landonjw.remoraids.internal.inventory.api.LineType;
 import ca.landonjw.remoraids.internal.inventory.api.Page;
 import ca.landonjw.remoraids.internal.inventory.api.Template;
-import com.pixelmonmod.pixelmon.config.PixelmonItems;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextFormatting;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 /**
  * A user interface to edit the spawn limit of a boss.
  * Can be viewed by: Registry > Options > Edit > Spawning Settings > Edit Spawn Limit
  *
  * @author landonjw
- * @since  1.0.0
+ * @since 1.0.0
  */
 public class RespawnLimitEditorUI extends BaseBossUI {
 
-    /**
-     * Default constructor.
-     *
-     * @param source     the user interface that opened this user interface, may be null if no previous UI opened this
-     * @param player     the player using the user interface
-     * @param bossEntity the boss entity being edited
-     */
-    public RespawnLimitEditorUI(@Nullable IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull IBossEntity bossEntity){
-        super(source, player, bossEntity);
-    }
+	/**
+	 * Default constructor.
+	 *
+	 * @param source     the user interface that opened this user interface, may be null if no previous UI opened this
+	 * @param player     the player using the user interface
+	 * @param bossEntity the boss entity being edited
+	 */
+	public RespawnLimitEditorUI(@Nullable IBossUI source, @Nonnull EntityPlayerMP player, @Nonnull IBossEntity bossEntity) {
+		super(source, player, bossEntity);
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public void open() {
-        if(bossNotInBattle()){
-            Config config = RemoRaids.getMessageConfig();
-            IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
+	/** {@inheritDoc} */
+	@Override
+	public void open() {
+		if (bossNotInBattle()) {
+			Config config = RemoRaids.getMessageConfig();
+			IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
 
-            Button back = Button.builder()
-                    .item(new ItemStack(Blocks.BARRIER))
-                    .displayName(config.get(MessageConfig.UI_COMMON_BACK))
-                    .onClick(() -> {
-                        source.open();
-                    })
-                    .build();
+			Button back = Button.builder().item(new ItemStack(Blocks.BARRIER)).displayName(config.get(MessageConfig.UI_COMMON_BACK)).onClick(() -> {
+				source.open();
+			}).build();
 
-            if(!this.bossEntity.getSpawner().getRespawnData().isPresent()){
-                IBossSpawner.IRespawnData data = this.bossEntity.getSpawner().createRespawnData();
-                data.setTotalRespawns(0);
-                data.setTotalWaitPeriod(5, TimeUnit.SECONDS);
-            }
+			if (!this.bossEntity.getSpawner().getRespawnData().isPresent()) {
+				IRespawnData data = this.bossEntity.getSpawner().createRespawnData();
+				data.setTotalRespawns(0);
+				data.setTotalWaitPeriod(5, TimeUnit.SECONDS);
+			}
 
-            IBossSpawner spawner = this.bossEntity.getSpawner();
-            IBossSpawner.IRespawnData respawnData = spawner.getRespawnData().get();
+			IBossSpawner spawner = this.bossEntity.getSpawner();
+			IRespawnData respawnData = spawner.getRespawnData().get();
 
-            IParsingContext context = IParsingContext.builder()
-                    .add(IBossSpawner.IRespawnData.class, () -> respawnData)
-                    .build();
+			IParsingContext context = IParsingContext.builder().add(IRespawnData.class, () -> respawnData).build();
 
-            Button spawnAmount = Button.builder()
-                    .item(new ItemStack(Items.PAPER))
-                    .displayName(service.interpret(config.get(MessageConfig.UI_RESPAWN_LIMIT_EDITOR_CURRENT_LIMIT), context))
-                    .lore(Arrays.asList(service.interpret(config.get(MessageConfig.UI_RESPAWN_LIMIT_EDITOR_REMAINING_RESPAWNS), context)))
-                    .build();
+			Button spawnAmount = Button.builder().item(new ItemStack(Items.PAPER)).displayName(service.interpret(config.get(MessageConfig.UI_RESPAWN_LIMIT_EDITOR_CURRENT_LIMIT), context)).lore(Arrays.asList(service.interpret(config.get(MessageConfig.UI_RESPAWN_LIMIT_EDITOR_REMAINING_RESPAWNS), context))).build();
 
-            Button decrementSpawns = Button.builder()
-                    .item(new ItemStack(PixelmonItems.LtradeHolderLeft))
-                    .displayName(config.get(MessageConfig.UI_RESPAWN_LIMIT_EDITOR_DECREASE))
-                    .onClick(() -> {
-                        if(respawnData.getTotalRespawns() > 0){
-                            respawnData.setTotalRespawns(respawnData.getTotalRespawns() - 1);
-                        }
-                        else{
-                            respawnData.setTotalRespawns(-1);
-                            respawnData.setInfinite(true);
-                        }
-                        open();
-                    })
-                    .build();
+			Button decrementSpawns = Button.builder().item(new ItemStack(PixelmonItems.LtradeHolderLeft)).displayName(config.get(MessageConfig.UI_RESPAWN_LIMIT_EDITOR_DECREASE)).onClick(() -> {
+				if (respawnData.getTotalRespawns() > 0) {
+					respawnData.setTotalRespawns(respawnData.getTotalRespawns() - 1);
+				} else {
+					respawnData.setTotalRespawns(-1);
+					respawnData.setInfinite(true);
+				}
+				open();
+			}).build();
 
-            Button incrementSpawns = Button.builder()
-                    .item(new ItemStack(PixelmonItems.tradeHolderRight))
-                    .displayName(config.get(MessageConfig.UI_RESPAWN_LIMIT_EDITOR_INCREASE))
-                    .onClick(() -> {
-                        if(respawnData.isInfinite()){
-                            respawnData.setInfinite(false);
-                        }
-                        respawnData.setTotalRespawns(respawnData.getTotalRespawns() + 1);
-                        open();
-                    })
-                    .build();
+			Button incrementSpawns = Button.builder().item(new ItemStack(PixelmonItems.tradeHolderRight)).displayName(config.get(MessageConfig.UI_RESPAWN_LIMIT_EDITOR_INCREASE)).onClick(() -> {
+				if (respawnData.isInfinite()) {
+					respawnData.setInfinite(false);
+				}
+				respawnData.setTotalRespawns(respawnData.getTotalRespawns() + 1);
+				open();
+			}).build();
 
-            Template template = Template.builder(5)
-                    .line(LineType.Horizontal, 1, 0, 9, getWhiteFiller())
-                    .line(LineType.Horizontal, 3, 0, 9, getWhiteFiller())
-                    .border(0,0, 5,9, getBlueFiller())
-                    .set(0, 4, getBossButton())
-                    .set(3, 4, back)
-                    .set(2, 3, decrementSpawns)
-                    .set(2, 4, spawnAmount)
-                    .set(2, 5, incrementSpawns)
-                    .build();
+			Template template = Template.builder(5).line(LineType.Horizontal, 1, 0, 9, getWhiteFiller()).line(LineType.Horizontal, 3, 0, 9, getWhiteFiller()).border(0, 0, 5, 9, getBlueFiller()).set(0, 4, getBossButton()).set(3, 4, back).set(2, 3, decrementSpawns).set(2, 4, spawnAmount).set(2, 5, incrementSpawns).build();
 
-            Page page = Page.builder()
-                    .template(template)
-                    .title(service.interpret(config.get(MessageConfig.UI_RESPAWN_LIMIT_EDITOR_TITLE), context))
-                    .build();
+			Page page = Page.builder().template(template).title(service.interpret(config.get(MessageConfig.UI_RESPAWN_LIMIT_EDITOR_TITLE), context)).build();
 
-            page.forceOpenPage(player);
-        }
-    }
+			page.forceOpenPage(player);
+		}
+	}
 
 }

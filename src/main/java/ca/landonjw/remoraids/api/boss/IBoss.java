@@ -1,10 +1,10 @@
 package ca.landonjw.remoraids.api.boss;
 
-import ca.landonjw.remoraids.api.IBossAPI;
-import ca.landonjw.remoraids.api.battles.IBossBattleSettings;
-import ca.landonjw.remoraids.api.util.DataSerializable;
-import ca.landonjw.remoraids.api.util.IBuilder;
-import ca.landonjw.remoraids.api.util.gson.JObject;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Gender;
@@ -13,10 +13,11 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 import com.pixelmonmod.pixelmon.enums.EnumNature;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.enums.forms.IEnumForm;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.Optional;
-import java.util.UUID;
+import ca.landonjw.remoraids.api.IBossAPI;
+import ca.landonjw.remoraids.api.battles.IBossBattleSettings;
+import ca.landonjw.remoraids.api.util.DataSerializable;
+import ca.landonjw.remoraids.api.util.IBuilder;
 
 /**
  * A IBoss represents the raid boss that will be used as a raid party host. In other words,
@@ -228,9 +229,11 @@ public interface IBoss extends DataSerializable {
 		 * want to apply this for health. While you can apply stat modifications elsewhere, it may make the opposing
 		 * pokemon far too powerful to defeat. Use with caution!
 		 *
-		 * <p>You may also use this call to apply an amplifier. An amplifier essentially takes the input value
+		 * <p>
+		 * You may also use this call to apply an amplifier. An amplifier essentially takes the input value
 		 * for the stat, and treats it as a multiplier to the overall stat of the pokemon, unmodified. Stat modifications
-		 * do not stack, so a change to a stat overwrites any previous application.</p>
+		 * do not stack, so a change to a stat overwrites any previous application.
+		 * </p>
 		 *
 		 * @param stat    The stat to apply the modification to
 		 * @param input   The value to use when modifying the stat
@@ -252,8 +255,10 @@ public interface IBoss extends DataSerializable {
 		/**
 		 * Allows for applying a custom texture to the raid pokemon.
 		 *
-		 * <p>If you aim to have no texture for this pokemon, use "". If null is placed here,
-		 * the call will fail exceptionally. Blame Reforged for this design decision.</p>
+		 * <p>
+		 * If you aim to have no texture for this pokemon, use "". If null is placed here,
+		 * the call will fail exceptionally. Blame Reforged for this design decision.
+		 * </p>
 		 *
 		 * @param texture The texture to use for the raid boss.
 		 * @return The builder after being modified by this call

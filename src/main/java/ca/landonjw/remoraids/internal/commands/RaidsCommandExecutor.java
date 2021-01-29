@@ -1,10 +1,10 @@
 package ca.landonjw.remoraids.internal.commands;
 
+import java.util.List;
+
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-
-import java.util.List;
 
 public interface RaidsCommandExecutor {
 
@@ -13,5 +13,4 @@ public interface RaidsCommandExecutor {
 	void execute(MinecraftServer server, ICommandSender source, String[] args) throws CommandException;
 
 	List<String> getTabCompletionOptions(String[] args);
-
 }

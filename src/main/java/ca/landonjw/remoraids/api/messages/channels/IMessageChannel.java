@@ -1,8 +1,9 @@
 package ca.landonjw.remoraids.api.messages.channels;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.ITextComponent;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Represents a method of messaging a player.
@@ -13,20 +14,20 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public interface IMessageChannel {
 
-    /**
-     * Sends a message to the player.
-     *
-     * @param player  the player to send the message to
-     * @param message the message to send in string form
-     */
-    void sendMessage(@NonNull EntityPlayerMP player, @NonNull String message);
+	/**
+	 * Sends a message to the player.
+	 *
+	 * @param player  the player to send the message to
+	 * @param message the message to send in string form
+	 */
+	void sendMessage(@NonNull EntityPlayerMP player, @NonNull String message);
 
-    /**
-     * Sends a message to the player.
-     *
-     * @param player  the player to send the message to
-     * @param message the message to send in text form
-     */
-    void sendMessage(@NonNull EntityPlayerMP player, @NonNull ITextComponent message);
+	/**
+	 * Sends a message to the player.
+	 *
+	 * @param player  the player to send the message to
+	 * @param message the message to send in text form
+	 */
+	void sendMessage(@NonNull EntityPlayerMP player, @NonNull ITextComponent message);
 
 }

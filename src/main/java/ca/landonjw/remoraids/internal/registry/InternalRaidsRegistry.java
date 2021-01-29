@@ -1,14 +1,15 @@
 package ca.landonjw.remoraids.internal.registry;
 
-import ca.landonjw.remoraids.api.registry.IRaidRegistry;
-import ca.landonjw.remoraids.api.spawning.IBossSpawner;
-import ca.landonjw.remoraids.api.util.IBuilder;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
-
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
+
+import ca.landonjw.remoraids.api.registry.IRaidRegistry;
+import ca.landonjw.remoraids.api.spawning.IBossSpawner;
+import ca.landonjw.remoraids.api.util.IBuilder;
 
 public class InternalRaidsRegistry implements IRaidRegistry {
 
@@ -41,7 +42,7 @@ public class InternalRaidsRegistry implements IRaidRegistry {
 	public <T extends IBossSpawner.IBossSpawnerBuilder> T createSpawnerBuilder(String key) {
 		Preconditions.checkNotNull(key, "Input builder key was null");
 		final Supplier<? extends IBuilder<?, ?>> supplier = spawnerBuilders.get(key);
-		if(supplier == null) {
+		if (supplier == null) {
 			throw new IllegalArgumentException("No supplier available for key: " + key);
 		}
 		return (T) supplier.get();
@@ -58,7 +59,7 @@ public class InternalRaidsRegistry implements IRaidRegistry {
 	public <T extends IBuilder<?, ?>> T createBuilder(Class<T> type) {
 		Preconditions.checkNotNull(type, "Input builder type was null");
 		final Supplier<? extends IBuilder<?, ?>> supplier = builders.get(type);
-		if(supplier == null) {
+		if (supplier == null) {
 			throw new IllegalArgumentException("No supplier available for type: " + type.getCanonicalName());
 		}
 		return (T) supplier.get();

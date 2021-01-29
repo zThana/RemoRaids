@@ -1,15 +1,5 @@
 package ca.landonjw.remoraids.internal.config.readers;
 
-import ca.landonjw.remoraids.RemoRaids;
-import ca.landonjw.remoraids.internal.api.config.ConfigurationAdapter;
-import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
-import com.google.common.reflect.TypeToken;
-import info.pixelmon.repack.ninja.leaping.configurate.ConfigurationNode;
-import info.pixelmon.repack.ninja.leaping.configurate.commented.CommentedConfigurationNode;
-import info.pixelmon.repack.ninja.leaping.configurate.hocon.HoconConfigurationLoader;
-import info.pixelmon.repack.ninja.leaping.configurate.loader.ConfigurationLoader;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -18,6 +8,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.google.common.base.Splitter;
+
+import ca.landonjw.remoraids.RemoRaids;
+import ca.landonjw.remoraids.internal.api.config.ConfigurationAdapter;
+import info.pixelmon.repack.ninja.leaping.configurate.ConfigurationNode;
+import info.pixelmon.repack.ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import info.pixelmon.repack.ninja.leaping.configurate.hocon.HoconConfigurationLoader;
+import info.pixelmon.repack.ninja.leaping.configurate.loader.ConfigurationLoader;
 
 public class ForgeConfigAdapter implements ConfigurationAdapter {
 
@@ -33,12 +32,12 @@ public class ForgeConfigAdapter implements ConfigurationAdapter {
 	}
 
 	private void createConfigIfMissing() {
-		if(!Files.exists(this.path)) {
+		if (!Files.exists(this.path)) {
 			try {
 				this.createDirectoriesIfNotExists(this.path.getParent());
 
-				try(InputStream is = RemoRaids.getResourceStream("raids/configuration/" + this.path.getFileName().toString())) {
-					if(is == null) {
+				try (InputStream is = RemoRaids.getResourceStream("raids/configuration/" + this.path.getFileName().toString())) {
+					if (is == null) {
 						System.out.println("Failed to locate resource file: " + this.path.getFileName().toString());
 						return;
 					}

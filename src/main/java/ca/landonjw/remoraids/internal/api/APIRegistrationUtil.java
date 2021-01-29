@@ -1,9 +1,9 @@
 package ca.landonjw.remoraids.internal.api;
 
+import java.lang.reflect.Method;
+
 import ca.landonjw.remoraids.api.BossAPIProvider;
 import ca.landonjw.remoraids.api.IBossAPI;
-
-import java.lang.reflect.Method;
 
 public class APIRegistrationUtil {
 

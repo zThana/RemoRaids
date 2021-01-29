@@ -1,5 +1,7 @@
 package ca.landonjw.remoraids.api.boss;
 
+import java.util.concurrent.TimeUnit;
+
 import ca.landonjw.remoraids.api.IBossAPI;
 import ca.landonjw.remoraids.api.spawning.IBossSpawnLocation;
 import ca.landonjw.remoraids.api.spawning.IBossSpawner;
@@ -7,8 +9,6 @@ import ca.landonjw.remoraids.api.spawning.ISpawnAnnouncement;
 import ca.landonjw.remoraids.api.util.IBuilder;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Provides a builder like construction to create a boss. This can be used to simplify the overall
@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit;
  * @author NickImpact
  * @since 1.0.0
  */
-@SuppressWarnings("UnusedReturnValue")
 public interface IBossCreator extends IBuilder.Deserializable<IBossSpawner, IBossCreator> {
 
 	/**

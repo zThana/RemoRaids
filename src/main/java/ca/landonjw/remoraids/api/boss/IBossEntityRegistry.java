@@ -14,22 +14,22 @@ import java.util.UUID;
  */
 public interface IBossEntityRegistry {
 
-    /**
-     * Gets a boss entity by it's unique id, if available
-     *
-     * This will result in an empty optional if a boss entity with supplied
-     * unique id is not registered.
-     *
-     * @param bossUniqueId unique id of boss to get
-     * @return boss entity, if available
-     */
-    Optional<IBossEntity> getBossEntity(UUID bossUniqueId);
+	/**
+	 * Gets a boss entity by it's unique id, if available
+	 *
+	 * This will result in an empty optional if a boss entity with supplied
+	 * unique id is not registered.
+	 *
+	 * @param bossUniqueId unique id of boss to get
+	 * @return boss entity, if available
+	 */
+	Optional<IBossEntity> getBossEntity(UUID bossUniqueId);
 
-    /**
-     * Gets all boss entities in the registry.
-     *
-     * @return all boss entities in the registry
-     */
-    Set<IBossEntity> getAllBossEntities();
+	/**
+	 * Gets all boss entities in the registry.
+	 *
+	 * @return all boss entities in the registry
+	 */
+	Set<IBossEntity> getAllBossEntities();
 
 }
