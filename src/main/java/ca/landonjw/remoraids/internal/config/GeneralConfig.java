@@ -18,6 +18,7 @@ import ca.landonjw.remoraids.internal.api.config.keys.BaseConfigKey;
 public class GeneralConfig implements ConfigKeyHolder {
 
 	public static final ConfigKey<Boolean> ANNOUNCEMENTS_ENABLED = booleanKey("announcements.enabled", true);
+	public static final ConfigKey<Boolean> ANNOUNCEMENTS_DISPLAY_BATTLE_SUMMARY_TO_SERVER = booleanKey("announcements.display-battle-summary-to-server", true);
 	public static final ConfigKey<Boolean> ANNOUNCEMENTS_ALLOW_TP = booleanKey("announcements.allow-teleport", false);
 
 	public static final ConfigKey<Integer> ENGAGE_MESSAGE_TYPE = intKey("engaging.message-type", 1);

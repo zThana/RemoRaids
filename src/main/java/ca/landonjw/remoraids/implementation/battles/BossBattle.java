@@ -1,5 +1,6 @@
 package ca.landonjw.remoraids.implementation.battles;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ca.landonjw.remoraids.internal.config.GeneralConfig;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.pixelmonmod.pixelmon.Pixelmon;
@@ -266,8 +268,17 @@ public class BossBattle implements IBossBattle {
 		}
 		output.add(service.interpret(config.get(MessageConfig.RESULTS_FOOTER), context));
 
-		// Send summary to all players
-		for (EntityPlayerMP player : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers()) {
+		boolean sendSummaryToServer = RemoRaids.getGeneralConfig().get(GeneralConfig.ANNOUNCEMENTS_DISPLAY_BATTLE_SUMMARY_TO_SERVER);
+
+		Collection<EntityPlayerMP> messageReceiver;
+		if (sendSummaryToServer){
+			messageReceiver = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers();
+		} else {
+			messageReceiver = getPlayersInBattle();
+		}
+
+		// Send summary to receivers
+		for (EntityPlayerMP player : messageReceiver) {
 			for (String out : output)
 				player.sendMessage(new TextComponentString(out));
 		}
