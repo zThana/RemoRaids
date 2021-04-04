@@ -6,7 +6,7 @@ buildscript {
             url = "https://files.minecraftforge.net/maven"
         }
         maven {
-            url "http://repository.jboss.org/nexus/content/groups/public/"
+            url "https://repository.jboss.org/nexus/content/groups/public/"
         }
     }
     dependencies {
@@ -32,7 +32,7 @@ group = modGroup
 archivesBaseName = modBaseName
 
 ext {
-    pixelmon = "8.1.0"
+    pixelmon = "8.1.2"
 }
 
 minecraft {
@@ -68,7 +68,7 @@ gradle.projectsEvaluated {
 dependencies {
     shadow 'com.google.guava:guava:27.1-jre'
     shadow 'com.google.code.gson:gson:2.8.6'
-    shadow 'reforged:server:8.1.0@Pixelmon-1.12.2-8.1.0-server.jar'
+    shadow 'reforged:server:8.1.2@Pixelmon-1.12.2-8.1.2-server.jar'
 }
 
 processResources {
