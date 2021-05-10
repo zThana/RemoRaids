@@ -2,6 +2,7 @@ package ca.landonjw.remoraids.implementation.commands.create;
 
 import javax.annotation.Nonnull;
 
+import ca.landonjw.remoraids.implementation.commands.create.arguments.HeldItemArgument;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 
 import ca.landonjw.remoraids.api.commands.arguments.IRaidsArgument;
@@ -40,7 +41,8 @@ public enum CreateCommandArguments {
 	CAPACITY_RESTRAINT(new CapacityRestraintArgument()),
 	COOLDOWN_RESTRAINT(new CooldownRestraintArgument()),
 	NO_REBATTLE_RESTRAINT(new NoRebattleRestraintArgument()),
-	SPECIES_CLAUSE_RESTRAINT(new SpeciesClauseRestraintArgument());
+	SPECIES_CLAUSE_RESTRAINT(new SpeciesClauseRestraintArgument()),
+	HELD_ITEM(new HeldItemArgument());
 
 	private IRaidsArgument argument;
 

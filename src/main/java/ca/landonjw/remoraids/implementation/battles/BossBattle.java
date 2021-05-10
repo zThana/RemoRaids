@@ -22,7 +22,7 @@ import com.pixelmonmod.pixelmon.battles.controller.BattleControllerBase;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
 import com.pixelmonmod.pixelmon.battles.rules.BattleRules;
-import com.pixelmonmod.pixelmon.comm.packetHandlers.battles.gui.HPPacket;
+import com.pixelmonmod.pixelmon.battles.tasks.HPUpdateTask;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 
@@ -220,7 +220,7 @@ public class BossBattle implements IBossBattle {
 			for (EntityPlayerMP player : playerBattleMap.keySet()) {
 				BattleControllerBase bcb = playerBattleMap.get(player);
 				PixelmonWrapper opponentWrapper = bcb.getPlayer(player).getOpponentPokemon().get(0);
-				HPPacket hpPacket = new HPPacket(opponentWrapper, newHealth - currentHealth);
+				HPUpdateTask hpPacket = new HPUpdateTask(opponentWrapper, newHealth - currentHealth);
 				Pixelmon.network.sendTo(hpPacket, player);
 				opponentWrapper.pokemon.setHealth(newHealth);
 			}

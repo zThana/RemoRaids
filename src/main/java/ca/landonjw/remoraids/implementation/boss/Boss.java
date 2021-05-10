@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.item.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import com.google.common.base.Preconditions;
@@ -54,6 +55,8 @@ public class Boss implements IBoss {
 	private float size;
 	/** The battle settings of the boss. */
 	private IBossBattleSettings battleSettings;
+	/** */
+	private ItemStack heldItem;
 
 	/**
 	 * Default constructor for the boss.
@@ -97,6 +100,7 @@ public class Boss implements IBoss {
 		}
 		applyIfNotNull(builder.gender, this.pokemon::setGender);
 		applyIfNotNull(builder.shiny, this.pokemon::setShiny);
+		applyIfNotNull(builder.heldItem, this.pokemon::setHeldItem);
 		applyIfNotNull(builder.moveset, moveset -> {
 			this.pokemon.getMoveset().attacks = moveset.attacks;
 		});
@@ -141,23 +145,23 @@ public class Boss implements IBoss {
 		}
 
 		switch (stat) {
-		case HP:
-			pokemon.getStats().hp = value;
-			break;
-		case Attack:
-			pokemon.getStats().attack = value;
-			break;
-		case Defence:
-			pokemon.getStats().defence = value;
-			break;
-		case SpecialAttack:
-			pokemon.getStats().specialAttack = value;
-			break;
-		case SpecialDefence:
-			pokemon.getStats().specialDefence = value;
-			break;
-		case Speed:
-			pokemon.getStats().speed = value;
+			case HP:
+				pokemon.getStats().hp = value;
+				break;
+			case Attack:
+				pokemon.getStats().attack = value;
+				break;
+			case Defence:
+				pokemon.getStats().defence = value;
+				break;
+			case SpecialAttack:
+				pokemon.getStats().specialAttack = value;
+				break;
+			case SpecialDefence:
+				pokemon.getStats().specialDefence = value;
+				break;
+			case Speed:
+				pokemon.getStats().speed = value;
 		}
 	}
 
@@ -246,6 +250,8 @@ public class Boss implements IBoss {
 		private IBossBattleSettings battleSettings;
 		/** The size of the boss. */
 		private float size;
+		/** The held item of the boss. */
+		private ItemStack heldItem;
 		/** Map corresponding to each stat of the boss. Tuple represents a value, and if the value is intended as an amplification or flat value. */
 		private Map<StatsType, Tuple<Integer, Boolean>> stats = Maps.newHashMap();
 
@@ -329,6 +335,13 @@ public class Boss implements IBoss {
 		@Override
 		public IBossBuilder size(float size) {
 			this.size = size;
+			return this;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public IBossBuilder heldItem(ItemStack heldItem) {
+			this.heldItem = heldItem;
 			return this;
 		}
 

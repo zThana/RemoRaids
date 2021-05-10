@@ -3,6 +3,7 @@ package ca.landonjw.remoraids.api.boss;
 import java.util.Optional;
 import java.util.UUID;
 
+import net.minecraft.item.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
@@ -251,6 +252,14 @@ public interface IBoss extends DataSerializable {
 		 * @return The builder after being modified by this call
 		 */
 		IBossBuilder size(float size);
+
+		/**
+		 * Sets the held item of the raid boss.
+		 *
+		 * @param heldItem Item to be held by the raid boss
+		 * @return The builder after being modified by this call
+		 */
+		IBossBuilder heldItem(ItemStack heldItem);
 
 		/**
 		 * Allows for applying a custom texture to the raid pokemon.

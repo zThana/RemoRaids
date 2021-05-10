@@ -16,6 +16,7 @@ import ca.landonjw.remoraids.api.battles.IBossBattle;
 import ca.landonjw.remoraids.implementation.battles.controller.participants.BossParticipant;
 import ca.landonjw.remoraids.internal.config.RestraintsConfig;
 import ca.landonjw.remoraids.internal.pokemon.PokemonUtils;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 public class BossWrapper extends PixelmonWrapper {
@@ -31,10 +32,17 @@ public class BossWrapper extends PixelmonWrapper {
 	public BossWrapper(@Nonnull BossParticipant owner, @Nonnull EntityPixelmon pixelmon) {
 		super(owner, PokemonUtils.clonePokemon(owner.getBossEntity().getBoss().getPokemon()), 0);
 		this.owner = owner;
+		this.pokemon.getStats().hp = owner.getBossEntity().getBoss().getStat(StatsType.HP);
+		this.pokemon.getStats().attack = owner.getBossEntity().getBoss().getStat(StatsType.Attack);
+		this.pokemon.getStats().defence = owner.getBossEntity().getBoss().getStat(StatsType.Defence);
+		this.pokemon.getStats().specialAttack = owner.getBossEntity().getBoss().getStat(StatsType.SpecialAttack);
+		this.pokemon.getStats().specialDefence = owner.getBossEntity().getBoss().getStat(StatsType.SpecialDefence);
+		this.pokemon.getStats().speed = owner.getBossEntity().getBoss().getStat(StatsType.Speed);
 		super.setHealth(owner.getBossBattle().getHealth());
 		this.entity = pixelmon;
 		removeDisabledMoves();
 	}
+
 
 	/**
 	 * Removes all disabled boss moves from the wrapper.
