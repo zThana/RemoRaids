@@ -12,7 +12,7 @@ import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.battles.controller.ai.MoveChoice;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
-import com.pixelmonmod.pixelmon.comm.packetHandlers.battles.gui.HPPacket;
+import com.pixelmonmod.pixelmon.battles.tasks.HPUpdateTask;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 
 import ca.landonjw.remoraids.RemoRaids;
@@ -110,7 +110,7 @@ public class BossPlayerParticipant extends PlayerParticipant {
 	@Override
 	public void sendDamagePacket(PixelmonWrapper target, int damage) {
 		if (this.controlledPokemon.contains(target)) {
-			Pixelmon.network.sendTo(new HPPacket(target, -damage), this.player);
+			Pixelmon.network.sendTo(new HPUpdateTask(target, -damage), this.player);
 		}
 	}
 
@@ -125,7 +125,7 @@ public class BossPlayerParticipant extends PlayerParticipant {
 	@Override
 	public void sendHealPacket(PixelmonWrapper target, int amount) {
 		if (this.controlledPokemon.contains(target)) {
-			Pixelmon.network.sendTo(new HPPacket(target, amount), this.player);
+			Pixelmon.network.sendTo(new HPUpdateTask(target, amount), this.player);
 		}
 	}
 
