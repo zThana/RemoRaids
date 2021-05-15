@@ -15,6 +15,7 @@ plugins {
     id 'java'
     id 'maven'
     id 'com.github.johnrengelman.shadow' version '4.0.4'
+    id "net.kyori.blossom" version "1.1.0"
 }
 
 apply plugin: 'net.minecraftforge.gradle'
@@ -43,16 +44,19 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 repositories {
     mavenCentral()
-    //Removed until 8.2 comes available on this repo
-//    ivy {
-//        url "https://download.nodecdn.net/containers"
-//        layout "pattern", {
-//            artifact "/[organisation]/[module]/release/[revision]/[ext]"
-//        }
-//    }
-    flatDir {
-        dirs 'libs'
+    ivy {
+        url "https://download.nodecdn.net/containers/reforged/server/release"
+        patternLayout {
+            artifact "[revision]/[artifact].[ext]"
+        }
+        metadataSources {
+            artifact()
+        }
     }
+}
+
+blossom {
+    replaceToken '@VERSION@', modVersion
 }
 
 gradle.projectsEvaluated {
@@ -66,14 +70,13 @@ dependencies {
     minecraft "net.minecraftforge:forge:" + modMinecraftVersion + "-" + modForgeVersion
     shadow 'com.google.guava:guava:27.1-jre'
     shadow 'com.google.code.gson:gson:2.8.6'
-    implementation "com.pixelmonmod:Pixelmon-1.12.2-8.2.0-pipe5689-universal"
+    implementation ":Pixelmon-1.12.2-8.2.0-server:8.2.0"
 }
 
 configurations {
     shade
     compile.extendsFrom shade
 }
-
 
 jar {
     manifest {
