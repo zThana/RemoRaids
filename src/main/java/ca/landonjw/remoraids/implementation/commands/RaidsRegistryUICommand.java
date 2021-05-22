@@ -40,4 +40,9 @@ public class RaidsRegistryUICommand extends CommandBase {
 		registry.open();
 	}
 
+	@Override
+	public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
+		return sender.canUseCommand(4, "remoraids.commands.registry");
+	}
+
 }
