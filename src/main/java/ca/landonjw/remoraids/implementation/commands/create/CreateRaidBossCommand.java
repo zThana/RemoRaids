@@ -67,4 +67,9 @@ public class CreateRaidBossCommand extends CommandBase {
 	public static ArgumentService getArgumentService() {
 		return argumentService;
 	}
+
+	@Override
+	public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
+		return sender.canUseCommand(4, "remoraids.commands.create");
+	}
 }
