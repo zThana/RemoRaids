@@ -143,7 +143,7 @@ public class BossEntity implements IBossEntity {
 	private void setOverlay() {
 		overlayText = spawner.getOverlayText();
 		if(overlayText == null)
-			overlayText = Collections.singletonList("You shouldn't be able to reach this point, so congrats!");
+			return;
 
 		PokemonSpec spec = new PokemonSpec();
 		spec.name = boss.getPokemon().getSpecies().name;
