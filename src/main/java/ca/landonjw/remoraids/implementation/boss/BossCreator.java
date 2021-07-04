@@ -1,7 +1,10 @@
 package ca.landonjw.remoraids.implementation.boss;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import ca.landonjw.remoraids.internal.messages.channels.OverlayChannel;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 
@@ -15,6 +18,9 @@ import ca.landonjw.remoraids.api.spawning.IRespawnData;
 import ca.landonjw.remoraids.api.spawning.ISpawnAnnouncement;
 import ca.landonjw.remoraids.implementation.spawning.BossSpawnLocation;
 import ca.landonjw.remoraids.internal.config.MessageConfig;
+import com.pixelmonmod.pixelmon.api.overlay.notice.EnumOverlayLayout;
+import com.pixelmonmod.pixelmon.api.overlay.notice.NoticeOverlay;
+import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -26,6 +32,8 @@ public class BossCreator implements IBossCreator {
 	private IBossSpawnLocation location;
 	private ISpawnAnnouncement announcement;
 	private IRespawnData respawnData;
+	private List<String> overlayText;
+	private boolean overlayDisabled;
 
 	private boolean persisting;
 
@@ -56,6 +64,13 @@ public class BossCreator implements IBossCreator {
 	@Override
 	public IBossCreator announcement(ISpawnAnnouncement announcement) {
 		this.announcement = announcement;
+		return this;
+	}
+
+	@Override
+	public IBossCreator overlay(List<String> overlayText, boolean disable) {
+		this.overlayText = overlayText;
+		this.overlayDisabled = disable;
 		return this;
 	}
 
@@ -91,8 +106,11 @@ public class BossCreator implements IBossCreator {
 		if (announcement == null) {
 			this.announcement(ISpawnAnnouncement.builder().message(RemoRaids.getMessageConfig().get(MessageConfig.RAID_SPAWN_ANNOUNCE)).warp(this.location).build());
 		}
+		if (overlayText == null && !overlayDisabled) {
+			overlayText = RemoRaids.getMessageConfig().get(MessageConfig.OVERLAY_TEXT);
+		}
 
-		return this.controller.boss(this.boss).location(this.location).announcement(this.announcement).respawns(this.respawnData).persists(this.persisting).build();
+		return this.controller.boss(this.boss).location(this.location).announcement(this.announcement).overlayText(this.overlayText).respawns(this.respawnData).persists(this.persisting).build();
 	}
 
 	@Override

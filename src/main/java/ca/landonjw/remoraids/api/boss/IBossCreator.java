@@ -1,5 +1,6 @@
 package ca.landonjw.remoraids.api.boss;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import ca.landonjw.remoraids.api.IBossAPI;
@@ -79,6 +80,15 @@ public interface IBossCreator extends IBuilder.Deserializable<IBossSpawner, IBos
 	 * @return The current instance of the builder
 	 */
 	IBossCreator announcement(ISpawnAnnouncement announcement);
+
+	/**
+	 * Specifies the overlay to be used and displayed while the boss is alive. This allows the implementation to
+	 * supply a custom overlay outside of the default option in the config.
+	 *
+	 * @param overlayText the custom boss overlay to use
+	 * @return the current instance of the builder
+	 */
+	IBossCreator overlay(List<String> overlayText, boolean disable);
 
 	/**
 	 * Specifies whether or not this boss can respawn. Alongside this call, the amount of times it can respawn and

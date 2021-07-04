@@ -1,11 +1,13 @@
 package ca.landonjw.remoraids.api.spawning;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ca.landonjw.remoraids.api.messages.channels.IMessageChannel;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 
 import ca.landonjw.remoraids.api.IBossAPI;
@@ -92,6 +94,13 @@ public interface IBossSpawner extends DataSerializable {
 	ISpawnAnnouncement getAnnouncement();
 
 	/**
+	 * Gets the overlay that is to be shown as long as the boss is alive
+	 *
+	 * @return the overlay to use for the overlay display
+	 */
+	List<String> getOverlayText();
+
+	/**
 	 * Returns a set of respawn data for the raid boss. Given that a raid boss might not have any respawns,
 	 * this data can return optionally to help suggest that a certain raid boss has no attempt
 	 * of respawning. It is still entirely possible that a raid boss spawner will have a set of respawn
@@ -162,6 +171,15 @@ public interface IBossSpawner extends DataSerializable {
 		 * @return builder instance with announcement set
 		 */
 		IBossSpawnerBuilder announcement(@Nullable ISpawnAnnouncement announcement);
+
+		/**
+		 * Sets the overlay that will be displayed when the boss is alive.
+		 * If the overlay is null, no overlay will be shown.
+		 *
+		 * @param overlay the overlay that will be displayed
+		 * @return builder instance with overlay set
+		 */
+		IBossSpawnerBuilder overlayText(@Nullable List<String> overlay);
 
 		/**
 		 * Sets the respawn data that defines how the spawner will respawn.

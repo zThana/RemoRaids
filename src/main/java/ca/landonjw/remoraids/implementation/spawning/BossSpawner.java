@@ -1,12 +1,18 @@
 package ca.landonjw.remoraids.implementation.spawning;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ca.landonjw.remoraids.api.IBossAPI;
+import ca.landonjw.remoraids.api.messages.channels.IMessageChannel;
+import ca.landonjw.remoraids.api.messages.placeholders.IParsingContext;
+import ca.landonjw.remoraids.api.messages.services.IMessageService;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.client.models.smd.AnimationType;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityStatue;
@@ -24,6 +30,8 @@ import ca.landonjw.remoraids.api.spawning.ISpawnAnnouncement;
 import ca.landonjw.remoraids.api.util.gson.JObject;
 import ca.landonjw.remoraids.implementation.boss.BossEntity;
 import ca.landonjw.remoraids.internal.pokemon.PokemonUtils;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -42,6 +50,8 @@ public class BossSpawner implements IBossSpawner {
 	private IBossSpawnLocation spawnLocation;
 	/** The announcement to be sent to players when the boss is spawned. */
 	private ISpawnAnnouncement announcement;
+	/** The overlay to be shown to players when the boss is alive. */
+	private List<String> overlayText;
 	/** Associated Respawn Data */
 	private IRespawnData respawns;
 	/** Specifies if the spawner will persist across restarts */
@@ -56,10 +66,11 @@ public class BossSpawner implements IBossSpawner {
 	 * @param spawnLocation the location to spawn at
 	 * @param announcement  the announcement to send on spawn, null for no announcement
 	 */
-	public BossSpawner(@Nonnull IBoss boss, @Nonnull IBossSpawnLocation spawnLocation, @Nullable ISpawnAnnouncement announcement, @Nullable IRespawnData respawns, boolean persists) {
+	public BossSpawner(@Nonnull IBoss boss, @Nonnull IBossSpawnLocation spawnLocation, @Nullable ISpawnAnnouncement announcement, @Nullable IRespawnData respawns, boolean persists, @Nullable List<String> overlayText) {
 		this.boss = Objects.requireNonNull(boss);
 		this.spawnLocation = Objects.requireNonNull(spawnLocation);
 		this.announcement = announcement;
+		this.overlayText = overlayText;
 		this.respawns = respawns;
 		this.persists = persists;
 	}
@@ -213,6 +224,12 @@ public class BossSpawner implements IBossSpawner {
 		return announcement;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public List<String> getOverlayText() {
+		return overlayText;
+	}
+
 	@Override
 	public Optional<IRespawnData> getRespawnData() {
 		return Optional.ofNullable(this.respawns);
@@ -245,6 +262,7 @@ public class BossSpawner implements IBossSpawner {
 		private IBossSpawnLocation location;
 		private ISpawnAnnouncement announcement;
 		private IRespawnData data;
+		private List<String> overlayText;
 		private boolean persists;
 
 		@Override
@@ -262,6 +280,12 @@ public class BossSpawner implements IBossSpawner {
 		@Override
 		public IBossSpawnerBuilder announcement(ISpawnAnnouncement announcement) {
 			this.announcement = announcement;
+			return this;
+		}
+
+		@Override
+		public IBossSpawnerBuilder overlayText(@Nullable List<String> overlayText) {
+			this.overlayText = overlayText;
 			return this;
 		}
 
@@ -290,7 +314,7 @@ public class BossSpawner implements IBossSpawner {
 			if (location == null) {
 				throw new IllegalStateException("builder requires location");
 			}
-			return new BossSpawner(this.boss, this.location, this.announcement, this.data, this.persists);
+			return new BossSpawner(this.boss, this.location, this.announcement, this.data, this.persists, this.overlayText);
 		}
 	}
 }

@@ -42,6 +42,7 @@ public class CreationBuilderWrapper {
 		IBoss boss = bossBuilder.battleSettings(battleSettings).build();
 		IBossSpawnLocation spawnLoc = spawnLocBuilder.build();
 		tryAddAnnouncement(spawnerBuilder, spawnLoc);
+		tryAddOverlay(spawnerBuilder);
 
 		IRespawnData respawnData = respawnDataBuilder.build();
 		IBossSpawner spawner = spawnerBuilder.boss(boss).location(spawnLoc).respawns(respawnData).build();
@@ -71,6 +72,12 @@ public class CreationBuilderWrapper {
 				announceBuilder.warp(spawnLoc.getWorld(), new Vec3d(spawnLoc.getLocation().x, spawnLoc.getLocation().y, spawnLoc.getLocation().z), spawnLoc.getRotation());
 			}
 			spawnerBuilder.announcement(announceBuilder.build());
+		}
+	}
+
+	private void tryAddOverlay(@Nonnull IBossSpawner.IBossSpawnerBuilder spawnerBuilder) {
+		if (RemoRaids.getMessageConfig().get(MessageConfig.OVERLAY_ENABLED)) {
+			spawnerBuilder.overlayText(RemoRaids.getMessageConfig().get(MessageConfig.OVERLAY_TEXT));
 		}
 	}
 
