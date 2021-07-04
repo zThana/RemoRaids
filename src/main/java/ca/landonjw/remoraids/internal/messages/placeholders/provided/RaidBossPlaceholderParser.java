@@ -6,6 +6,10 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import ca.landonjw.remoraids.api.battles.IBossBattle;
+import ca.landonjw.remoraids.implementation.battles.BossBattle;
+import ca.landonjw.remoraids.implementation.battles.BossBattleRegistry;
+import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 import com.pixelmonmod.pixelmon.enums.forms.EnumNoForm;
 import com.pixelmonmod.pixelmon.enums.forms.IEnumForm;
@@ -37,6 +41,7 @@ public class RaidBossPlaceholderParser implements IPlaceholderParser {
 
 	private Optional<String> parseSingleArg(@Nonnull IBoss boss, @Nonnull String arg) {
 		arg = arg.toLowerCase();
+		IBossBattle battle = BossBattleRegistry.getInstance().getBossBattle(boss.getEntity().get()).orElse(null);
 
 		for (StatsType type : StatsType.getStatValues()) {
 			if (type.name().equalsIgnoreCase(arg)) {
@@ -53,6 +58,28 @@ public class RaidBossPlaceholderParser implements IPlaceholderParser {
 		case "form":
 			IEnumForm form = boss.getPokemon().getFormEnum();
 			return (form != EnumNoForm.NoForm) ? Optional.of(form.getFormSuffix()) : Optional.empty();
+		case "currenthealth":
+			if(battle == null)
+				return Optional.of("Error");
+			double healthPercentage = battle.getHealth() * 100.0 / battle.getMaxHealth();
+			String colourCode;
+			if(healthPercentage > 50.0) {
+				colourCode = "§a";
+			} else if(healthPercentage < 50.0 && healthPercentage > 20.0) {
+				colourCode = "§e";
+			} else {
+				colourCode = "§c";
+			}
+
+			return Optional.of("" + colourCode + battle.getHealth());
+		case "maxhealth":
+			if(battle == null)
+				return Optional.of("Error");
+			return Optional.of("" +  battle.getMaxHealth());
+		case "participants":
+			if(battle == null)
+				return Optional.of("Error");
+			return Optional.of("" +  battle.getPlayersInBattle().size());
 		}
 		return Optional.empty();
 	}
