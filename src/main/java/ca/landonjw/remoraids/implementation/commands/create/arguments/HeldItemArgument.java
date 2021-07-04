@@ -9,8 +9,8 @@ import com.google.common.collect.Lists;
 import ca.landonjw.remoraids.api.boss.IBoss;
 import ca.landonjw.remoraids.api.commands.arguments.IRaidsArgument;
 import ca.landonjw.remoraids.api.messages.placeholders.IParsingContext;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class HeldItemArgument implements IRaidsArgument {
 
@@ -24,11 +24,11 @@ public class HeldItemArgument implements IRaidsArgument {
         if (context.getAssociation(IBoss.IBossBuilder.class).isPresent()) {
             IBoss.IBossBuilder builder = context.getAssociation(IBoss.IBossBuilder.class).get();
 
-            String itemName = "pixelmon:" + value;
-            ItemStack heldItem = GameRegistry.makeItemStack(itemName, 0, 1, null);
-            if(heldItem.isEmpty()) {
+            Item item = Item.getByNameOrId("pixelmon:" + value);
+            if(item == null) {
                 throw new IllegalArgumentException("Held item not found");
             }
+            ItemStack heldItem = new ItemStack(item);
 
             builder.heldItem(heldItem);
         }
