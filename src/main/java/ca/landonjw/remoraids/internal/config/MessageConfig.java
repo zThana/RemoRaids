@@ -17,6 +17,8 @@ import ca.landonjw.remoraids.internal.api.config.KeyFactory;
 import ca.landonjw.remoraids.internal.api.config.keys.BaseConfigKey;
 import ca.landonjw.remoraids.internal.api.config.keys.FunctionalKey;
 
+import static ca.landonjw.remoraids.internal.api.config.ConfigKeyTypes.booleanKey;
+
 public class MessageConfig implements ConfigKeyHolder {
 
 	// -------------------------------------------------------------------------------------------------
@@ -63,6 +65,13 @@ public class MessageConfig implements ConfigKeyHolder {
 
 	public static final ConfigKey<String> RESULTS_BODY_TOP_DAMAGE_CONTENT = translationKey("battle-results.body.top-damage-content", "&e{player}&7: &b{integer}");
 	public static final ConfigKey<String> RESULTS_FOOTER = translationKey("battle-results.footer", "&8&m==================================");
+
+	// -------------------------------------------------------------------------------------------------
+	//
+	// Battle Overlay Message
+	//
+	// -------------------------------------------------------------------------------------------------
+	public static final ConfigKey<List<String>> OVERLAY_TEXT = listTranslationKey("battle-overlay.message", Lists.newArrayList("Welcome to Raid Shadowlegends", "Why am I doing this again?"));
 
 	// -------------------------------------------------------------------------------------------------
 	//

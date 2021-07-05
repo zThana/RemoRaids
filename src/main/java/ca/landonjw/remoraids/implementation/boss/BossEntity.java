@@ -1,5 +1,7 @@
 package ca.landonjw.remoraids.implementation.boss;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -44,6 +46,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BossInfo;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
+
 /**
  * Implementation of {@link IBossEntity}.
  *
@@ -69,6 +73,8 @@ public class BossEntity implements IBossEntity {
 	private World world;
 	/** Location of the boss entity. */
 	private BlockPos position;
+	/** Overlay text*/
+	private List<String> overlayText;
 
 	/**
 	 * Constructor for the boss entity.
@@ -86,6 +92,7 @@ public class BossEntity implements IBossEntity {
 		this.world = statueEntity.world;
 		this.position = statueEntity.getPosition();
 		setEngager();
+		setOverlay();
 		vanishBattleEntity();
 
 		BossEntityRegistry.getInstance().register(this);
@@ -125,6 +132,49 @@ public class BossEntity implements IBossEntity {
 			IMessageChannel title = new TitleChannel(SPacketTitle.Type.SUBTITLE);
 			bossEngager = new BossEngager(this, title, engageRange, parsedMessage);
 			break;
+		}
+	}
+
+	private NoticeOverlay.Builder overlayTemplate;
+
+	/**
+	 * Creates the overlay initially
+	 */
+	private void setOverlay() {
+		overlayText = spawner.getOverlayText();
+		if(overlayText == null)
+			return;
+
+		PokemonSpec spec = new PokemonSpec();
+		spec.name = boss.getPokemon().getSpecies().name;
+		spec.form = boss.getPokemon().getFormEnum().getForm();
+		spec.shiny = boss.getPokemon().isShiny();
+		overlayTemplate = NoticeOverlay.builder().setLayout(EnumOverlayLayout.LEFT_AND_RIGHT).setPokemonSprite(spec);
+
+		startOverlayTask();
+	}
+
+	private void startOverlayTask() {
+		Task.builder().execute((task) -> {
+			if (this.getEntity().isPresent()) {
+				showOverlay();
+			} else {
+				for (EntityPlayer player : world.playerEntities) {
+					EntityPlayerMP playerMP = (EntityPlayerMP) player;
+					NoticeOverlay.hide(playerMP);
+				}
+				task.setExpired();
+			}
+		}).interval(60).delay(60).build();
+	}
+
+	private void showOverlay() {
+		IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
+		for (EntityPlayer player : world.playerEntities) {
+			EntityPlayerMP playerMP = (EntityPlayerMP) player;
+			IParsingContext context = IParsingContext.builder().add(IBossEntity.class, () -> this).add(EntityPlayerMP.class, () -> playerMP).add(IBoss.class, () -> boss).build();
+			List<String> parsed = service.interpret(overlayText, context);
+			overlayTemplate.setLines(parsed).sendTo(playerMP);
 		}
 	}
 
