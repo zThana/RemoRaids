@@ -21,7 +21,7 @@ public class GeneralConfig implements ConfigKeyHolder {
 	public static final ConfigKey<Boolean> ANNOUNCEMENTS_DISPLAY_BATTLE_SUMMARY_TO_SERVER = booleanKey("announcements.display-battle-summary-to-server", true);
 	public static final ConfigKey<Boolean> ANNOUNCEMENTS_ALLOW_TP = booleanKey("announcements.allow-teleport", false);
 
-	public static final ConfigKey<Boolean> OVERLAY_ENABLED = booleanKey("battle-overlay.enabled", true);
+	public static final ConfigKey<Boolean> OVERLAY_ENABLED = booleanKey("battle-overlay.enabled", false);
 
 	public static final ConfigKey<Integer> ENGAGE_MESSAGE_TYPE = intKey("engaging.message-type", 1);
 	public static final ConfigKey<Float> ENGAGE_RANGE = customKey(adapter -> {
