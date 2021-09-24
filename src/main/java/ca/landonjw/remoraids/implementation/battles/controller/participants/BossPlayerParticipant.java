@@ -20,6 +20,7 @@ import ca.landonjw.remoraids.api.battles.IBossBattle;
 import ca.landonjw.remoraids.api.battles.IBossBattleRegistry;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.internal.config.RestraintsConfig;
+import com.pixelmonmod.pixelmon.enums.battle.EnumBattleEndCause;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 /**
@@ -133,11 +134,11 @@ public class BossPlayerParticipant extends PlayerParticipant {
 	 * Ends the current battle.
 	 */
 	@Override
-	public void endBattle() {
+	public void endBattle(EnumBattleEndCause cause) {
 		IBossBattleRegistry battleRegistry = RemoRaids.getBossAPI().getBossBattleRegistry();
 		Optional<IBossBattle> maybeBattle = battleRegistry.getBossBattle(player);
 		maybeBattle.ifPresent(battle -> battle.endBattle(player));
-		super.endBattle();
+		super.endBattle(cause);
 	}
 
 	/**
