@@ -20,6 +20,7 @@ import ca.landonjw.remoraids.api.battles.IBossBattle;
 import ca.landonjw.remoraids.api.boss.IBossEntity;
 import ca.landonjw.remoraids.api.spawning.IBossSpawner;
 import ca.landonjw.remoraids.implementation.battles.controller.BossWrapper;
+import com.pixelmonmod.pixelmon.enums.battle.EnumBattleEndCause;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.text.TextComponentBase;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -116,7 +117,7 @@ public class BossParticipant extends BattleParticipant {
 	 * Ends the battle for the participant.
 	 */
 	@Override
-	public void endBattle() {
+	public void endBattle(EnumBattleEndCause enumBattleEndCause) {
 		this.controlledPokemon.get(0).entity.onEndBattle();
 	}
 
