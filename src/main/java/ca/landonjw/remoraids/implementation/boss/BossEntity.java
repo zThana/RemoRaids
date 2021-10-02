@@ -185,13 +185,13 @@ public class BossEntity implements IBossEntity {
 		Task.builder().execute((task) -> {
 			if (getBattleEntity().isPresent()) {
 				for (EntityPlayer player : world.playerEntities) {
-					if (player.getDistance(getEntity().get()) < 100) {
+					if (player.getDistance(getBattleEntity().get()) < 100) {
 						SPacketDestroyEntities packet = new SPacketDestroyEntities(getBattleEntity().get().getEntityId());
 						((EntityPlayerMP) player).connection.sendPacket(packet);
 					}
 				}
 			} else {
-				if (!getEntity().isPresent()) {
+				if (!getBattleEntity().isPresent()) {
 					task.setExpired();
 				}
 			}
