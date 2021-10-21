@@ -6,10 +6,12 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import ca.landonjw.remoraids.internal.config.GeneralConfig;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.drops.CustomDropScreen;
+import com.pixelmonmod.pixelmon.api.enums.BattleEndTaskType;
 import com.pixelmonmod.pixelmon.api.enums.EnumPositionTriState;
 import com.pixelmonmod.pixelmon.api.events.drops.CustomDropsEvent;
 
@@ -89,15 +91,22 @@ public abstract class DropRewardBase implements IReward {
 		IParsingContext context = IParsingContext.builder().add(EntityPlayerMP.class, () -> player).add(IReward.class, () -> this).build();
 		ITextComponent rewardText = new TextComponentString(service.interpret(config.get(MessageConfig.REWARD_RECEIVED), context));
 
-		TextUtils.addCallback(rewardText, (sender) -> {
-			RewardDropQuery query = new RewardDropQuery(player.getUniqueID(), this);
-			ongoingRewardQueries.put(player.getUniqueID(), query);
+		if(RemoRaids.getGeneralConfig().get(GeneralConfig.USE_CALLBACK)) {
+			TextUtils.addCallback(rewardText, (sender) -> openReward(player), true);
 
-			CustomDropScreen.builder().setItems(contents.stream().map(IRewardContent::toItemStack).collect(Collectors.toList())).setTitle(new TextComponentString(getDescription())).setButtonText(EnumPositionTriState.RIGHT, "Take All") // TODO: Make these configurable?
-					.setButtonText(EnumPositionTriState.LEFT, "Drop All").sendTo(player);
-		}, true);
+			player.sendMessage(rewardText);
+		} else {
+			Pixelmon.storageManager.getParty(player).addTaskForBattleEnd(BattleEndTaskType.QUEUE_IF_BATTLE_OTHERWISE_RUN, (bc) -> openReward(player));
+		}
 
-		player.sendMessage(rewardText);
+	}
+
+	private void openReward(EntityPlayerMP player) {
+		RewardDropQuery query = new RewardDropQuery(player.getUniqueID(), this);
+		ongoingRewardQueries.put(player.getUniqueID(), query);
+
+		CustomDropScreen.builder().setItems(contents.stream().map(IRewardContent::toItemStack).collect(Collectors.toList())).setTitle(new TextComponentString(getDescription())).setButtonText(EnumPositionTriState.RIGHT, "Take All") // TODO: Make these configurable?
+				.setButtonText(EnumPositionTriState.LEFT, "Drop All").sendTo(player);
 	}
 
 	/**
