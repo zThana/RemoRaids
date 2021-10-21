@@ -134,6 +134,13 @@ public interface IBossSpawner extends DataSerializable {
 	boolean hasSpawned();
 
 	/**
+	 * Returns if dynamax shall be allowed in this battle
+	 *
+	 * @return if dynamax shall be allowed in this battle
+	 */
+	boolean allowDynamax();
+
+	/**
 	 * Creates a new builder for a raid boss spawner.
 	 *
 	 * @return A new builder allowing construction of a raid boss spawner
@@ -180,6 +187,15 @@ public interface IBossSpawner extends DataSerializable {
 		 * @return builder instance with overlay set
 		 */
 		IBossSpawnerBuilder overlayText(@Nullable List<String> overlay);
+
+		/**
+		 * Sets if dynamax shall be allowed
+		 * Defaults to true
+		 *
+		 * @param allowDynamax sets if dynamax is allowed or not
+		 * @return builder instance with dynamax set
+		 */
+		IBossSpawnerBuilder allowDynamax(boolean allowDynamax);
 
 		/**
 		 * Sets the respawn data that defines how the spawner will respawn.

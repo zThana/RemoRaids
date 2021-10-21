@@ -142,6 +142,28 @@ public class BossPlayerParticipant extends PlayerParticipant {
 	}
 
 	/**
+	 * Method for overwriting dynamax
+	 *
+	 * @return if the player can dynamax
+	 */
+	@Override
+	public boolean canDynamax() {
+//	I think we dont need this?
+//		if (this.bc != null && this.bc.isRaid()) {
+//			BattleParticipant bp = this.getOpponents().get(0);
+//			if (bp instanceof RaidPixelmonParticipant) {
+//				RaidPixelmonParticipant rpp = (RaidPixelmonParticipant)bp;
+//				return rpp.canDynamax(this);
+//			}
+//		}
+		if(!bossEntity.allowDynamax()) {
+			return false;
+		}
+
+		return this.getStorage().getMegaItem().canDynamax();
+	}
+
+	/**
 	 * Gets the boss that the player is battling.
 	 *
 	 * @return the boss that the player is battling

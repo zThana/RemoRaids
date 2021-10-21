@@ -75,6 +75,8 @@ public class BossEntity implements IBossEntity {
 	private BlockPos position;
 	/** Overlay text*/
 	private List<String> overlayText;
+	/** Allow Dynamax */
+	private boolean allowDynamax;
 
 	/**
 	 * Constructor for the boss entity.
@@ -94,6 +96,7 @@ public class BossEntity implements IBossEntity {
 		setEngager();
 		setOverlay();
 		vanishBattleEntity();
+		this.allowDynamax = spawner.allowDynamax();
 
 		BossEntityRegistry.getInstance().register(this);
 		BossBattleRegistry.getInstance().createBossBattle(this);
@@ -274,6 +277,16 @@ public class BossEntity implements IBossEntity {
 		 * drop listener to be incapable of cancelling the event.
 		 */
 		Task.builder().execute(() -> BossEntityRegistry.getInstance().deregister(this)).delay(1).iterations(1).build();
+	}
+
+	/**
+	 * Returns if dynamax is allowed in the battle
+	 *
+	 * @return if dynamax is allowed
+	 */
+	@Override
+	public boolean allowDynamax() {
+		return allowDynamax;
 	}
 
 	/** {@inheritDoc} */
