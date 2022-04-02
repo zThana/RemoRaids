@@ -2,6 +2,7 @@ package ca.landonjw.remoraids.implementation.commands.create;
 
 import javax.annotation.Nonnull;
 
+import ca.landonjw.remoraids.implementation.commands.create.arguments.AllowDynamaxArgument;
 import ca.landonjw.remoraids.implementation.commands.create.arguments.HeldItemArgument;
 import ca.landonjw.remoraids.implementation.commands.create.arguments.ShowOverlayArgument;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
@@ -44,7 +45,9 @@ public enum CreateCommandArguments {
 	NO_REBATTLE_RESTRAINT(new NoRebattleRestraintArgument()),
 	SPECIES_CLAUSE_RESTRAINT(new SpeciesClauseRestraintArgument()),
 	HELD_ITEM(new HeldItemArgument()),
-	SHOW_OVERLAY(new ShowOverlayArgument());
+	SHOW_OVERLAY(new ShowOverlayArgument()),
+	ALLOW_DYNAMAX(new AllowDynamaxArgument())
+	;
 
 	private IRaidsArgument argument;
 

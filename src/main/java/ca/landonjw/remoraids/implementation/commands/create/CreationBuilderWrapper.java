@@ -76,9 +76,7 @@ public class CreationBuilderWrapper {
 	}
 
 	private void tryAddOverlay(@Nonnull IBossSpawner.IBossSpawnerBuilder spawnerBuilder) {
-		if (RemoRaids.getGeneralConfig().get(GeneralConfig.OVERLAY_ENABLED)) {
-			spawnerBuilder.overlayText(RemoRaids.getMessageConfig().get(MessageConfig.OVERLAY_TEXT));
-		}
+		spawnerBuilder.overlayText(RemoRaids.getMessageConfig().get(MessageConfig.OVERLAY_TEXT), RemoRaids.getGeneralConfig().get(GeneralConfig.OVERLAY_ENABLED));
 	}
 
 	public IParsingContext getContext() {

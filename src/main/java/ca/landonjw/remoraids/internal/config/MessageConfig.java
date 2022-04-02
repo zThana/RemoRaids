@@ -71,7 +71,7 @@ public class MessageConfig implements ConfigKeyHolder {
 	// Battle Overlay Message
 	//
 	// -------------------------------------------------------------------------------------------------
-	public static final ConfigKey<List<String>> OVERLAY_TEXT = listTranslationKey("battle-overlay.message", Lists.newArrayList("Welcome to Raid Shadowlegends", "Why am I doing this again?"));
+	public static final ConfigKey<List<String>> OVERLAY_TEXT = listTranslationKey("battle-overlay.message", Lists.newArrayList("RemoRaids", "Default Overlay"));
 
 	// -------------------------------------------------------------------------------------------------
 	//

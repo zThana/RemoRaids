@@ -73,133 +73,141 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @Mod(modid = RemoRaids.MOD_ID, name = RemoRaids.MOD_NAME, version = RemoRaids.VERSION, acceptableRemoteVersions = "*")
 public class RemoRaids {
 
-	public static final String MOD_ID = "remoraids";
-	public static final String MOD_NAME = "RemoRaids";
-	public static final String VERSION = "@VERSION@";
+    public static final String MOD_ID = "remoraids";
+    public static final String MOD_NAME = "RemoRaids";
+    public static final String VERSION = "@VERSION@";
 
-	private static RemoRaids instance;
+    private static RemoRaids instance;
 
-	public static final EventBus EVENT_BUS = new EventBus();
-	public static final Logger logger = LogManager.getLogger(MOD_NAME);
+    public static final EventBus EVENT_BUS = new EventBus();
+    public static final Logger logger = LogManager.getLogger(MOD_NAME);
 
-	private static Config generalConfig;
-	private static Config restraintsConfig;
-	private static Config messageConfig;
+    private static Config generalConfig;
+    private static Config restraintsConfig;
+    private static Config messageConfig;
 
-	public static RaidBossDataStorage storage;
+    public static RaidBossDataStorage storage;
 
-	private static RaidsDataPersistence raidsPersistence = new RaidsDataPersistence();
-	private static ISerializationFactories deserializerFactories = new InternalRaidsDeserializerFactories();
+    private static RaidsDataPersistence raidsPersistence = new RaidsDataPersistence();
+    private static ISerializationFactories deserializerFactories = new InternalRaidsDeserializerFactories();
 
-	@Mod.EventHandler
-	public void preInit(FMLPreInitializationEvent event) {
-		instance = this;
-		APIRegistrationUtil.register(new BossAPI());
-		InventoryAPI.register();
+    private File directory;
 
-		File directory = new File(event.getModConfigurationDirectory(), "remoraids");
-		generalConfig = new ForgeConfig(new ForgeConfigAdapter(directory.toPath().resolve("general.conf")), new GeneralConfig());
-		restraintsConfig = new ForgeConfig(new ForgeConfigAdapter(directory.toPath().resolve("restraints.conf")), new RestraintsConfig());
-		messageConfig = new ForgeConfig(new ForgeConfigAdapter(directory.toPath().resolve("messages.conf")), new MessageConfig());
+    @Mod.EventHandler
+    public void preInit(FMLPreInitializationEvent event) {
+        instance = this;
+        APIRegistrationUtil.register(new BossAPI());
+        InventoryAPI.register();
 
-		registerBuilders();
-		registerFactories();
+        this.directory = new File(event.getModConfigurationDirectory(), "remoraids");
+        generalConfig = new ForgeConfig(new ForgeConfigAdapter(directory.toPath().resolve("general.conf")), new GeneralConfig());
+        restraintsConfig = new ForgeConfig(new ForgeConfigAdapter(directory.toPath().resolve("restraints.conf")), new RestraintsConfig());
+        messageConfig = new ForgeConfig(new ForgeConfigAdapter(directory.toPath().resolve("messages.conf")), new MessageConfig());
 
-		getBossAPI().getRaidRegistry().register(IMessageService.class, new MessageService());
+        registerBuilders();
+        registerFactories();
 
-		IPlaceholderService placeholders = new PlaceholderService();
-		placeholders.registerDefaults();
-		getBossAPI().getRaidRegistry().register(IPlaceholderService.class, placeholders);
-	}
+        getBossAPI().getRaidRegistry().register(IMessageService.class, new MessageService());
 
-	private void registerBuilders() {
-		getBossAPI().getRaidRegistry().registerBuilderSupplier(IBossCreator.class, BossCreator::new);
-		getBossAPI().getRaidRegistry().registerBuilderSupplier(IBoss.IBossBuilder.class, Boss.BossBuilder::new);
-		getBossAPI().getRaidRegistry().registerBuilderSupplier(IBossSpawner.IBossSpawnerBuilder.class, BossSpawner.BossSpawnerBuilder::new);
-		getBossAPI().getRaidRegistry().registerBuilderSupplier(IRespawnData.IRespawnDataBuilder.class, RespawnData.RespawnDataBuilder::new);
-		getBossAPI().getRaidRegistry().registerBuilderSupplier(IBossSpawnLocation.IBossSpawnLocationBuilder.class, BossSpawnLocation.BossSpawnLocationBuilder::new);
-		getBossAPI().getRaidRegistry().registerBuilderSupplier(ISpawnAnnouncement.ISpawnAnnouncementBuilder.class, SpawnAnnouncement.SpawnAnnouncementBuilder::new);
-		getBossAPI().getRaidRegistry().registerBuilderSupplier(IParsingContext.Builder.class, ParsingContext.ParsingContextBuilder::new);
-		getBossAPI().getRaidRegistry().registerBuilderSupplier(IPlaceholderContext.Builder.class, PlaceholderContext.PlaceholderContextBuilder::new);
-		getBossAPI().getRaidRegistry().registerBuilderSupplier(IPlaceholderParser.Builder.class, PlaceholderParser.PlaceholderParserBuilder::new);
-		getBossAPI().getRaidRegistry().registerSpawnerBuilderSupplier("default", BossSpawner.BossSpawnerBuilder::new);
-	}
+        IPlaceholderService placeholders = new PlaceholderService();
+        placeholders.registerDefaults();
+        getBossAPI().getRaidRegistry().register(IPlaceholderService.class, placeholders);
+    }
 
-	private void registerFactories() {
-		deserializerFactories.registerFactory(IRewardContent.class, new RewardContentSerializationFactory());
-		deserializerFactories.registerFactory(IReward.class, new RewardSerializationFactory());
-		// TODO: Battle restraint factory registration
-	}
+    private void registerBuilders() {
+        getBossAPI().getRaidRegistry().registerBuilderSupplier(IBossCreator.class, BossCreator::new);
+        getBossAPI().getRaidRegistry().registerBuilderSupplier(IBoss.IBossBuilder.class, Boss.BossBuilder::new);
+        getBossAPI().getRaidRegistry().registerBuilderSupplier(IBossSpawner.IBossSpawnerBuilder.class, BossSpawner.BossSpawnerBuilder::new);
+        getBossAPI().getRaidRegistry().registerBuilderSupplier(IRespawnData.IRespawnDataBuilder.class, RespawnData.RespawnDataBuilder::new);
+        getBossAPI().getRaidRegistry().registerBuilderSupplier(IBossSpawnLocation.IBossSpawnLocationBuilder.class, BossSpawnLocation.BossSpawnLocationBuilder::new);
+        getBossAPI().getRaidRegistry().registerBuilderSupplier(ISpawnAnnouncement.ISpawnAnnouncementBuilder.class, SpawnAnnouncement.SpawnAnnouncementBuilder::new);
+        getBossAPI().getRaidRegistry().registerBuilderSupplier(IParsingContext.Builder.class, ParsingContext.ParsingContextBuilder::new);
+        getBossAPI().getRaidRegistry().registerBuilderSupplier(IPlaceholderContext.Builder.class, PlaceholderContext.PlaceholderContextBuilder::new);
+        getBossAPI().getRaidRegistry().registerBuilderSupplier(IPlaceholderParser.Builder.class, PlaceholderParser.PlaceholderParserBuilder::new);
+        getBossAPI().getRaidRegistry().registerSpawnerBuilderSupplier("default", BossSpawner.BossSpawnerBuilder::new);
+    }
 
-	@Mod.EventHandler
-	public void init(FMLInitializationEvent event) {
-		MinecraftForge.EVENT_BUS.register(new TaskTickListener());
-		MinecraftForge.EVENT_BUS.register(new BossUpdateListener());
-		MinecraftForge.EVENT_BUS.register(this);
+    private void registerFactories() {
+        deserializerFactories.registerFactory(IRewardContent.class, new RewardContentSerializationFactory());
+        deserializerFactories.registerFactory(IReward.class, new RewardSerializationFactory());
+        // TODO: Battle restraint factory registration
+    }
 
-		Pixelmon.EVENT_BUS.register(new EngageListener());
-		Pixelmon.EVENT_BUS.register(new BossDropListener());
-		Pixelmon.EVENT_BUS.register(new StatueInteractListener());
+    @Mod.EventHandler
+    public void init(FMLInitializationEvent event) {
+        MinecraftForge.EVENT_BUS.register(new TaskTickListener());
+        MinecraftForge.EVENT_BUS.register(new BossUpdateListener());
+        MinecraftForge.EVENT_BUS.register(this);
 
-		RemoRaids.EVENT_BUS.register(this);
-		RemoRaids.EVENT_BUS.register(new RaidBossDeathListener());
+        Pixelmon.EVENT_BUS.register(new EngageListener());
+        Pixelmon.EVENT_BUS.register(new BossDropListener());
+        Pixelmon.EVENT_BUS.register(new StatueInteractListener());
 
-		storage = new RaidBossDataStorage();
-	}
+        RemoRaids.EVENT_BUS.register(this);
+        RemoRaids.EVENT_BUS.register(new RaidBossDeathListener());
 
-	@SubscribeEvent(priority = EventPriority.HIGH)
-	public void onWorldLoad(WorldEvent.Load event) {
-		if (storage.getSpawners() == null) {
-			storage.read();
-		}
-	}
+        storage = new RaidBossDataStorage();
+    }
 
-	@Mod.EventHandler
-	public void onServerStarting(FMLServerStartingEvent event) {
-		event.registerServerCommand(new Callback());
-		event.registerServerCommand(new RaidsCommand());
-	}
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public void onWorldLoad(WorldEvent.Load event) {
+        if (storage.getSpawners() == null) {
+            storage.read();
+        }
+    }
 
-	@Mod.EventHandler
-	public void onShutdown(FMLServerStoppingEvent event) {
-		for (IBossSpawner spawner : IBossAPI.getInstance().getBossEntityRegistry().getAllBossEntities().stream().map(IBossEntity::getSpawner).collect(Collectors.toList())) {
-			if (spawner.doesPersist()) {
-				storage.save(spawner);
-			}
-			spawner.getBoss().getEntity().ifPresent(IBossEntity::despawn);
-		}
-	}
+    @Mod.EventHandler
+    public void onServerStarting(FMLServerStartingEvent event) {
+        event.registerServerCommand(new Callback());
+        event.registerServerCommand(new RaidsCommand());
+    }
 
-	public static RemoRaids getInstance() {
-		return instance;
-	}
+    @Mod.EventHandler
+    public void onShutdown(FMLServerStoppingEvent event) {
+        for (IBossSpawner spawner : IBossAPI.getInstance().getBossEntityRegistry().getAllBossEntities().stream().map(IBossEntity::getSpawner).collect(Collectors.toList())) {
+            if (spawner.doesPersist()) {
+                storage.save(spawner);
+            }
+            spawner.getBoss().getEntity().ifPresent(IBossEntity::despawn);
+        }
+    }
 
-	public static IBossAPI getBossAPI() {
-		return BossAPIProvider.get();
-	}
+    public void reload() {
+        generalConfig = new ForgeConfig(new ForgeConfigAdapter(directory.toPath().resolve("general.conf")), new GeneralConfig());
+        restraintsConfig = new ForgeConfig(new ForgeConfigAdapter(directory.toPath().resolve("restraints.conf")), new RestraintsConfig());
+        messageConfig = new ForgeConfig(new ForgeConfigAdapter(directory.toPath().resolve("messages.conf")), new MessageConfig());
+    }
 
-	public static Config getGeneralConfig() {
-		return generalConfig;
-	}
+    public static RemoRaids getInstance() {
+        return instance;
+    }
 
-	public static Config getMessageConfig() {
-		return messageConfig;
-	}
+    public static IBossAPI getBossAPI() {
+        return BossAPIProvider.get();
+    }
 
-	public static Config getRestraintsConfig() {
-		return restraintsConfig;
-	}
+    public static Config getGeneralConfig() {
+        return generalConfig;
+    }
 
-	public static ISerializationFactories getDeserializerFactories() {
-		return deserializerFactories;
-	}
+    public static Config getMessageConfig() {
+        return messageConfig;
+    }
 
-	public static RaidsDataPersistence getRaidsPersistence() {
-		return raidsPersistence;
-	}
+    public static Config getRestraintsConfig() {
+        return restraintsConfig;
+    }
 
-	public static InputStream getResourceStream(String path) {
-		return RemoRaids.instance.getClass().getClassLoader().getResourceAsStream(path);
-	}
+    public static ISerializationFactories getDeserializerFactories() {
+        return deserializerFactories;
+    }
+
+    public static RaidsDataPersistence getRaidsPersistence() {
+        return raidsPersistence;
+    }
+
+    public static InputStream getResourceStream(String path) {
+        return RemoRaids.instance.getClass().getClassLoader().getResourceAsStream(path);
+    }
 
 }

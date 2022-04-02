@@ -101,6 +101,11 @@ public interface IBossSpawner extends DataSerializable {
 	List<String> getOverlayText();
 
 	/**
+	 * @return if the overlay shall be displayed or not
+	 */
+	boolean overlayDisabled();
+
+	/**
 	 * Returns a set of respawn data for the raid boss. Given that a raid boss might not have any respawns,
 	 * this data can return optionally to help suggest that a certain raid boss has no attempt
 	 * of respawning. It is still entirely possible that a raid boss spawner will have a set of respawn
@@ -132,6 +137,13 @@ public interface IBossSpawner extends DataSerializable {
 	 * @return True if a spawn has taken place, false otherwise
 	 */
 	boolean hasSpawned();
+
+	/**
+	 * Returns if dynamax shall be allowed in this battle
+	 *
+	 * @return if dynamax shall be allowed in this battle
+	 */
+	boolean allowDynamax();
 
 	/**
 	 * Creates a new builder for a raid boss spawner.
@@ -179,7 +191,16 @@ public interface IBossSpawner extends DataSerializable {
 		 * @param overlay the overlay that will be displayed
 		 * @return builder instance with overlay set
 		 */
-		IBossSpawnerBuilder overlayText(@Nullable List<String> overlay);
+		IBossSpawnerBuilder overlayText(@Nullable List<String> overlay, boolean overlayDisabled);
+
+		/**
+		 * Sets if dynamax shall be allowed
+		 * Defaults to true
+		 *
+		 * @param allowDynamax sets if dynamax is allowed or not
+		 * @return builder instance with dynamax set
+		 */
+		IBossSpawnerBuilder allowDynamax(boolean allowDynamax);
 
 		/**
 		 * Sets the respawn data that defines how the spawner will respawn.

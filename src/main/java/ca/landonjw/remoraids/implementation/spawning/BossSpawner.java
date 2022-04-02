@@ -52,12 +52,16 @@ public class BossSpawner implements IBossSpawner {
 	private ISpawnAnnouncement announcement;
 	/** The overlay to be shown to players when the boss is alive. */
 	private List<String> overlayText;
+	/** Sets if the overlay is disabled or nah */
+	private boolean overlayDisabled;
 	/** Associated Respawn Data */
 	private IRespawnData respawns;
 	/** Specifies if the spawner will persist across restarts */
 	private transient boolean persists;
 	/** A marker flag to indicate a raid boss has spawned */
 	private transient boolean spawned;
+	/** Sets if dynamax is allowed or not */
+	private boolean allowDynamax;
 
 	/**
 	 * Constructor for the boss spawner.
@@ -66,13 +70,15 @@ public class BossSpawner implements IBossSpawner {
 	 * @param spawnLocation the location to spawn at
 	 * @param announcement  the announcement to send on spawn, null for no announcement
 	 */
-	public BossSpawner(@Nonnull IBoss boss, @Nonnull IBossSpawnLocation spawnLocation, @Nullable ISpawnAnnouncement announcement, @Nullable IRespawnData respawns, boolean persists, @Nullable List<String> overlayText) {
+	public BossSpawner(@Nonnull IBoss boss, @Nonnull IBossSpawnLocation spawnLocation, @Nullable ISpawnAnnouncement announcement, @Nullable IRespawnData respawns, boolean persists, @Nullable List<String> overlayText, boolean overlayDisabled, boolean allowDynamax) {
 		this.boss = Objects.requireNonNull(boss);
 		this.spawnLocation = Objects.requireNonNull(spawnLocation);
 		this.announcement = announcement;
 		this.overlayText = overlayText;
+		this.overlayDisabled = overlayDisabled;
 		this.respawns = respawns;
 		this.persists = persists;
+		this.allowDynamax = allowDynamax;
 	}
 
 	@Override
@@ -230,6 +236,12 @@ public class BossSpawner implements IBossSpawner {
 		return overlayText;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public boolean overlayDisabled() {
+		return overlayDisabled;
+	}
+
 	@Override
 	public Optional<IRespawnData> getRespawnData() {
 		return Optional.ofNullable(this.respawns);
@@ -252,6 +264,12 @@ public class BossSpawner implements IBossSpawner {
 
 	/** {@inheritDoc} */
 	@Override
+	public boolean allowDynamax() {
+		return allowDynamax;
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public JObject serialize() {
 		return new JObject().add("key", this.getKey()).add("boss", this.boss.serialize()).add("announcement", this.announcement.serialize()).add("location", this.spawnLocation.serialize()).when(this.respawns, Objects::nonNull, o -> o.add("respawning", this.respawns.serialize()));
 	}
@@ -263,7 +281,9 @@ public class BossSpawner implements IBossSpawner {
 		private ISpawnAnnouncement announcement;
 		private IRespawnData data;
 		private List<String> overlayText;
+		private boolean overlayDisabled;
 		private boolean persists;
+		private boolean allowDynamax = true;
 
 		@Override
 		public IBossSpawnerBuilder boss(IBoss boss) {
@@ -284,8 +304,15 @@ public class BossSpawner implements IBossSpawner {
 		}
 
 		@Override
-		public IBossSpawnerBuilder overlayText(@Nullable List<String> overlayText) {
+		public IBossSpawnerBuilder overlayText(@Nullable List<String> overlayText, boolean overlayDisabled) {
 			this.overlayText = overlayText;
+			this.overlayDisabled = overlayDisabled;
+			return this;
+		}
+
+		@Override
+		public IBossSpawnerBuilder allowDynamax(boolean allowDynamax) {
+			this.allowDynamax = allowDynamax;
 			return this;
 		}
 
@@ -314,7 +341,7 @@ public class BossSpawner implements IBossSpawner {
 			if (location == null) {
 				throw new IllegalStateException("builder requires location");
 			}
-			return new BossSpawner(this.boss, this.location, this.announcement, this.data, this.persists, this.overlayText);
+			return new BossSpawner(this.boss, this.location, this.announcement, this.data, this.persists, this.overlayText, this.overlayDisabled, this.allowDynamax);
 		}
 	}
 }

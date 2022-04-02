@@ -70,7 +70,7 @@ dependencies {
     minecraft "net.minecraftforge:forge:" + modMinecraftVersion + "-" + modForgeVersion
     shadow 'com.google.guava:guava:27.1-jre'
     shadow 'com.google.code.gson:gson:2.8.6'
-    implementation ":Pixelmon-1.12.2-8.3.0-server:8.3.0"
+    implementation ":Pixelmon-1.12.2-8.3.8-server:8.3.8"
 }
 
 configurations {

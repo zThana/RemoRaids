@@ -89,4 +89,11 @@ public interface IBossEntity {
 	 */
 	void despawn();
 
+	/**
+	 * Returns if dynamax is allowed in the battle
+	 *
+	 * @return if dynamax is allowed
+	 */
+	boolean allowDynamax();
+
 }
