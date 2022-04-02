@@ -9,26 +9,27 @@ import net.minecraftforge.server.command.CommandTreeBase;
 
 public class RaidsCommand extends CommandTreeBase {
 
-	public RaidsCommand() {
-		this.addSubcommand(new CreateRaidBossCommand());
-		this.addSubcommand(new RaidsRegistryUICommand());
-	}
+    public RaidsCommand() {
+        this.addSubcommand(new CreateRaidBossCommand());
+        this.addSubcommand(new RaidsRegistryUICommand());
+        this.addSubcommand(new RaidsReload());
+    }
 
-	@Override
-	public String getName() {
-		return "raids";
-	}
+    @Override
+    public String getName() {
+        return "raids";
+    }
 
-	@Override
-	public String getUsage(ICommandSender sender) {
-		StringJoiner commandJoiner = new StringJoiner("/");
-		getSubCommands().forEach((command) -> commandJoiner.add(command.getName()));
-		return "/" + getName() + " <" + commandJoiner.toString() + ">";
-	}
+    @Override
+    public String getUsage(ICommandSender sender) {
+        StringJoiner commandJoiner = new StringJoiner("/");
+        getSubCommands().forEach((command) -> commandJoiner.add(command.getName()));
+        return "/" + getName() + " <" + commandJoiner.toString() + ">";
+    }
 
-	@Override
-	public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-		return sender.canUseCommand(4, "remoraids.commands.base");
-	}
+    @Override
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
+        return sender.canUseCommand(4, "remoraids.commands.base");
+    }
 
 }
