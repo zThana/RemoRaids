@@ -144,6 +144,8 @@ public class BossEntity implements IBossEntity {
 	 * Creates the overlay initially
 	 */
 	private void setOverlay() {
+		if (spawner.overlayDisabled())
+			return;
 		overlayText = spawner.getOverlayText();
 		if(overlayText == null)
 			return;

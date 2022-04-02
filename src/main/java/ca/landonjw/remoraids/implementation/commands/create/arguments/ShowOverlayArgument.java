@@ -22,7 +22,7 @@ public class ShowOverlayArgument implements IRaidsArgument {
         if (context.getAssociation(IBossSpawner.IBossSpawnerBuilder.class).isPresent()) {
             IBossSpawner.IBossSpawnerBuilder spawnerBuilder = context.getAssociation(IBossSpawner.IBossSpawnerBuilder.class).get();
 
-            spawnerBuilder.overlayText(RemoRaids.getMessageConfig().get(MessageConfig.OVERLAY_TEXT));
+            spawnerBuilder.overlayText(RemoRaids.getMessageConfig().get(MessageConfig.OVERLAY_TEXT), true);
         } else {
             System.out.println("no builder found :(");
         }
