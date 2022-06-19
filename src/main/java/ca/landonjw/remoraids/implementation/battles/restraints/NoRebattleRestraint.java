@@ -3,6 +3,7 @@ package ca.landonjw.remoraids.implementation.battles.restraints;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -18,14 +19,15 @@ import ca.landonjw.remoraids.internal.config.MessageConfig;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 public class NoRebattleRestraint implements IBattleRestraint {
-	private Set<EntityPlayerMP> restrainedPlayers = new HashSet<>();
+
+	private final Set<UUID> restrainedPlayers = new HashSet<>();
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean validatePlayer(@Nullable EntityPlayerMP player, @Nonnull IBoss boss) {
-		return !restrainedPlayers.contains(player);
+	public boolean validatePlayer(@Nonnull EntityPlayerMP player, @Nonnull IBoss boss) {
+		return !restrainedPlayers.contains(player.getUniqueID());
 	}
 
 	@Override
@@ -48,19 +50,19 @@ public class NoRebattleRestraint implements IBattleRestraint {
 
 	/**
 	 * {@inheritDoc}
-	 * <p>
+	 *
 	 * Adds player to list that prevents them from reentering battle again.
 	 *
 	 * @param player player leaving battle
 	 */
 	@Override
 	public void onBattleEnd(@Nonnull EntityPlayerMP player, @Nonnull IBoss boss) {
-		restrainedPlayers.add(player);
+		restrainedPlayers.add(player.getUniqueID());
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * <p>
+	 *
 	 * Clears the prevented players list.
 	 */
 	@Override
