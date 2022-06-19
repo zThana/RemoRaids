@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
@@ -29,7 +30,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 public class CooldownRestraint implements IBattleRestraint {
 
 	/** Map of players and the last time they left battle with the boss. */
-	private Map<EntityPlayerMP, Instant> lastBattleTimeMap = new HashMap<>();
+	private final Map<UUID, Instant> lastBattleTimeMap = new HashMap<>();
 	/** The cooldown in seconds before plays may reenter battle with the boss, after they have left. */
 	private long cooldownSeconds;
 
@@ -46,10 +47,9 @@ public class CooldownRestraint implements IBattleRestraint {
 	/** {@inheritDoc} */
 	@Override
 	public boolean validatePlayer(@Nonnull EntityPlayerMP player, @Nonnull IBoss boss) {
-		if (lastBattleTimeMap.containsKey(player)) {
-			Duration timeElapsed = Duration.between(lastBattleTimeMap.get(player), Instant.now());
-			if (cooldownSeconds > timeElapsed.getSeconds())
-				return false;
+		if (lastBattleTimeMap.containsKey(player.getUniqueID())) {
+			Duration timeElapsed = Duration.between(lastBattleTimeMap.get(player.getUniqueID()), Instant.now());
+			return cooldownSeconds <= timeElapsed.getSeconds();
 		}
 
 		return true;
@@ -64,8 +64,8 @@ public class CooldownRestraint implements IBattleRestraint {
 	/** {@inheritDoc} */
 	@Override
 	public Optional<String> getRejectionMessage(@Nonnull EntityPlayerMP player, @Nonnull IBoss boss) {
-		if (lastBattleTimeMap.containsKey(player)) {
-			Duration timeElapsed = Duration.between(lastBattleTimeMap.get(player), Instant.now());
+		if (lastBattleTimeMap.containsKey(player.getUniqueID())) {
+			Duration timeElapsed = Duration.between(lastBattleTimeMap.get(player.getUniqueID()), Instant.now());
 			if (cooldownSeconds > timeElapsed.getSeconds()) {
 				Config config = RemoRaids.getMessageConfig();
 				IMessageService service = IBossAPI.getInstance().getRaidRegistry().getUnchecked(IMessageService.class);
@@ -86,7 +86,7 @@ public class CooldownRestraint implements IBattleRestraint {
 	 */
 	@Override
 	public void onBattleEnd(@Nonnull EntityPlayerMP player, @Nonnull IBoss boss) {
-		lastBattleTimeMap.put(player, Instant.now());
+		lastBattleTimeMap.put(player.getUniqueID(), Instant.now());
 	}
 
 	/**
@@ -120,8 +120,8 @@ public class CooldownRestraint implements IBattleRestraint {
 	 * @return cooldown remaining before player may reenter battle
 	 */
 	public Optional<Long> getCooldownRemaining(@Nonnull EntityPlayerMP player, TimeUnit unit) {
-		if (lastBattleTimeMap.containsKey(player)) {
-			Duration timeElapsed = Duration.between(lastBattleTimeMap.get(player), Instant.now());
+		if (lastBattleTimeMap.containsKey(player.getUniqueID())) {
+			Duration timeElapsed = Duration.between(lastBattleTimeMap.get(player.getUniqueID()), Instant.now());
 			if (cooldownSeconds > timeElapsed.getSeconds()) {
 				return Optional.of(unit.convert(cooldownSeconds - timeElapsed.getSeconds(), TimeUnit.SECONDS));
 			}
